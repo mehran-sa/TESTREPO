@@ -1,0 +1,13 @@
+{
+  "name": "invoice-studio-verification",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Development-only regression harness. The application itself has no dependencies and no build step.",
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "^0.28.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "jsdom": "^24.0.0"
+  }
+}
