@@ -30,6 +30,10 @@ export const TOAST_MS = 2200;
 export const PRINT_SETTLE_MS = 180;
 /** Extra settle time after web fonts report ready, before opening the dialog. */
 export const PRINT_FONT_SETTLE_MS = 80;
+/** Undo history depth, and how long typing is coalesced into one entry. */
+export const HISTORY_LIMIT = 60;
+export const HISTORY_DEBOUNCE_MS = 700;
+
 export const LOGO_HINT_DEFAULT = "PNG, JPG, WEBP or SVG. Maximum 3 MB.";
 export const SIDEBAR_RESIZE_MIN_VIEWPORT = 1180;
 export const XLSX_CDN = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";

@@ -20,7 +20,8 @@ export function initFieldBindings() {
     el.addEventListener(eventName, () => {
       if (id === "accent" || id === "accentHex") setAccent(fieldValue(id));
       renderPreview();
-      saveInvoice();
+      // Keystrokes: coalesced into a single history entry.
+      saveInvoice({ typing: true });
     });
   });
 }

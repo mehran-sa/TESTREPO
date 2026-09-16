@@ -26,8 +26,12 @@ import { initSidebarResizer } from "./editor/sidebar.js";
 import { initToolbar } from "./editor/toolbar.js";
 import { initLibraryControls, refreshLibraries } from "./editor/library.js";
 import { initBundleTools } from "./editor/bundles.js";
+import { initHistoryControls } from "./editor/history-controls.js";
+import { configureHistory } from "./history/invoice-history.js";
 
 import { renderAll, applySnapshot } from "./session.js";
+import { serialize } from "./invoice/invoice-data.js";
+import { state } from "./state.js";
 import { loadInvoice } from "./storage/invoice-storage.js";
 import { DEFAULT_ACCENT } from "./constants.js";
 import { installCompatibilityGlobals } from "./compat.js";
@@ -84,6 +88,15 @@ export function init() {
   step("defaults", seedDefaults);
   step("first render", renderAll);
   step("restore autosave", restoreAutosave);
+  // History is seeded after the autosave is restored, so the starting point is
+  // the invoice the user actually sees. Zoom is carried over from live state on
+  // restore, keeping the preview zoom out of undo.
+  step("history", () => configureHistory({
+    capture: serialize,
+    restore: snapshot => applySnapshot({ ...snapshot, zoom: state.zoom })
+  }));
+  step("history controls", initHistoryControls);
+
   step("libraries", refreshLibraries);
   step("compatibility globals", installCompatibilityGlobals);
 }

@@ -7,7 +7,7 @@ import { readItemsFromFile } from "../import-export/spreadsheet.js";
 import { setItems } from "../state.js";
 import { applySnapshot, renderAll } from "../session.js";
 import { confirmAction } from "../ui/confirm-dialog.js";
-import { resetTextFields } from "../invoice/reset-text.js";
+import { resetInvoiceContent } from "../invoice/reset-text.js";
 import { renderItems } from "./items.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice, clearInvoice } from "../storage/invoice-storage.js";
@@ -32,19 +32,20 @@ export function initToolbar() {
   $("resetTextBtn").onclick = async () => {
     const ok = await confirmAction({
       title: "Reset all text fields?",
-      message: "This will clear text entered in the current invoice. " +
-        "Saved templates and saved brands will not be deleted.",
+      message: "This will clear text entered in the current invoice and set the " +
+        "invoice date back to today. Saved templates and saved brands will not be deleted.",
       confirmLabel: "Reset text fields",
       danger: true
     });
     if (!ok) return;
 
-    const cleared = resetTextFields();
+    // One state change, one save, therefore one undo step for the whole reset.
+    const cleared = resetInvoiceContent();
     renderAll();
     saveInvoice();
-    toast(cleared.fields || cleared.itemCells
-      ? `Text cleared from ${cleared.fields} field${cleared.fields === 1 ? "" : "s"}.`
-      : "There was no text to clear.");
+    toast(cleared.fields || cleared.itemCells || cleared.dateReset
+      ? `Text cleared from ${cleared.fields} field${cleared.fields === 1 ? "" : "s"}. Invoice date reset.`
+      : "There was nothing to reset.");
   };
 
   $("resetBtn").onclick = () => {

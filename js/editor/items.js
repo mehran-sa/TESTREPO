@@ -43,7 +43,7 @@ export function renderItems() {
         const col = state.columns.find(c => c.key === input.dataset.key);
         item[input.dataset.key] = isNumericType(col?.type) ? num(input.value) : input.value;
         renderPreview();
-        saveInvoice();
+        saveInvoice({ typing: true });
       };
     });
     root.appendChild(card);

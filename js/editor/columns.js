@@ -61,7 +61,7 @@ export function renderColumns() {
     row.querySelector(".labelinput").oninput = () => {
       col.label = row.querySelector(".labelinput").value;
       renderPreview();
-      saveInvoice();
+      saveInvoice({ typing: true });
     };
     row.querySelector("button").onclick = () => {
       if (state.columns.length <= 1) return toast("At least one column is required.");

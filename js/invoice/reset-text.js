@@ -1,7 +1,8 @@
 /**
  * "Reset all text fields" for the current invoice.
  *
- * Clears only user-entered text. It deliberately leaves alone everything that
+ * Clears user-entered text and returns the invoice date to today, its normal
+ * default. It deliberately leaves alone everything that
  * is configuration rather than content: template selection, columns, section
  * toggles, currency, dates, status, discount/tax/shipping rates, accent colour,
  * logo and its sizing, and both saved libraries. Nothing is removed from
@@ -11,7 +12,7 @@
  * controls are opted in explicitly instead of being cleared by accident.
  */
 
-import { $ } from "../utils.js";
+import { $, today } from "../utils.js";
 import { FIELD_IDS } from "../constants.js";
 import { state } from "../state.js";
 
@@ -64,4 +65,29 @@ export function resetTextFields() {
   }
 
   return { fields, itemCells };
+}
+
+/**
+ * Returns the invoice date to its default: today.
+ *
+ * The due date is left as it is - it is a term the user chose, not content, and
+ * the update brief asked only for the invoice date.
+ *
+ * @returns {boolean} whether the value actually changed
+ */
+export function resetInvoiceDate() {
+  const el = $("invoiceDate");
+  if (!el) return false;
+  const current = el.value;
+  el.value = today();
+  return el.value !== current;
+}
+
+/**
+ * The whole reset, as one operation so it becomes a single undo step.
+ * @returns {{fields: number, itemCells: number, dateReset: boolean}}
+ */
+export function resetInvoiceContent() {
+  const cleared = resetTextFields();
+  return { ...cleared, dateReset: resetInvoiceDate() };
 }
