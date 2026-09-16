@@ -25,6 +25,7 @@ import { setAccent, initLogoControls, initZoomControls, applyLogoDefaults } from
 import { initSidebarResizer } from "./editor/sidebar.js";
 import { initToolbar } from "./editor/toolbar.js";
 import { initLibraryControls, refreshLibraries } from "./editor/library.js";
+import { initBundleTools } from "./editor/bundles.js";
 
 import { renderAll, applySnapshot } from "./session.js";
 import { loadInvoice } from "./storage/invoice-storage.js";
@@ -76,6 +77,9 @@ export function init() {
   step("sidebar", initSidebarResizer);
   step("toolbar", initToolbar);
   step("library controls", initLibraryControls);
+  // Guarded like every other step: a failure in the bundle tool must not stop
+  // the invoice editor loading.
+  step("bundle tools", initBundleTools);
 
   step("defaults", seedDefaults);
   step("first render", renderAll);

@@ -5,7 +5,9 @@ import { printInvoice, exportInvoicePDF } from "../print/pdf.js";
 import { exportInvoiceJSON, readInvoiceFile } from "../import-export/json.js";
 import { readItemsFromFile } from "../import-export/spreadsheet.js";
 import { setItems } from "../state.js";
-import { applySnapshot } from "../session.js";
+import { applySnapshot, renderAll } from "../session.js";
+import { confirmAction } from "../ui/confirm-dialog.js";
+import { resetTextFields } from "../invoice/reset-text.js";
 import { renderItems } from "./items.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice, clearInvoice } from "../storage/invoice-storage.js";
@@ -24,6 +26,25 @@ export function initToolbar() {
       toast(err.message);
     }
     e.target.value = "";
+  };
+
+  // Clears invoice text only. Kept separate from the full reset below.
+  $("resetTextBtn").onclick = async () => {
+    const ok = await confirmAction({
+      title: "Reset all text fields?",
+      message: "This will clear text entered in the current invoice. " +
+        "Saved templates and saved brands will not be deleted.",
+      confirmLabel: "Reset text fields",
+      danger: true
+    });
+    if (!ok) return;
+
+    const cleared = resetTextFields();
+    renderAll();
+    saveInvoice();
+    toast(cleared.fields || cleared.itemCells
+      ? `Text cleared from ${cleared.fields} field${cleared.fields === 1 ? "" : "s"}.`
+      : "There was no text to clear.");
   };
 
   $("resetBtn").onclick = () => {

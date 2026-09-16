@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/bundles.css">
 <link rel="stylesheet" href="css/invoice.css">
 <link rel="stylesheet" href="css/templates/minimal.css">
 <link rel="stylesheet" href="css/templates/classic.css">
@@ -30,6 +31,7 @@
     <button class="btn" id="printBtn" title="Prints only the invoice, never the editor/sidebar.">Print</button>
     <button class="btn" id="exportBtn">Export JSON</button>
     <button class="btn" id="importBtn">Import JSON</button>
+    <button class="btn" id="resetTextBtn" title="Clears text entered in the current invoice. Saved templates and brands are kept.">Reset Text</button>
     <button class="btn danger" id="resetBtn">Reset</button>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
@@ -39,6 +41,7 @@
     <button class="tab" data-tab="items">Items</button>
     <button class="tab" data-tab="columns">Columns</button>
     <button class="tab" data-tab="design">Design</button>
+    <button class="tab" data-tab="bundles">Bundles</button>
   </nav>
 
   <div class="tabpane active" id="tab-details">
@@ -150,6 +153,34 @@
     </section>
   </div>
 <div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar"></div>
+
+  <div class="tabpane" id="tab-bundles">
+    <section class="panel">
+      <div class="panelhead"><h2>Bundle name splitter</h2></div>
+      <p class="hint">Splits the Name column of a royalty sheet into course and bundle. Review the result, then apply it to the invoice as line items.</p>
+      <label class="bundle-drop" id="bundleDrop" for="bundleFile">
+        <strong>Drop a royalty sheet here</strong>
+        <span>or click to choose .xlsx, .xls or .csv</span>
+      </label>
+      <input id="bundleFile" class="hidden" type="file" accept=".xlsx,.xls,.csv">
+      <div class="bundle-status" id="bundleStatus" role="status" aria-live="polite"></div>
+
+      <div id="bundleTools" class="hidden">
+        <div class="importbox">
+          <button class="btn small" id="bundleSplitViewBtn">Course + bundle</button>
+          <button class="btn small" id="bundleSummaryViewBtn">Bundle + price</button>
+          <button class="btn small" id="bundleDownloadBtn">Download CSV</button>
+          <button class="btn small danger" id="bundleClearBtn">Clear</button>
+        </div>
+        <div class="importbox">
+          <button class="btn small primary" id="applyBundlesBtn">Apply courses to invoice</button>
+        </div>
+        <div class="bundle-meta" id="bundleMeta"></div>
+        <div id="bundleResults"></div>
+      </div>
+    </section>
+  </div>
+
 </aside>
 
 <main class="workspace">
@@ -206,7 +237,17 @@
     <button class="btn primary" type="button" id="templateOverwriteConfirm">Overwrite</button>
   </div>
 </dialog>
-<div class="toast" id="toast"></div>
+<dialog class="confirm-dialog" id="appConfirmDialog" aria-labelledby="appConfirmTitle" aria-describedby="appConfirmMessage">
+  <div class="dialog-body">
+    <h3 id="appConfirmTitle"></h3>
+    <p id="appConfirmMessage"></p>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn" type="button" id="appConfirmCancel">Cancel</button>
+    <button class="btn primary" type="button" id="appConfirmAccept">Confirm</button>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="module" src="js/app.js"></script>
 </body>
