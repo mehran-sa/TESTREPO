@@ -8,10 +8,24 @@
  */
 
 import { $, toast } from "../utils.js";
+import { readRaw, writeRaw } from "../storage/local-storage.js";
+import { STORAGE_KEYS } from "../constants.js";
 import { undoInvoice, redoInvoice, onHistoryChange } from "../history/invoice-history.js";
 
 const isUndo = (key, e) => key === "z" && !e.shiftKey;
 const isRedo = (key, e) => key === "y" || (key === "z" && e.shiftKey);
+
+/**
+ * Inside a text field, Ctrl+Z normally undoes the last few characters typed.
+ * Here it undoes the last change to the invoice, which can be more than that.
+ * Said once, the first time it happens in a text field.
+ */
+function explainUndoOnce(target) {
+  if (!target || !target.matches?.("input, textarea")) return;
+  if (readRaw(STORAGE_KEYS.undoHintShown) === "1") return;
+  writeRaw(STORAGE_KEYS.undoHintShown, "1");
+  toast("Ctrl+Z undoes your last change to the invoice, which may be more than the last few characters typed. Ctrl+Y redoes it.");
+}
 
 export function initHistoryControls() {
   const undoBtn = $("undoBtn");
@@ -35,6 +49,7 @@ export function initHistoryControls() {
     if (isUndo(key, e)) {
       e.preventDefault();
       runUndo();
+      explainUndoOnce(e.target); // after, so the "Undo" message does not cover it
     } else if (isRedo(key, e)) {
       e.preventDefault();
       runRedo();

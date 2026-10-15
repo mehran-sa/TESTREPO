@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.3.0">
+<meta name="sa-app-version" content="2.4.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
@@ -62,8 +62,8 @@
     </div>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
-  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Back up everything on the Invoices tab to keep a copy.</div>
-  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <button class="btn small" id="backupNowBtn" type="button">Back up now</button></div>
+  <div class="notice privacy-notice" id="privacyNotice"><span>Saved only in this browser on this device. Nothing is uploaded.</span><button class="notice-close" id="privacyNoticeClose" type="button" aria-label="Hide this message" title="Hide">&times;</button></div>
+  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <span class="notice-actions"><button class="btn small" id="backupNowBtn" type="button">Back up now</button><button class="btn small" id="backupLaterBtn" type="button" title="Remind me again in 7 days">Later</button></span></div>
   <nav class="tabs">
     <button class="tab" data-tab="invoices">Invoices</button>
     <button class="tab active" data-tab="details">Details</button>
@@ -174,12 +174,12 @@
       <div class="panelhead"><h2>Invoice template</h2><span class="hint">Live switching</span></div>
       <div class="field"><label for="template">Design</label>
         <select id="template">
-          <option value="modern">Modern Professional</option>
-          <option value="minimal">Janets PDF - Exact Layout</option>
-          <option value="classic">One Education Classic</option>
-          <option value="royalty">Alpha / Fanatical Royalty</option>
+          <option value="modern">Modern</option>
+          <option value="minimal">Minimal</option>
+          <option value="classic">Classic, bordered table</option>
+          <option value="royalty">Royalty statement</option>
         </select>
-        <div class="hint" id="fontHint" style="margin-top:6px">Font: Inter / Segoe UI</div><div class="hint" style="margin-top:3px">Measured PDF sizes: 27.75 pt invoice title, 12 pt invoice number, 11.25 pt balance, and 9.75 pt body/table text. Nimbus Sans is used when installed; Helvetica/Arial is the fallback.</div>
+        <div class="hint" id="fontHint" style="margin-top:6px"></div>
       </div>
       <div class="grid2" style="margin-top:10px">
         <div class="field"><label for="accent">Accent colour</label><input id="accent" type="color" value="#2563eb"></div>
@@ -188,6 +188,7 @@
         <div class="field"><label for="logoHeight">Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
         <div class="field"><label for="logoFit">Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
         <div class="field"><label for="logoAlign">Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
+        <div class="field"><label for="logoFallback">Without a logo, show</label><select id="logoFallback"><option value="initial" selected>Company initial</option><option value="none">Nothing</option></select></div>
       </div>
     </section>
     <section class="panel">
@@ -237,8 +238,8 @@
 </aside>
 
 <main class="workspace">
-  <div class="canvasbar"><div class="meta" id="previewMeta">A4 portrait preview</div><div class="actions"><button class="btn small" id="zoomOut">−</button><span class="meta" id="zoomLabel">100%</span><button class="btn small" id="zoomIn">+</button></div></div>
-  <article class="invoice template-modern" id="invoice">
+  <div class="canvasbar"><div class="meta" id="previewMeta">A4 portrait preview</div><div class="actions"><button class="btn small" id="zoomOut" type="button" aria-label="Zoom out">−</button><span class="meta" id="zoomLabel" aria-live="polite">100%</span><button class="btn small" id="zoomIn" type="button" aria-label="Zoom in">+</button><button class="btn small" id="zoomFit" type="button" title="Fit the page to the space available">Fit</button></div></div>
+  <div class="invoice-stage" id="invoiceStage"><article class="invoice template-modern" id="invoice">
     <div class="topdetails">
     <header class="inv-header">
       <div class="companywrap" data-section="company">
@@ -276,7 +277,7 @@
       <div data-section="terms"><div class="label" id="pTermsLabel">Terms</div><div class="metaText" id="pTerms"></div></div>
     </section>
     <footer class="footer" data-section="footer"><span id="pFooterCompany">Your Company Ltd.</span><span id="pFooterInvoice">Invoice #INV-1001</span></footer>
-  </article>
+  </article></div>
 </main>
 </div>
 <dialog class="confirm-dialog" id="templateOverwriteDialog">
@@ -312,6 +313,7 @@
     <button class="btn primary" type="button" id="appPromptAccept">Save</button>
   </div>
 </dialog>
+<button class="jump-btn" id="jumpBtn" type="button" hidden>Preview</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="module" src="js/app.js"></script>

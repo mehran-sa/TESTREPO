@@ -5,7 +5,7 @@
  * this module only renders the lists and wires the buttons.
  */
 
-import { $, toast } from "../utils.js";
+import { $, toast, toastError } from "../utils.js";
 import { confirmAction, promptText } from "../ui/confirm-dialog.js";
 import { serialize, serializeBrand } from "../invoice/invoice-data.js";
 import { listTemplates, writeTemplates, getTemplate, findTemplateIndexByName } from "../storage/template-library.js";
@@ -87,7 +87,7 @@ export function loadTemplate(index) {
     toast("Template loaded: " + entry.name + (warnings.length ? " (with corrections)" : ""));
   } catch (err) {
     console.error("[SA Invoice Generator] template could not be loaded:", err);
-    toast(`Template "${entry.name}" could not be loaded. The current invoice was not changed.`);
+    toastError(`Template "${entry.name}" could not be loaded. The current invoice was not changed.`);
   }
 }
 
@@ -106,7 +106,7 @@ export async function deleteTemplate(index) {
   const at = list.findIndex(t => t.name === entry.name);
   if (at === -1) return refreshLibraries();
   list.splice(at, 1);
-  if (!writeTemplates(list)) return toast("Could not update the template library.");
+  if (!writeTemplates(list)) return toastError("Could not update the template library.");
   refreshLibraries();
   toast("Template deleted: " + entry.name);
 }
@@ -152,14 +152,14 @@ async function saveTemplate() {
   if (existing !== -1) {
     promptTemplateOverwrite(list[existing].name, () => {
       list[existing] = record;
-      if (!writeTemplates(list)) return toast("Could not save the template.");
+      if (!writeTemplates(list)) return toastError("Could not save the template.");
       refreshLibraries();
       toast("Template overwritten: " + name);
     });
     return;
   }
   list.push(record);
-  if (!writeTemplates(list)) return toast("Could not save the template.");
+  if (!writeTemplates(list)) return toastError("Could not save the template.");
   refreshLibraries();
   toast("Template saved: " + name);
 }
@@ -187,7 +187,7 @@ export async function deleteBrand(index) {
   const at = list.findIndex(b => b.name === entry.name && JSON.stringify(b.data) === JSON.stringify(entry.data));
   if (at === -1) return refreshLibraries();
   list.splice(at, 1);
-  if (!writeBrands(list)) return toast("Could not update the brand library.");
+  if (!writeBrands(list)) return toastError("Could not update the brand library.");
   refreshLibraries();
   toast("Brand removed: " + entry.name);
 }
@@ -204,7 +204,7 @@ async function saveBrand() {
   if (name === null) return;
   const list = listBrands();
   list.push({ name, data: serializeBrand() });
-  if (!writeBrands(list)) return toast("Could not save the brand.");
+  if (!writeBrands(list)) return toastError("Could not save the brand.");
   refreshLibraries();
   toast("Brand saved: " + name);
 }

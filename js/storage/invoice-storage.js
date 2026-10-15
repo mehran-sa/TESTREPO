@@ -7,7 +7,7 @@ import { STORAGE_KEYS, AUTOSAVE_TYPING_DELAY_MS } from "../constants.js";
 import { readRaw, writeRaw, remove } from "./local-storage.js";
 import { serialize } from "../invoice/invoice-data.js";
 import { recordChange } from "../history/invoice-history.js";
-import { toast, trimmedField, fieldValue } from "../utils.js";
+import { toast, trimmedField, fieldValue, toastError } from "../utils.js";
 import { state } from "../state.js";
 import { getTotals } from "../invoice/calculations.js";
 import { saveInvoiceRecord, isInvoiceId, readRecordText } from "./invoice-library.js";
@@ -65,7 +65,7 @@ function writeNow({ record = true } = {}) {
     }
   }
   if (!stored && lastSaveOk) {
-    toast("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
+    toastError("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
   }
   lastSaveOk = stored;
   setSaveState(stored ? "saved" : "failed");

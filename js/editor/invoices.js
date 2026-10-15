@@ -3,8 +3,9 @@
  * duplicate-number warning, and full backup and restore.
  */
 
-import { $, toast, download, trimmedField } from "../utils.js";
-import { BACKUP_REMINDER_DAYS } from "../constants.js";
+import { $, toast, download, trimmedField, toastError } from "../utils.js";
+import { BACKUP_REMINDER_DAYS, BACKUP_SNOOZE_DAYS, STORAGE_KEYS } from "../constants.js";
+import { readRaw, writeRaw } from "../storage/local-storage.js";
 import { state } from "../state.js";
 import { money, dateFmt } from "../invoice/formatters.js";
 import { listInvoices, invoicesWithNumber, loadSavedInvoice } from "../storage/invoice-library.js";
@@ -117,7 +118,8 @@ export function updateNumberWarning() {
 function updateBackupHints() {
   const last = lastBackupAt();
   $("lastBackupHint").textContent = last ? "Last backup: " + dateFmt(last.toISOString().slice(0, 10)) : "No backup yet";
-  const due = backupIsDue(BACKUP_REMINDER_DAYS);
+  const snoozedUntil = new Date(readRaw(STORAGE_KEYS.backupReminderSnoozedUntil) || 0);
+  const due = backupIsDue(BACKUP_REMINDER_DAYS) && !(snoozedUntil > new Date());
   $("backupReminder").hidden = !due;
   if (due) {
     $("backupReminderText").textContent = last
@@ -141,13 +143,13 @@ async function restoreFromFile(file) {
   try {
     data = JSON.parse(await file.text());
   } catch {
-    return toast(`"${file.name}" is not a backup file. Nothing was changed.`);
+    return toastError(`"${file.name}" is not a backup file. Nothing was changed.`);
   }
   let summary;
   try {
     summary = inspectBackup(data);
   } catch (err) {
-    return toast(err.message);
+    return toastError(err.message);
   }
   const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
   const ok = await confirmAction({
@@ -184,7 +186,10 @@ async function restoreFromFile(file) {
   if (result.brands) parts.push(plural(result.brands, "brand") + " added");
   if (result.invalid) parts.push(`${result.invalid} damaged invoice${result.invalid === 1 ? " was" : "s were"} skipped`);
   let message = parts.length ? "Restored: " + parts.join(", ") + "." : "Nothing new to restore: everything in the backup is already here.";
-  if (result.failed) message = "The restore stopped because browser storage is full. " + (parts.length ? "Done so far: " + parts.join(", ") + "." : "");
+  if (result.failed) {
+    toastError("The restore stopped because browser storage is full. " + (parts.length ? "Done so far: " + parts.join(", ") + "." : ""));
+    return;
+  }
   toast(message);
 }
 
@@ -198,6 +203,22 @@ export function initInvoiceList() {
 
   $("backupBtn").onclick = backUpEverything;
   $("backupNowBtn").onclick = backUpEverything;
+  $("backupLaterBtn").onclick = () => {
+    writeRaw(STORAGE_KEYS.backupReminderSnoozedUntil, new Date(Date.now() + BACKUP_SNOOZE_DAYS * 864e5).toISOString());
+    updateBackupHints();
+    toast(`You will be reminded again in ${BACKUP_SNOOZE_DAYS} days.`);
+  };
+
+  // The privacy note can be hidden for good; the save indicator's tooltip and
+  // the README say the same thing.
+  const note = $("privacyNotice");
+  if (note) {
+    note.hidden = readRaw(STORAGE_KEYS.privacyNoticeHidden) === "1";
+    $("privacyNoticeClose").onclick = () => {
+      writeRaw(STORAGE_KEYS.privacyNoticeHidden, "1");
+      note.hidden = true;
+    };
+  }
   $("restoreBtn").onclick = () => $("restoreFile").click();
   $("restoreFile").onchange = e => {
     const file = e.target.files[0];

@@ -1,6 +1,6 @@
 /** Top toolbar: Export PDF, Print, Export/Import JSON, Reset, spreadsheet import. */
 
-import { $, toast } from "../utils.js";
+import { $, toast, toastError } from "../utils.js";
 import { printInvoice, exportInvoicePDF } from "../print/pdf.js";
 import { exportInvoiceJSON, readInvoiceFile } from "../import-export/json.js";
 import { readItemsFromFile } from "../import-export/spreadsheet.js";
@@ -52,7 +52,7 @@ export function initToolbar() {
         ? "Invoice imported as a new saved invoice, with corrections: " + warnings.join(" ")
         : "Invoice imported as a new saved invoice. Your other invoices are unchanged.");
     } catch (err) {
-      toast(err.message);
+      toastError(err.message);
     }
   };
 
@@ -94,7 +94,7 @@ export function initToolbar() {
       const check = showImportCheck($("importCheck"), statementTotal, getTotals().subtotal);
       toast(items.length + " items imported." + (check.status === "mismatch" ? " Check the import: it does not match the statement's total." : ""));
     } catch (err) {
-      toast(err.message);
+      toastError(err.message);
     }
     e.target.value = "";
   };

@@ -8,7 +8,7 @@
  * saveInvoice() (js/storage/invoice-storage.js).
  */
 
-import { today, plusDays, isIsoDate, toast } from "./utils.js";
+import { today, plusDays, isIsoDate, toast, toastError } from "./utils.js";
 import { DEFAULT_DUE_DAYS } from "./constants.js";
 import { state, setInvoiceId } from "./state.js";
 import { applySnapshot } from "./session.js";
@@ -106,7 +106,7 @@ export function openInvoice(id) {
   if (id === state.invoiceId) return;
   const snapshot = loadSavedInvoice(id);
   if (!snapshot) {
-    toast("That invoice could not be opened. It may have been deleted in another tab.");
+    toastError("That invoice could not be opened. It may have been deleted in another tab.");
     notifyDocumentsChanged();
     return;
   }
@@ -117,7 +117,7 @@ export function openInvoice(id) {
     writeInvoiceNow({ record: false });
   } catch (err) {
     console.error("[SA Invoice Generator] invoice could not be opened:", err);
-    toast("That invoice could not be opened. The current invoice was not changed.");
+    toastError("That invoice could not be opened. The current invoice was not changed.");
   }
 }
 

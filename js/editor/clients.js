@@ -1,6 +1,6 @@
 /** Saved-clients picker in the Bill to panel. */
 
-import { $, toast, fieldValue, trimmedField } from "../utils.js";
+import { $, toast, fieldValue, trimmedField, toastError } from "../utils.js";
 import { listClients, saveClient, removeClient, CLIENT_FIELDS, clientKey } from "../storage/client-book.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
@@ -42,11 +42,11 @@ export function initClientBook() {
   });
 
   $("saveClientBtn").onclick = () => {
-    if (!trimmedField("clientName")) return toast("Enter the client company name first.");
+    if (!trimmedField("clientName")) return toastError("Enter the client company name first.");
     const details = {};
     for (const [prop, fieldId] of Object.entries(CLIENT_FIELDS)) details[prop] = fieldValue(fieldId).trim();
     const { ok, updated } = saveClient(details);
-    if (!ok) return toast("The client could not be saved: browser storage is full or unavailable.");
+    if (!ok) return toastError("The client could not be saved: browser storage is full or unavailable.");
     refreshClientPicker();
     toast(updated ? "Saved client updated." : "Client saved for later invoices.");
   };
@@ -61,7 +61,7 @@ export function initClientBook() {
       danger: true
     });
     if (!ok) return;
-    if (!removeClient(client.id)) return toast("The client could not be removed.");
+    if (!removeClient(client.id)) return toastError("The client could not be removed.");
     refreshClientPicker();
     toast("Client removed.");
   };

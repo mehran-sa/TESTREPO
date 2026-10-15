@@ -7,7 +7,7 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.3.0";
+export const APP_VERSION = "2.4.0";
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
@@ -32,8 +32,15 @@ export const STORAGE_KEYS = {
   /** Keys present in the logos map: small, so it can be checked on every save. */
   logoIndex: "invoiceStudio.logoIndex.v1",
   clients: "invoiceStudio.clients.v1",
-  lastBackupAt: "invoiceStudio.lastBackupAt"
+  lastBackupAt: "invoiceStudio.lastBackupAt",
+  /* Added in 2.4.0: dismissed privacy note, snoozed backup reminder. */
+  privacyNoticeHidden: "invoiceStudio.privacyNoticeHidden",
+  backupReminderSnoozedUntil: "invoiceStudio.backupReminderSnoozedUntil",
+  undoHintShown: "invoiceStudio.undoHintShown"
 };
+
+/** "Later" on the backup reminder hides it for this many days. */
+export const BACKUP_SNOOZE_DAYS = 7;
 
 /** Days without a full backup before the app suggests making one. */
 export const BACKUP_REMINDER_DAYS = 30;
@@ -42,7 +49,8 @@ export const BACKUP_REMINDER_DAYS = 30;
 export const LIMITS = {
   logoWidth: { min: 40, max: 240, fallback: 120 },
   logoHeight: { min: 30, max: 140, fallback: 54 },
-  zoom: { min: 0.6, max: 1.3, step: 0.1 },
+  /* min 0.3 so the A4 page can fit a phone screen ("Fit"). */
+  zoom: { min: 0.3, max: 1.3, step: 0.1 },
   sidebar: { min: 320, max: 720, fallback: 430 },
   percent: { min: 0, max: 100 },
   columnWidth: { min: 5 },
@@ -102,7 +110,7 @@ export const SECTION_DEFS = [
  * files is ignored.
  */
 export const FIELD_IDS = [
-  "logoWidth", "logoHeight", "logoFit", "logoAlign", "invoiceNumber", "invoiceDate", "dueDate",
+  "logoWidth", "logoHeight", "logoFit", "logoAlign", "logoFallback", "invoiceNumber", "invoiceDate", "dueDate",
   "currency", "reference", "companyName", "companyReg", "companyVat", "companyAddress", "companyPhone",
   "companyEmail", "companyWebsite", "clientName", "clientContact", "clientTax", "clientAddress", "clientEmail",
   "discount", "tax", "shipping", "notes", "paymentDetails", "terms", "template", "accent", "accentHex"
@@ -111,7 +119,7 @@ export const FIELD_IDS = [
 /** Reusable seller identity and visual setup; never invoice-specific data. */
 export const BRAND_FIELD_IDS = [
   "companyName", "companyReg", "companyVat", "companyAddress", "companyPhone", "companyEmail", "companyWebsite",
-  "currency", "template", "accent", "accentHex", "logoWidth", "logoHeight", "logoFit", "logoAlign",
+  "currency", "template", "accent", "accentHex", "logoWidth", "logoHeight", "logoFit", "logoAlign", "logoFallback",
   "paymentDetails", "terms"
 ];
 

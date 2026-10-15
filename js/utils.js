@@ -263,16 +263,35 @@ export function safeColor(value) {
 
 let toastTimer;
 
-export function toast(message) {
+export function toast(message, { error = false } = {}) {
   const el = $("toast");
   if (!el) return;
-  el.textContent = message;
-  el.classList.add("show");
   clearTimeout(toastTimer);
-  // Longer messages (errors, import corrections) stay up long enough to read.
+  el.textContent = "";
+  const text = document.createElement("span");
+  text.textContent = message;
+  el.appendChild(text);
+  el.classList.toggle("error", error);
+  // Errors are announced at once and stay until dismissed; other messages fade.
+  el.setAttribute("role", error ? "alert" : "status");
+  el.classList.add("show");
+  if (error) {
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "toast-close";
+    close.setAttribute("aria-label", "Dismiss message");
+    close.textContent = "\u00d7";
+    close.onclick = () => el.classList.remove("show");
+    el.appendChild(close);
+    return;
+  }
+  // Longer messages (import corrections) stay up long enough to read.
   const duration = Math.min(8000, Math.max(TOAST_MS, String(message).length * 45));
   toastTimer = setTimeout(() => el.classList.remove("show"), duration);
 }
+
+/** A problem the user needs to see: stays on screen until dismissed. */
+export const toastError = message => toast(message, { error: true });
 
 /* ------------------------------------------------------------ download */
 

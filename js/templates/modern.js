@@ -9,7 +9,8 @@ import { metaCompany } from "../invoice/invoice-data.js";
 
 export default {
   id: "modern",
-  name: "Modern Professional",
+  name: "Modern",
+  description: "Clean layout with a coloured accent, a balance-due panel and a card-style table.",
   cssClass: "template-modern",
   fontStack: "Inter / Segoe UI / Arial",
   labels: {

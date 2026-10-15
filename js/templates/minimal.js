@@ -15,7 +15,8 @@ import { metaCompany } from "../invoice/invoice-data.js";
 
 export default {
   id: "minimal",
-  name: "Janets PDF - Exact Layout",
+  name: "Minimal",
+  description: "Compact black-and-white layout with plain lines (formerly “Janets PDF”).",
   cssClass: "template-minimal",
   fontStack: "Nimbus Sans Regular + Bold",
   labels: {

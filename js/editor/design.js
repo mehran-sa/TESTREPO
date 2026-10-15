@@ -1,9 +1,9 @@
 /** Design tab: accent colour, logo upload and sizing, zoom. */
 
-import { $, setText, safeColor, toast, num } from "../utils.js";
+import { $, setText, safeColor, toast, num, toastError } from "../utils.js";
 import { LIMITS, LOGO_HINT_DEFAULT } from "../constants.js";
 import { state, setLogo, setZoom } from "../state.js";
-import { renderPreview } from "../invoice/invoice-renderer.js";
+import { renderPreview, applyZoom } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
 
 /** Applies an accent colour to the CSS custom properties and both inputs. */
@@ -58,11 +58,11 @@ export function initLogoControls() {
     if (!/^image\//.test(file.type)) { toast("Please select a valid image file."); e.target.value = ""; return; }
 
     const reader = new FileReader();
-    reader.onerror = () => toast("The logo could not be read.");
+    reader.onerror = () => toastError("The logo could not be read.");
     reader.onload = () => {
       // Decode before accepting so a corrupt file never reaches the preview.
       const probe = new Image();
-      probe.onerror = () => toast("The selected logo image is not valid.");
+      probe.onerror = () => toastError("The selected logo image is not valid.");
       probe.onload = () => {
         const original = String(reader.result);
         const shrunk = shrinkLogo(probe, file.type, original);
@@ -89,14 +89,57 @@ export function initLogoControls() {
   };
 }
 
+/** True while the preview should keep fitting its space (after Fit, or on a narrow screen). */
+let fitting = false;
+
+/** The zoom at which the whole page width fits the preview area (at most 100%). */
+function fitZoom() {
+  const inv = $("invoice");
+  const workspace = inv.closest(".workspace");
+  if (!workspace || !inv.offsetWidth) return state.zoom;
+  const style = getComputedStyle(workspace);
+  const room = workspace.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+  return Math.min(1, Math.floor((room / inv.offsetWidth) * 100) / 100);
+}
+
+function fitPreview() {
+  setZoom(fitZoom());
+  applyZoom();
+}
+
 export function initZoomControls() {
   const zoomBy = delta => {
-    setZoom(state.zoom + delta);
+    fitting = false;
+    setZoom(Math.round((state.zoom + delta) * 10) / 10);
     renderPreview();
     saveInvoice();
   };
   $("zoomIn").onclick = () => zoomBy(LIMITS.zoom.step);
   $("zoomOut").onclick = () => zoomBy(-LIMITS.zoom.step);
+  $("zoomFit").onclick = () => {
+    fitting = true;
+    fitPreview();
+    saveInvoice();
+  };
+
+  // Keep the stage the right size when the page grows or shrinks (a logo
+  // loading, items added), and keep fitting while the window changes size.
+  if ("ResizeObserver" in window) new ResizeObserver(() => applyZoom()).observe($("invoice"));
+  let timer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { if (fitting) fitPreview(); }, 120);
+  });
+}
+
+/**
+ * On narrow screens the page starts fitted to the screen width. Not saved:
+ * it is a view setting for this screen only.
+ */
+export function fitPreviewOnNarrowScreens() {
+  if (window.innerWidth > 1180) return;
+  fitting = true;
+  fitPreview();
 }
 
 /** Ensures the range inputs have a value before the first render. */

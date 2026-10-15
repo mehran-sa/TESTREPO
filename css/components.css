@@ -3,7 +3,8 @@
 
 .actions{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:750;color:var(--ink)}
 .btn:hover{border-color:#9da9b9;transform:translateY(-1px)}
-.btn:disabled{opacity:.42;cursor:default}
+/* Disabled: clearly greyed, but still readable (was 42% opacity). */
+.btn:disabled{opacity:1;cursor:default;color:#98a2b3;background:#f9fafb;border-color:#eaecf0}
 .btn:disabled:hover{border-color:var(--line);transform:none}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--danger)}.btn.small{padding:6px 9px;font-size:11.5px}.btn.icon{width:31px;height:31px;padding:0}
 .library-title{font-size:11.5px;font-weight:800;color:#475467;margin:10px 0 6px}.library-list{display:grid;gap:6px}.library-item{display:flex;align-items:center;gap:6px;padding:6px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}.library-item .library-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:700;color:#344054}.library-empty{font-size:11.5px;color:var(--muted);padding:3px 0}
 .confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-list{margin:10px 0 0;padding-left:18px;color:#344054;font-size:12.5px;line-height:1.5}.confirm-dialog .dialog-list li+li{margin-top:4px}
@@ -68,3 +69,34 @@
 .menu-item{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:7px;padding:9px 10px;font-size:12.5px;font-weight:600;color:var(--ink)}
 .menu-item:hover,.menu-item:focus-visible{background:#f2f4f7;outline:none}
 .menu-sep{height:1px;background:#eaecf0;margin:4px 2px}
+
+/* Line items: compact rows (replaces the old per-item cards) */
+.itemrow{border:1px solid #e0e5ec;border-radius:9px;padding:8px 9px 9px;margin-bottom:7px;background:#fbfcfe}
+.itemrow.dragging{opacity:.45}
+.itemrow-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.itemrow-head .drag{cursor:grab;color:#98a2b3;font-size:13px;padding:2px 3px;user-select:none;touch-action:none}
+.itemrow-num{font-size:12px;color:#344054}
+.itemrow-total{margin-left:auto;font-size:12.5px;font-weight:800;color:#1f2937;white-space:nowrap}
+.itemrow-head .btn.icon{width:28px;height:28px;padding:0;font-size:13px;line-height:1}
+.itemrow-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:6px 8px}
+.itemrow-fields .field.full{grid-column:1/-1}
+.itemrow-fields label{font-size:11px;font-weight:600;color:#475467;margin-bottom:3px}
+.itemrow-fields input,.itemrow-fields textarea{padding:7px 8px;font-size:13.5px}
+.itemrow-fields textarea{min-height:36px;resize:vertical;overflow:hidden}
+
+/* Narrow screens: jump between the editor and the preview */
+.jump-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));z-index:60;border:0;border-radius:999px;padding:11px 18px;font-weight:800;font-size:13px;color:#fff;background:var(--accent);box-shadow:0 10px 30px rgba(16,24,40,.25)}
+.jump-btn[hidden]{display:none}
+@media (min-width:1181px){.jump-btn{display:none}}
+
+/* Compact notices */
+.privacy-notice{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px 7px 12px}
+.privacy-notice[hidden]{display:none}
+.notice-close{border:0;background:transparent;color:inherit;font-size:18px;line-height:1;width:26px;height:26px;border-radius:6px;cursor:pointer;flex:none}
+.notice-close:hover,.notice-close:focus-visible{background:rgba(16,24,40,.07)}
+.notice-actions{display:flex;gap:6px;flex:none}
+
+/* Error messages stay until dismissed */
+.toast.error{pointer-events:auto;background:#b42318;display:flex;align-items:center;gap:10px;max-width:min(520px,calc(100vw - 32px))}
+.toast-close{border:0;background:rgba(255,255,255,.18);color:#fff;width:26px;height:26px;border-radius:6px;font-size:16px;line-height:1;cursor:pointer;flex:none}
+.toast-close:hover,.toast-close:focus-visible{background:rgba(255,255,255,.3)}

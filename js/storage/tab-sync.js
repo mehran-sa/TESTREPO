@@ -14,7 +14,7 @@
  */
 
 import { STORAGE_KEYS } from "../constants.js";
-import { $, toast } from "../utils.js";
+import { $, toast, toastError } from "../utils.js";
 import { state } from "../state.js";
 import { holdInvoiceWrites, writeInvoiceNow, onInvoiceWritten } from "./invoice-storage.js";
 import { recordKey, readRecordText, loadSavedInvoice } from "./invoice-library.js";
@@ -85,7 +85,7 @@ async function ask() {
   }
   const snapshot = loadSavedInvoice(id);
   if (!snapshot) {
-    toast("The other version could not be read. This tab's version was kept.");
+    toastError("The other version could not be read. This tab's version was kept.");
     writeInvoiceNow();
     return;
   }

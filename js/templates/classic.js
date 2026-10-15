@@ -16,7 +16,8 @@ import { oneEducationCompanyMeta } from "../invoice/invoice-data.js";
 
 export default {
   id: "classic",
-  name: "One Education Classic",
+  name: "Classic, bordered table",
+  description: "Traditional layout with a fully bordered table and a quantity total row (formerly “One Education Classic”).",
   cssClass: "template-classic",
   fontStack: "Arial / Liberation Sans",
   labels: {

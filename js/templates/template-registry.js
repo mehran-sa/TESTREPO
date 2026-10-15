@@ -30,6 +30,7 @@
  * @typedef {Object} TemplateDescriptor
  * @property {string} id @property {string} name @property {string} cssClass
  * @property {string} fontStack
+ * @property {string} [description] one line shown under the Design menu
  * @property {TemplateLabels} labels
  * @property {TemplateCapabilities} capabilities
  */

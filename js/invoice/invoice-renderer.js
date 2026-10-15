@@ -28,7 +28,7 @@ const applyTemplateChrome = (templateId, template) => {
   // The class string is built from the selected id, not the resolved template,
   // so an unknown id behaves exactly as it did before.
   $("invoice").className = "invoice template-" + templateId;
-  setText("fontHint", "PDF font stack: " + template.fontStack);
+  setText("fontHint", template.description || "");
 };
 
 const renderLabels = ({ labels }) => {
@@ -82,6 +82,12 @@ const renderPaymentDetails = (caps, paymentText) => {
 const applySectionVisibility = (caps, { notesText, termsText, paymentText }) => {
   qsa("[data-section]")
     .forEach(el => el.classList.toggle("section-hidden", !state.sections[el.dataset.section]));
+
+  // "Without a logo, show: Nothing" hides the placeholder box (with the
+  // company's initial) exactly as switching off the Logo section does.
+  if (!state.logo && fieldValue("logoFallback") === "none") {
+    qsa('[data-section="logo"]').forEach(el => el.classList.add("section-hidden"));
+  }
 
   if (caps.hideReferenceRowWhenEmpty) {
     toggleSection(qs('.metatable tr[data-section="reference"]'),
@@ -240,10 +246,20 @@ const renderLogo = () => {
   }
 };
 
-const applyZoom = () => {
+/**
+ * Scales the preview. The page is wrapped in a stage that takes the scaled
+ * size: transform alone left the layout at full A4 width, so a zoomed-out page
+ * sat off-centre and small screens scrolled sideways.
+ */
+export const applyZoom = () => {
   const inv = $("invoice");
+  const stage = $("invoiceStage");
   inv.style.transform = `scale(${state.zoom})`;
-  inv.style.transformOrigin = "top center";
+  inv.style.transformOrigin = "top left";
+  if (stage) {
+    stage.style.width = inv.offsetWidth * state.zoom + "px";
+    stage.style.height = inv.offsetHeight * state.zoom + "px";
+  }
   setText("zoomLabel", Math.round(state.zoom * 100) + "%");
 };
 

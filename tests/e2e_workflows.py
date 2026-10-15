@@ -174,6 +174,8 @@ try:
         check("title is SA Invoice Generator", page.title() == "SA Invoice Generator")
         check("header shows SA Invoice Generator", page.text_content(".brand h1") == "SA Invoice Generator")
         check("start-up failure banner is removed once the app runs", page.locator("#bootError").count() == 0)
+        check("page and scripts are the same release (no mixed-version warning)",
+              "older version" not in (page.text_content("#toast") or ""))
         check("content security policy blocks outbound connections",
               "connect-src 'none'" in (page.get_attribute('meta[http-equiv="Content-Security-Policy"]', "content") or ""))
         inv, due = page.input_value("#invoiceDate"), page.input_value("#dueDate")
@@ -189,7 +191,7 @@ try:
         page.click("[data-tab=items]")
         for desc, qty, rate in [("Consulting", "3", "19.99"), ("Support", "1", "0.125"), ("Support", "1", "0.125")]:
             page.click("#addItemBtn")
-            card = page.locator(".itemcard").last
+            card = page.locator(".itemrow").last
             card.locator('[data-key="sku"]').fill("X")
             card.locator('[data-key="description"]').fill(desc)
             card.locator('[data-key="quantity"]').fill(qty)
@@ -221,18 +223,31 @@ try:
 
         # ---- edit and delete items
         page.click("[data-tab=items]")
-        page.locator(".itemcard").first.locator('[data-key="quantity"]').fill("4")
+        page.locator(".itemrow").first.locator('[data-key="quantity"]').fill("4")
         page.wait_for_timeout(50)
+        check("item row shows its line total as you type",
+              page.locator(".itemrow").first.locator(".itemrow-total").text_content() == "£79.96")
+        page.locator(".itemrow").nth(1).locator("button.move-up").click(); page.wait_for_timeout(100)
+        check("Move up reorders items in the editor and on the invoice",
+              page.locator(".itemrow").first.locator('[data-key="rate"]').input_value() == "0.125"
+              and page.eval_on_selector_all("#pItems tr", "r => r[0].textContent").find("Support") != -1)
+        page.locator(".itemrow").first.locator("button.move-down").click(); page.wait_for_timeout(100)
+        page.locator(".itemrow").nth(2).locator(".drag").drag_to(page.locator(".itemrow").first.locator(".drag"))
+        page.wait_for_timeout(100)
+        check("dragging the handle reorders items",
+              page.locator(".itemrow").first.locator('[data-key="rate"]').input_value() == "0.125")
+        page.locator(".itemrow").first.locator(".drag").drag_to(page.locator(".itemrow").nth(2).locator(".drag"))
+        page.wait_for_timeout(100)
         check("editing a quantity updates totals", page.text_content("#pSubtotal") == "£80.22")
-        page.locator(".itemcard").nth(2).locator("button").click()
+        page.locator(".itemrow").nth(2).locator("button.remove").click()
         check("removing an item updates the list and totals",
-              page.locator(".itemcard").count() == 2 and page.text_content("#pSubtotal") == "£80.09")
+              page.locator(".itemrow").count() == 2 and page.text_content("#pSubtotal") == "£80.09")
 
         # ---- undo / redo
         page.click("#undoBtn"); page.wait_for_timeout(100)
-        check("undo restores the removed item", page.locator(".itemcard").count() == 3)
+        check("undo restores the removed item", page.locator(".itemrow").count() == 3)
         page.keyboard.press("Control+y"); page.wait_for_timeout(100)
-        check("redo (Ctrl+Y) removes it again", page.locator(".itemcard").count() == 2)
+        check("redo (Ctrl+Y) removes it again", page.locator(".itemrow").count() == 2)
 
         # ---- columns
         page.click("[data-tab=columns]")
@@ -357,7 +372,7 @@ try:
               "matching the statement" in page.text_content("#importCheck")
               and "ok" in page.get_attribute("#importCheck", "class"))
         check("XLSX import (local SheetJS) skips preamble and footer rows",
-              page.locator(".itemcard").count() == 2 and page.text_content("#pSubtotal") == "£40.49",
+              page.locator(".itemrow").count() == 2 and page.text_content("#pSubtotal") == "£40.49",
               page.text_content("#pSubtotal"))
 
         page.set_input_files("#sheetFile", MISMATCH_CSV); page.wait_for_timeout(300)
@@ -585,6 +600,56 @@ try:
         tab_b.wait_for_selector("#appConfirmDialog[open]", timeout=3000)
         tab_b.click("#appConfirmAccept"); tab_b.wait_for_timeout(200)
         tab_b.close()
+
+        # ---- 2.4.0 interface details
+        page.set_viewport_size({"width": 1400, "height": 900}); page.wait_for_timeout(150)
+        page.click("[data-tab=design]")
+        page.select_option("#template", "minimal")
+        check("template menu uses plain names with a description",
+              page.locator("#template option:checked").text_content() == "Minimal"
+              and "formerly" in page.text_content("#fontHint"))
+        page.select_option("#template", "modern")
+        page.select_option("#logoFallback", "none"); page.wait_for_timeout(100)
+        check("no-logo option hides the logo box when there is no logo",
+              "section-hidden" in page.get_attribute('#invoice [data-section="logo"]', "class"))
+        page.select_option("#logoFallback", "initial"); page.wait_for_timeout(100)
+        check("company initial shows again", "section-hidden" not in page.get_attribute('#invoice [data-section="logo"]', "class"))
+        page.set_viewport_size({"width": 700, "height": 900}); page.wait_for_timeout(150)
+        page.click("#zoomFit"); page.wait_for_timeout(150)
+        stage_w = page.evaluate("() => document.getElementById('invoiceStage').getBoundingClientRect().width")
+        ws_w = page.evaluate("() => document.querySelector('.workspace').clientWidth")
+        check("Fit makes the whole page width fit the preview area", stage_w <= ws_w and stage_w > ws_w * 0.8, f"{stage_w} in {ws_w}")
+        page.click("#zoomIn"); page.set_viewport_size({"width": 1400, "height": 900}); page.wait_for_timeout(150)
+        page.click("#privacyNoticeClose")
+        page.reload(); page.wait_for_timeout(400)
+        check("privacy note stays hidden once dismissed", page.is_hidden("#privacyNotice"))
+        page.evaluate("() => localStorage.removeItem('invoiceStudio.lastBackupAt')"); page.reload(); page.wait_for_timeout(400)
+        page.click("#backupLaterBtn"); page.reload(); page.wait_for_timeout(400)
+        check("backup reminder Later snoozes it", page.is_hidden("#backupReminder"))
+        page.click("[data-tab=items]")
+        page.set_input_files("#sheetFile", BROKEN); page.wait_for_timeout(600)
+        check("errors stay on screen with a dismiss button",
+              "error" in page.get_attribute("#toast", "class") and page.is_visible("#toast .toast-close"))
+        page.wait_for_timeout(2600)
+        still = "show" in page.get_attribute("#toast", "class")
+        page.click("#toast .toast-close")
+        check("error is still shown after the normal fade time, and dismisses", still and "show" not in page.get_attribute("#toast", "class"))
+        page.click("[data-tab=details]")
+        page.click("#reference"); page.keyboard.press("Control+z"); page.wait_for_timeout(100)
+        check("first Ctrl+Z in a text field explains what undo does", "Ctrl+Z undoes your last change" in page.text_content("#toast"))
+        page.keyboard.press("Control+y")
+
+        mob = browser.new_context(viewport={"width": 390, "height": 844})
+        mob.on("request", on_request)
+        pm = mob.new_page(); pm.goto(URL); pm.wait_for_timeout(500)
+        check("phone: page fits the screen without sideways scrolling",
+              pm.evaluate("() => document.documentElement.scrollWidth") <= 390
+              and pm.evaluate("() => document.getElementById('invoiceStage').getBoundingClientRect().right") <= 390)
+        check("phone: Preview button is shown", pm.is_visible("#jumpBtn") and "Preview" in pm.text_content("#jumpBtn"))
+        pm.click("#jumpBtn"); pm.wait_for_timeout(900)
+        check("phone: Preview button scrolls to the invoice, then offers Edit", "Edit" in pm.text_content("#jumpBtn"))
+        pm.screenshot(path=os.path.join(OUT, OUT_PREFIX + "phone-preview.png"))
+        mob.close()
 
         # ---- storage failure handling (separate profile)
         ctx3 = browser.new_context(timezone_id="Asia/Dhaka")

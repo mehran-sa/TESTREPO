@@ -9,7 +9,7 @@
  * the saved-library panel) cannot stop the rest of the application loading.
  */
 
-import { $, today, plusDays, toast } from "./utils.js";
+import { $, today, plusDays, toast, toastError } from "./utils.js";
 import { DEFAULT_DUE_DAYS, APP_VERSION } from "./constants.js";
 import * as TemplateRegistry from "./templates/template-registry.js";
 import modernTemplate from "./templates/modern.js";
@@ -21,7 +21,8 @@ import { initTabs } from "./editor/tabs.js";
 import { initFieldBindings } from "./editor/details.js";
 import { initItemControls } from "./editor/items.js";
 import { initColumnControls } from "./editor/columns.js";
-import { setAccent, initLogoControls, initZoomControls, applyLogoDefaults } from "./editor/design.js";
+import { setAccent, initLogoControls, initZoomControls, applyLogoDefaults, fitPreviewOnNarrowScreens } from "./editor/design.js";
+import { initJumpButton } from "./editor/jump.js";
 import { initSidebarResizer } from "./editor/sidebar.js";
 import { initToolbar } from "./editor/toolbar.js";
 import { initLibraryControls, refreshLibraries } from "./editor/library.js";
@@ -66,7 +67,7 @@ function seedDefaults() {
 /** Opens the right invoice at start-up; see documents.restoreAtStartup(). */
 function restoreAutosave() {
   const messages = restoreAtStartup();
-  if (messages.length) toast(messages.join(" "));
+  if (messages.length) toastError(messages.join(" "));
 }
 
 /**
@@ -118,6 +119,8 @@ export function init() {
   step("saved invoices", initInvoiceList);
   step("client book", initClientBook);
   step("save indicator", initSaveState);
+  step("jump button", initJumpButton);
+  step("fit preview", fitPreviewOnNarrowScreens);
   // After the autosave is restored, so the starting point is this tab's view.
   step("tab sync", initTabSync);
   step("version check", checkVersion);
