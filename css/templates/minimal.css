@@ -166,7 +166,6 @@
   border:0;
 }
 .template-minimal .billrow>[data-section="client"]{display:block}
-.template-minimal .billrow>[data-section="status"]{display:none!important}
 .template-minimal .billrow .label{
   margin:0 0 3px;
   padding:0;

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.1.0">
+<meta name="sa-app-version" content="2.2.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
@@ -52,11 +52,13 @@
     <button class="btn" id="exportBtn">Export JSON</button>
     <button class="btn" id="importBtn">Import JSON</button>
     <button class="btn" id="resetTextBtn" title="Clears text entered in the current invoice. Saved templates and brands are kept.">Reset Text</button>
-    <button class="btn danger" id="resetBtn">Reset</button>
+    <button class="btn" id="resetBtn" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
-  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Export JSON to keep a backup copy.</div>
+  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Back up everything on the Invoices tab to keep a copy.</div>
+  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <button class="btn small" id="backupNowBtn" type="button">Back up now</button></div>
   <nav class="tabs">
+    <button class="tab" data-tab="invoices">Invoices</button>
     <button class="tab active" data-tab="details">Details</button>
     <button class="tab" data-tab="items">Items</button>
     <button class="tab" data-tab="columns">Columns</button>
@@ -64,12 +66,34 @@
     <button class="tab" data-tab="bundles">Bundles</button>
   </nav>
 
+  <div class="tabpane" id="tab-invoices">
+    <section class="panel">
+      <div class="panelhead"><h2>Saved invoices</h2><span class="hint" id="invoiceCount"></span></div>
+      <div class="importbox">
+        <button class="btn small primary" id="newInvoiceBtn" type="button">New invoice</button>
+        <button class="btn small" id="duplicateInvoiceBtn" type="button">Duplicate</button>
+        <button class="btn small" id="blankInvoiceBtn" type="button">New blank</button>
+      </div>
+      <p class="hint">Every change is saved automatically. New invoice keeps your company details, design and payment details, clears the client and items, and uses the next unused number. New blank starts from the app defaults.</p>
+      <div class="field"><label for="invoiceSearch">Search</label><input id="invoiceSearch" type="search" placeholder="Invoice number or client" autocomplete="off"></div>
+      <div id="invoiceList" class="invoice-list" aria-live="polite"></div>
+    </section>
+    <section class="panel">
+      <div class="panelhead"><h2>Backup</h2><span class="hint" id="lastBackupHint"></span></div>
+      <p class="hint">Saves every invoice, client, template and brand to one file on your computer. Restoring adds them back and never deletes anything already here.</p>
+      <div class="importbox">
+        <button class="btn small primary" id="backupBtn" type="button">Back up everything</button>
+        <button class="btn small" id="restoreBtn" type="button">Restore from backup</button>
+        <input type="file" id="restoreFile" class="hidden" accept=".json,application/json">
+      </div>
+    </section>
+  </div>
+
   <div class="tabpane active" id="tab-details">
     <section class="panel">
       <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
       <div class="grid2">
-        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div></div>
-        <div class="field"><label>Status</label><select id="status"><option>Draft</option><option selected>Due</option><option>Paid</option><option>Partially Paid</option><option>Overdue</option><option>Cancelled</option></select></div>
+        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
         <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
         <div class="field"><label>Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
         <div class="field"><label>Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
@@ -94,6 +118,7 @@
     <section class="panel">
       <div class="panelhead"><h2>Bill to</h2><span class="hint">Customer</span></div>
       <div class="grid2">
+        <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
         <div class="field full"><label>Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
         <div class="field"><label>Contact</label><input id="clientContact"></div>
         <div class="field"><label>VAT / tax</label><input id="clientTax"></div>
@@ -123,6 +148,7 @@
         <input id="sheetFile" class="hidden" type="file" accept=".csv,.xlsx,.xls">
       </div>
       <p class="hint">Spreadsheet columns are matched against your current column names and common aliases.</p>
+      <div class="import-check" id="importCheck" role="status" hidden></div>
       <div id="itemsEditor"></div>
     </section>
   </div>
@@ -225,7 +251,6 @@
     </header>
     <section class="billrow">
       <div data-section="client"><div class="label" id="pBillToLabel">Bill to</div><div class="clientname" id="pClientName">Client company</div><div class="metaText" id="pClientMeta">Add client details</div></div>
-      <div data-section="status"><div class="label" id="pStatusLabel">Invoice status</div><span class="status" id="pStatus">● Due</span></div>
     </section>
     </div>
     <table class="invtable"><colgroup id="pCols"></colgroup><thead><tr id="pHeaders"></tr></thead><tbody id="pItems"></tbody><tfoot id="pClassicTotals"></tfoot></table>

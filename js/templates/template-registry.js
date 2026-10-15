@@ -7,7 +7,7 @@
  * template names.
  *
  * @typedef {Object} TemplateLabels
- * @property {string} title @property {string} bill @property {string} status
+ * @property {string} title @property {string} bill
  * @property {string} balance @property {string} note @property {string} payment
  * @property {string} terms @property {string} date @property {string} due
  * @property {string} ref

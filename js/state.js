@@ -28,6 +28,8 @@
  * @property {Column[]} columns
  * @property {LineItem[]} items
  * @property {Record<string, boolean>} sections
+ * @property {string} invoiceId  Id of this invoice in the saved-invoices
+ *                               library (js/storage/invoice-library.js).
  */
 
 import { SECTION_DEFS, LIMITS } from "./constants.js";
@@ -51,8 +53,11 @@ export const state = {
   zoom: 1,
   columns: defaultColumns(),
   items: [],
-  sections: defaultSections()
+  sections: defaultSections(),
+  invoiceId: ""
 };
+
+export const setInvoiceId = id => { state.invoiceId = typeof id === "string" ? id : ""; };
 
 /* ----------------------------------------------------------- selectors */
 

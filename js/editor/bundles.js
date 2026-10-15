@@ -18,6 +18,8 @@ import { setItems } from "../state.js";
 import { renderItems } from "./items.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
+import { compareWithStatement } from "../import-export/statement-total.js";
+import { money } from "../invoice/formatters.js";
 
 const VIEWS = { split: "split", summary: "summary" };
 
@@ -121,7 +123,17 @@ async function handleFile(file) {
     view.view = VIEWS.split;
     render();
 
-    setStatus(`${file.name} \u2014 names split and grouped by bundle.`, "ok");
+    // Check the sheet against its own total row, when it has one.
+    const check = compareWithStatement(view.rows.statementTotal, getTotalPrice(getBundleSummary(view.rows)));
+    if (check.status === "mismatch") {
+      setStatus(`${file.name}: names split and grouped by bundle. The statement's "${check.statement.label}" row says ` +
+        `${money(check.statement.value)}, but the rows add up to ${money(check.imported)} (difference ${money(check.difference)}). ` +
+        "Check for missing or misread rows.", "error");
+    } else if (check.status === "match") {
+      setStatus(`${file.name}: names split and grouped by bundle. The rows add up to ${money(check.imported)}, matching the statement's "${check.statement.label}" row.`, "ok");
+    } else {
+      setStatus(`${file.name} \u2014 names split and grouped by bundle.`, "ok");
+    }
   } catch (err) {
     view.rows = [];
     render();

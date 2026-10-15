@@ -12,7 +12,7 @@
 
 import { $, qs, qsa, setText, toggleSection, fieldValue, fieldOr, trimmedField, num, esc, clamp } from "../utils.js";
 import {
-  LIMITS, FIXED_WIDTH_COLUMN_COUNT, STATUS_STYLES, STATUS_STYLE_FALLBACK
+  LIMITS, FIXED_WIDTH_COLUMN_COUNT
 } from "../constants.js";
 import { state } from "../state.js";
 import * as TemplateRegistry from "../templates/template-registry.js";
@@ -34,7 +34,6 @@ const applyTemplateChrome = (templateId, template) => {
 const renderLabels = ({ labels }) => {
   setText("pInvoiceTitle", labels.title);
   setText("pBillToLabel", labels.bill);
-  setText("pStatusLabel", labels.status);
   setText("pBalanceLabel", labels.balance);
   setText("pNoteLabel", labels.note);
   setText("pPaymentLabel", labels.payment);
@@ -76,16 +75,6 @@ const renderPaymentDetails = (caps, paymentText) => {
       (row.key ? `<div class="oe-payment-key">${esc(row.key)}</div>` : "") +
       `<div class="oe-payment-value">${esc(row.value)}</div></div>`)
     .join("");
-};
-
-const renderStatusBadge = () => {
-  const status = fieldValue("status");
-  const [color, background, borderColor] = STATUS_STYLES[status] || STATUS_STYLE_FALLBACK;
-  const pill = $("pStatus");
-  pill.textContent = "\u25cf " + status;
-  pill.style.color = color;
-  pill.style.background = background;
-  pill.style.borderColor = borderColor;
 };
 
 /* -------------------------------------------------------- visibility */
@@ -287,7 +276,6 @@ export function renderPreview() {
   setText("pFooterCompany", fieldOr("companyName", "Your Company"));
   setText("pFooterInvoice", "Invoice #" + invoiceNo);
 
-  renderStatusBadge();
   applySectionVisibility(caps, { notesText, termsText, paymentText });
 
   const visible = visibleColumns(caps);

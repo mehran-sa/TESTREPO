@@ -7,7 +7,7 @@
 .btn:disabled:hover{border-color:var(--line);transform:none}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--danger)}.btn.small{padding:6px 8px;font-size:11px}.btn.icon{width:31px;height:31px;padding:0}
 .library-title{font-size:10px;font-weight:800;color:#475467;margin:10px 0 6px}.library-list{display:grid;gap:6px}.library-item{display:flex;align-items:center;gap:6px;padding:6px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}.library-item .library-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:700;color:#344054}.library-empty{font-size:10px;color:var(--muted);padding:3px 0}
 .confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #e4e7ec;background:#f9fafb}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:800}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:800}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
 .tabpane{display:none}.tabpane.active{display:block}
 .panel{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--panel)}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panelhead h2{font-size:13px;margin:0}.hint{font-size:10px;color:var(--muted)}
 .grid2,.grid3{display:grid;gap:10px}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}.full{grid-column:1/-1}
@@ -18,6 +18,23 @@
 .importbox{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.notice{font-size:11px;color:#475467;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.14);padding:9px;border-radius:9px;margin-bottom:12px}
 .hidden{display:none!important}
 .field-warning{margin-top:4px;color:var(--danger)}
+/* Saved invoices list */
+.invoice-list{display:grid;gap:6px;margin-top:10px}
+.invoice-row{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}
+.invoice-row.current{border-color:var(--accent);background:rgba(var(--accent-rgb),.05)}
+.invoice-row .invoice-main{flex:1;min-width:0}
+.invoice-row .invoice-number{font-size:12px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-sub{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-total{font-size:11.5px;font-weight:750;white-space:nowrap}
+.invoice-row .invoice-open-now{font-size:10px;font-weight:800;color:var(--accent);white-space:nowrap}
+.invoice-empty{font-size:11px;color:var(--muted);padding:6px 0}
+.backup-reminder{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fffaeb;border-color:#fedf89;color:#7a4d00}
+.backup-reminder[hidden]{display:none}
+.import-check{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.45}
+.import-check[hidden]{display:none}
+.import-check.ok{background:#ecfdf3;border:1px solid #abefc6;color:#085d3a}
+.import-check.warn{background:#fffaeb;border:1px solid #fedf89;color:#7a4d00}
+.inline-input select{flex:1;min-width:0}
 .inline-input{display:flex;gap:6px;align-items:stretch}.inline-input input{flex:1;min-width:0}.inline-input .btn{flex:none}
 /* The library heading had no rule and fell back to the browser's 1.5em h2,
    twice the size of every other panel heading. */

@@ -32,7 +32,9 @@ import { configureHistory } from "./history/invoice-history.js";
 import { renderAll, applySnapshot } from "./session.js";
 import { serialize } from "./invoice/invoice-data.js";
 import { state } from "./state.js";
-import { readInvoiceAutosave, backupUnreadableInvoice } from "./storage/invoice-storage.js";
+import { restoreAtStartup, captureBlankDefaults } from "./documents.js";
+import { initInvoiceList } from "./editor/invoices.js";
+import { initClientBook } from "./editor/clients.js";
 import { DEFAULT_ACCENT } from "./constants.js";
 import { installCompatibilityGlobals } from "./compat.js";
 import { initTabSync } from "./storage/tab-sync.js";
@@ -59,31 +61,10 @@ function seedDefaults() {
   setAccent(DEFAULT_ACCENT);
 }
 
-/**
- * Restores the autosave. An autosave that cannot be read or applied is copied
- * to a backup key first: the editor autosaves on the next change, and before
- * this the unreadable invoice was simply overwritten and lost.
- */
+/** Opens the right invoice at start-up; see documents.restoreAtStartup(). */
 function restoreAutosave() {
-  const { data, corrupt, backedUp } = readInvoiceAutosave();
-  if (corrupt) {
-    toast(backedUp
-      ? "The saved invoice could not be read. A copy was kept in browser storage; a new invoice was started."
-      : "The saved invoice could not be read, and there was no room to keep a copy.");
-    return;
-  }
-  if (!data) return;
-  try {
-    // Not written back: nothing has changed yet (see applySnapshot).
-    const warnings = applySnapshot(data, { persist: false });
-    if (warnings.length) toast("Your saved invoice was opened with corrections: " + warnings.join(" "));
-  } catch (err) {
-    console.error("[SA Invoice Generator] the autosaved invoice could not be restored:", err);
-    const kept = backupUnreadableInvoice();
-    toast(kept
-      ? "The saved invoice could not be restored. A copy was kept in browser storage."
-      : "The saved invoice could not be restored.");
-  }
+  const messages = restoreAtStartup();
+  if (messages.length) toast(messages.join(" "));
 }
 
 /**
@@ -118,6 +99,8 @@ export function init() {
 
   step("defaults", seedDefaults);
   step("first render", renderAll);
+  // Remembered before any saved data is applied: "New blank invoice" uses it.
+  step("blank defaults", captureBlankDefaults);
   step("restore autosave", restoreAutosave);
   // History is seeded after the autosave is restored, so the starting point is
   // the invoice the user actually sees. Zoom is carried over from live state on
@@ -129,6 +112,8 @@ export function init() {
   step("history controls", initHistoryControls);
 
   step("libraries", refreshLibraries);
+  step("saved invoices", initInvoiceList);
+  step("client book", initClientBook);
   // After the autosave is restored, so the starting point is this tab's view.
   step("tab sync", initTabSync);
   step("version check", checkVersion);

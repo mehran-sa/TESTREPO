@@ -95,7 +95,6 @@
   margin:9mm 8mm 8.5mm;
   padding:0;
 }
-.template-classic .billrow>[data-section="status"]{display:none!important}
 .template-classic .billrow .label{
   margin:0 0 1px;
   padding:0;

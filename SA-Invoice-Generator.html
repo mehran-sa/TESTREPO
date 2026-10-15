@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.1.0">
+<meta name="sa-app-version" content="2.2.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
      (connect-src 'none'). Excel import uses the bundled js/vendor copy. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-67ESR7u2t6l4CfCwBOU4N4ZpCkxHKpty01bfsKe9e0c='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-SnG+f/ng1izZIZRZQp8hIqGrBNlxkZq6CyDZiFuTgGI='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI4IiB5MT0iOCIgeDI9IjU2IiB5Mj0iNTYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjU2M2ViIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdjM2FlZCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9InVybCgjZykiLz4KICA8cGF0aCBkPSJNMTkgMTNoMThsMTAgMTB2MjhIMTl6IiBmaWxsPSIjZmZmIi8+CiAgPHBhdGggZD0iTTM3IDEzdjExaDEwIiBmaWxsPSIjZGJlYWZlIi8+CiAgPHJlY3QgeD0iMjQiIHk9IjMwIiB3aWR0aD0iMTgiIGhlaWdodD0iMyIgcng9IjEuNSIgZmlsbD0iIzI1NjNlYiIvPgogIDxyZWN0IHg9IjI0IiB5PSIzNyIgd2lkdGg9IjE4IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMyNTYzZWIiIG9wYWNpdHk9Ii44MiIvPgogIDxyZWN0IHg9IjI0IiB5PSI0NCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMyNTYzZWIiIG9wYWNpdHk9Ii42NiIvPgo8L3N2Zz4K">
 <link rel="alternate icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAADIElEQVRYhb2WTWwNURTHf+fOfS3a0lQRX4umrc8UKWkiJDZWWomvbiQsiGBBRGKtCxvsWIqFiAUpDSUsm2BbQihFLHykkb5Sn5VX71q8zrw7fTNzp9I6yST3nvn4nfs/58y9gmX1hwbmqpw+CqYVaAQqlAFlQAwoCmP7En8MKCNhX/HeMIY+D67w8/OFu3cbf/tM8QcN+z+1C3IRqPJ9kwQP+/K8IM/27u7aF0EAY/CrdkBTAi/6s+pPfv3123NfSUF27/WUr7zEb54Mfqtdqwo5TweXSYODMrJqXuXQHg2m7f+u3Ppe3uzVQL0L3tyYYfUSXVAAECMogGAOv0YMd+6NpIarwrtrNFDpkr1lZYYDO2aQZEM/DE1NZZw9/TUdvHCvWrngY5GmssV1muPHquwVJsELcxd8IgEA1C3LcORoJRJRQ5EsF1yN5TytGaC+qYyDhyvdcAPKBZ+oAgB5A0vXlbF123RnW2sXXBlBjBtaUyHUVIR9vdMkEa7sAErhxZcnqoBvQRFGwmVcEZas3OqCFApEWor60kmyR3VBW8cX+t+PxjKXL9bcPFkdKBANl4Cl42RXMQEc3jKdvnfxASxdpIOxHUBIdsYXYcmDYVWwUtDaUk5rS3mqDEjUNwn7dJzs9m/UVuDBsxwDn//EQufXeGxYkQkUiJLd5ug0u5pdhNfuj/B2ID6AunlWADGyq3AA7i3VVuDcoaoobnQKiJY9dKXZz/+1DcUFZ9yfMGHfDuxM508+ZsMpWFjrcWJn6XbtK5B0RtBp4HYAm9dk+JD1QqAFs8NzOwDXAUW74ONT0NyQobkhVQYKf0JHirWCYTHMSnrw5fMctzrHlLBUKR7RQChuWr7v7dPRRDjwVZPnsYJNJbJb82ePcvT15hwHl+g+T4AD5o1SyOUo2UvSMelwECPdamSo5pIyPFURADdc/hkODHvlmfOqp0dGtZhdAlnnAbJk5e4+j4EbxOzr6Jk5qAC6uub0e3k2iqFvqmUHhhGz69TD2ht+wQbW3m7KvB/ZAx7sxrBCQXW07BNe+XeQfjHmtleeOd/RM3PQZ/4F4LjQfeYXilgAAAAASUVORK5CYII=">
 
@@ -71,7 +71,7 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 .btn:disabled:hover{border-color:var(--line);transform:none}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--danger)}.btn.small{padding:6px 8px;font-size:11px}.btn.icon{width:31px;height:31px;padding:0}
 .library-title{font-size:10px;font-weight:800;color:#475467;margin:10px 0 6px}.library-list{display:grid;gap:6px}.library-item{display:flex;align-items:center;gap:6px;padding:6px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}.library-item .library-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:700;color:#344054}.library-empty{font-size:10px;color:var(--muted);padding:3px 0}
 .confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #e4e7ec;background:#f9fafb}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:800}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:800}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
 .tabpane{display:none}.tabpane.active{display:block}
 .panel{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--panel)}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panelhead h2{font-size:13px;margin:0}.hint{font-size:10px;color:var(--muted)}
 .grid2,.grid3{display:grid;gap:10px}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}.full{grid-column:1/-1}
@@ -82,6 +82,23 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 .importbox{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.notice{font-size:11px;color:#475467;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.14);padding:9px;border-radius:9px;margin-bottom:12px}
 .hidden{display:none!important}
 .field-warning{margin-top:4px;color:var(--danger)}
+/* Saved invoices list */
+.invoice-list{display:grid;gap:6px;margin-top:10px}
+.invoice-row{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}
+.invoice-row.current{border-color:var(--accent);background:rgba(var(--accent-rgb),.05)}
+.invoice-row .invoice-main{flex:1;min-width:0}
+.invoice-row .invoice-number{font-size:12px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-sub{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-total{font-size:11.5px;font-weight:750;white-space:nowrap}
+.invoice-row .invoice-open-now{font-size:10px;font-weight:800;color:var(--accent);white-space:nowrap}
+.invoice-empty{font-size:11px;color:var(--muted);padding:6px 0}
+.backup-reminder{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fffaeb;border-color:#fedf89;color:#7a4d00}
+.backup-reminder[hidden]{display:none}
+.import-check{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.45}
+.import-check[hidden]{display:none}
+.import-check.ok{background:#ecfdf3;border:1px solid #abefc6;color:#085d3a}
+.import-check.warn{background:#fffaeb;border:1px solid #fedf89;color:#7a4d00}
+.inline-input select{flex:1;min-width:0}
 .inline-input{display:flex;gap:6px;align-items:stretch}.inline-input input{flex:1;min-width:0}.inline-input .btn{flex:none}
 /* The library heading had no rule and fell back to the browser's 1.5em h2,
    twice the size of every other panel heading. */
@@ -173,7 +190,7 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 .canvasbar{width:210mm;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.canvasbar .meta{font-size:11px;color:var(--muted)}
 .invoice{--template-accent:var(--accent);width:210mm;min-height:297mm;margin:auto;background:#fff;box-shadow:0 18px 55px rgba(16,24,40,.14);padding:14mm 14mm 13mm;position:relative;overflow:hidden;font-family:var(--font-modern)}
 .invoice .section-hidden{display:none!important}.topdetails{display:contents}.inv-header{display:grid;grid-template-columns:1.15fr .85fr;gap:26px}.companywrap{display:flex;gap:12px;align-items:flex-start}.logobox{width:64px;height:64px;border:1px solid #d7dde6;border-radius:10px;background:#f7f9fc;display:grid;place-items:center;overflow:hidden;flex:none}.logobox img{width:100%;height:100%;object-fit:contain;display:none}.logobox.has-logo{background:transparent;border-color:transparent}.logofallback{width:42px;height:42px;border-radius:11px;background:var(--template-accent);color:#fff;font-size:20px;font-weight:900;display:grid;place-items:center}.companyname{font-size:20px;font-weight:800;margin:1px 0 5px}.metaText{white-space:pre-line;font-size:10.5px;color:#485568;line-height:1.45}.invtitle{text-align:right}.invtitle h2{margin:0;font-size:36px;font-weight:300;letter-spacing:.04em}.invno{font-size:15px;color:#667085;font-weight:700;margin-top:3px}.metatable{width:100%;margin-top:14px;border-collapse:collapse;font-size:10.5px}.metatable td{padding:3px 0}.metatable td:first-child{text-align:left;color:#667085}.metatable td:last-child{text-align:right;font-weight:700}.balance{margin-top:13px;background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.14);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800}.balance strong{font-size:18px;color:var(--template-accent)}
-.billrow{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0}.label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:850;margin-bottom:5px}.clientname{font-size:14px;font-weight:850;margin-bottom:4px;white-space:pre-line}.status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:9.5px;font-weight:850;border:1px solid #abefc6;background:#ecfdf3;color:#18794e}
+.billrow{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0}.label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:850;margin-bottom:5px}.clientname{font-size:14px;font-weight:850;margin-bottom:4px;white-space:pre-line}
 .invtable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10px}.invtable th{padding:8px 7px;text-transform:none;letter-spacing:.04em;font-size:8.5px;background:#f4f6f9;color:#344054;border:1px solid #cfd6e0;text-align:left}.invtable td{padding:8px 7px;border:1px solid #d7dde6;vertical-align:top;overflow-wrap:anywhere}.invtable .right{text-align:right}.empty{text-align:center;color:#98a2b3;padding:20px!important}
 .bottomgrid{display:grid;grid-template-columns:1fr 250px;gap:24px;margin-top:16px}.notebox{border:1px solid #d8dee7;border-radius:8px;padding:10px;background:#fbfcfe;min-height:88px}.summary{border-top:2px solid #344054;padding-top:6px}.sumrow{display:flex;justify-content:space-between;gap:14px;padding:4px 0;font-size:10.5px}.sumrow span:first-child{color:#667085}.sumrow.total{border-top:1px solid #d0d5dd;margin-top:4px;padding-top:9px;font-size:14px;font-weight:850}.paymentgrid{display:grid;grid-template-columns:1fr 1fr;gap:24px;border-top:1px solid #d9dee7;margin-top:21px;padding-top:15px}.footer{position:absolute;bottom:9mm;left:14mm;right:14mm;display:flex;justify-content:space-between;font-size:8.5px;color:#8a94a5}
 
@@ -346,7 +363,6 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
   border:0;
 }
 .template-minimal .billrow>[data-section="client"]{display:block}
-.template-minimal .billrow>[data-section="status"]{display:none!important}
 .template-minimal .billrow .label{
   margin:0 0 3px;
   padding:0;
@@ -644,7 +660,6 @@ body.pdf-exporting .invoice.template-minimal{padding:23px 33px 30px 33px!importa
   margin:9mm 8mm 8.5mm;
   padding:0;
 }
-.template-classic .billrow>[data-section="status"]{display:none!important}
 .template-classic .billrow .label{
   margin:0 0 1px;
   padding:0;
@@ -793,7 +808,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
 /* Alpha / Fanatical Royalty template */
 /* Extracted verbatim from the original index.html <style> block. */
 
-.invoice.template-royalty{padding:13mm 13mm;font-family:var(--font-royalty)}.template-royalty .inv-header{grid-template-columns:1fr .72fr}.template-royalty .companywrap{display:block}.template-royalty .logobox{margin-bottom:8px;border:0;border-radius:0}.template-royalty .companyname{font-size:17px}.template-royalty .invtitle h2{font-size:26px;font-weight:650}.template-royalty .metatable{table-layout:fixed}.template-royalty .metatable td:first-child{width:62%;text-align:right;padding-right:24px}.template-royalty .metatable td:last-child{width:38%;text-align:right}.template-royalty .balance{display:grid;grid-template-columns:62% 38%;background:#f4f4f4;border:0;border-radius:3px;color:#303030;margin-top:18px;padding:8px 14px}.template-royalty .balance span{text-align:right;padding-right:24px}.template-royalty .balance strong{color:#303030;font-size:17px;text-align:right}.template-royalty .billrow{margin:15px 0}.template-royalty .clientname{white-space:pre-line;line-height:1.55}.template-royalty .invtable th{background:#e5e5e5;border-color:#777;color:#111;font-family:var(--font-royalty);font-weight:700}.template-royalty .invtable td{border-color:#777;font-family:var(--font-royalty)}.template-royalty .bottomgrid{grid-template-columns:minmax(0,1fr) 220px;align-items:start}.template-royalty .notebox{min-width:0}.template-royalty .notebox .label,.template-royalty .paymentgrid .label{text-transform:none;letter-spacing:0;font-size:10px;line-height:1.25;margin-bottom:7px;color:#333}.template-royalty .notebox .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:700;font-style:italic}.template-royalty .paymentgrid .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:400;font-style:normal}.template-royalty .summary{border-top:1px solid #111}.template-royalty .status{border-radius:2px}
+.invoice.template-royalty{padding:13mm 13mm;font-family:var(--font-royalty)}.template-royalty .inv-header{grid-template-columns:1fr .72fr}.template-royalty .companywrap{display:block}.template-royalty .logobox{margin-bottom:8px;border:0;border-radius:0}.template-royalty .companyname{font-size:17px}.template-royalty .invtitle h2{font-size:26px;font-weight:650}.template-royalty .metatable{table-layout:fixed}.template-royalty .metatable td:first-child{width:62%;text-align:right;padding-right:24px}.template-royalty .metatable td:last-child{width:38%;text-align:right}.template-royalty .balance{display:grid;grid-template-columns:62% 38%;background:#f4f4f4;border:0;border-radius:3px;color:#303030;margin-top:18px;padding:8px 14px}.template-royalty .balance span{text-align:right;padding-right:24px}.template-royalty .balance strong{color:#303030;font-size:17px;text-align:right}.template-royalty .billrow{margin:15px 0}.template-royalty .clientname{white-space:pre-line;line-height:1.55}.template-royalty .invtable th{background:#e5e5e5;border-color:#777;color:#111;font-family:var(--font-royalty);font-weight:700}.template-royalty .invtable td{border-color:#777;font-family:var(--font-royalty)}.template-royalty .bottomgrid{grid-template-columns:minmax(0,1fr) 220px;align-items:start}.template-royalty .notebox{min-width:0}.template-royalty .notebox .label,.template-royalty .paymentgrid .label{text-transform:none;letter-spacing:0;font-size:10px;line-height:1.25;margin-bottom:7px;color:#333}.template-royalty .notebox .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:700;font-style:italic}.template-royalty .paymentgrid .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:400;font-style:normal}.template-royalty .summary{border-top:1px solid #111}
 
 /* css/print.css */
 /* Global print page box */
@@ -831,11 +846,13 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     <button class="btn" id="exportBtn">Export JSON</button>
     <button class="btn" id="importBtn">Import JSON</button>
     <button class="btn" id="resetTextBtn" title="Clears text entered in the current invoice. Saved templates and brands are kept.">Reset Text</button>
-    <button class="btn danger" id="resetBtn">Reset</button>
+    <button class="btn" id="resetBtn" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
-  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Export JSON to keep a backup copy.</div>
+  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Back up everything on the Invoices tab to keep a copy.</div>
+  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <button class="btn small" id="backupNowBtn" type="button">Back up now</button></div>
   <nav class="tabs">
+    <button class="tab" data-tab="invoices">Invoices</button>
     <button class="tab active" data-tab="details">Details</button>
     <button class="tab" data-tab="items">Items</button>
     <button class="tab" data-tab="columns">Columns</button>
@@ -843,12 +860,34 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     <button class="tab" data-tab="bundles">Bundles</button>
   </nav>
 
+  <div class="tabpane" id="tab-invoices">
+    <section class="panel">
+      <div class="panelhead"><h2>Saved invoices</h2><span class="hint" id="invoiceCount"></span></div>
+      <div class="importbox">
+        <button class="btn small primary" id="newInvoiceBtn" type="button">New invoice</button>
+        <button class="btn small" id="duplicateInvoiceBtn" type="button">Duplicate</button>
+        <button class="btn small" id="blankInvoiceBtn" type="button">New blank</button>
+      </div>
+      <p class="hint">Every change is saved automatically. New invoice keeps your company details, design and payment details, clears the client and items, and uses the next unused number. New blank starts from the app defaults.</p>
+      <div class="field"><label for="invoiceSearch">Search</label><input id="invoiceSearch" type="search" placeholder="Invoice number or client" autocomplete="off"></div>
+      <div id="invoiceList" class="invoice-list" aria-live="polite"></div>
+    </section>
+    <section class="panel">
+      <div class="panelhead"><h2>Backup</h2><span class="hint" id="lastBackupHint"></span></div>
+      <p class="hint">Saves every invoice, client, template and brand to one file on your computer. Restoring adds them back and never deletes anything already here.</p>
+      <div class="importbox">
+        <button class="btn small primary" id="backupBtn" type="button">Back up everything</button>
+        <button class="btn small" id="restoreBtn" type="button">Restore from backup</button>
+        <input type="file" id="restoreFile" class="hidden" accept=".json,application/json">
+      </div>
+    </section>
+  </div>
+
   <div class="tabpane active" id="tab-details">
     <section class="panel">
       <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
       <div class="grid2">
-        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div></div>
-        <div class="field"><label>Status</label><select id="status"><option>Draft</option><option selected>Due</option><option>Paid</option><option>Partially Paid</option><option>Overdue</option><option>Cancelled</option></select></div>
+        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
         <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
         <div class="field"><label>Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
         <div class="field"><label>Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
@@ -873,6 +912,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     <section class="panel">
       <div class="panelhead"><h2>Bill to</h2><span class="hint">Customer</span></div>
       <div class="grid2">
+        <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
         <div class="field full"><label>Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
         <div class="field"><label>Contact</label><input id="clientContact"></div>
         <div class="field"><label>VAT / tax</label><input id="clientTax"></div>
@@ -902,6 +942,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         <input id="sheetFile" class="hidden" type="file" accept=".csv,.xlsx,.xls">
       </div>
       <p class="hint">Spreadsheet columns are matched against your current column names and common aliases.</p>
+      <div class="import-check" id="importCheck" role="status" hidden></div>
       <div id="itemsEditor"></div>
     </section>
   </div>
@@ -1004,7 +1045,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     </header>
     <section class="billrow">
       <div data-section="client"><div class="label" id="pBillToLabel">Bill to</div><div class="clientname" id="pClientName">Client company</div><div class="metaText" id="pClientMeta">Add client details</div></div>
-      <div data-section="status"><div class="label" id="pStatusLabel">Invoice status</div><span class="status" id="pStatus">● Due</span></div>
     </section>
     </div>
     <table class="invtable"><colgroup id="pCols"></colgroup><thead><tr id="pHeaders"></tr></thead><tbody id="pItems"></tbody><tfoot id="pClassicTotals"></tfoot></table>
@@ -1057,7 +1097,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   };
 
   // js/constants.js
-  var APP_VERSION = "2.1.0";
+  var APP_VERSION = "2.2.0";
   var DATA_VERSION = 2;
   var STORAGE_KEYS = {
     invoice: "invoiceStudioPro.v2",
@@ -1065,8 +1105,18 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     invoiceBackup: "invoiceStudioPro.v2.unreadableBackup",
     templates: "invoiceStudio.templates.v1",
     brands: "invoiceStudio.brands.v1",
-    sidebarWidth: "invoiceStudio.sidebarWidth"
+    sidebarWidth: "invoiceStudio.sidebarWidth",
+    /* Added in 2.2.0: the saved-invoices library, logos shared by those
+       invoices, the client address book and the last full backup time. */
+    invoiceIndex: "invoiceStudio.invoiceIndex.v1",
+    invoiceRecordPrefix: "invoiceStudio.invoice.",
+    logos: "invoiceStudio.logos.v1",
+    /** Keys present in the logos map: small, so it can be checked on every save. */
+    logoIndex: "invoiceStudio.logoIndex.v1",
+    clients: "invoiceStudio.clients.v1",
+    lastBackupAt: "invoiceStudio.lastBackupAt"
   };
+  var BACKUP_REMINDER_DAYS = 30;
   var LIMITS = {
     logoWidth: { min: 40, max: 240, fallback: 120 },
     logoHeight: { min: 30, max: 140, fallback: 54 },
@@ -1097,7 +1147,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     ["logo", "Logo"],
     ["company", "Company details"],
     ["client", "Client details"],
-    ["status", "Invoice status"],
     ["invoiceDate", "Invoice date"],
     ["dueDate", "Due date"],
     ["reference", "Reference / PO"],
@@ -1116,7 +1165,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     "logoFit",
     "logoAlign",
     "invoiceNumber",
-    "status",
     "invoiceDate",
     "dueDate",
     "currency",
@@ -1171,15 +1219,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     companyEmail: "email",
     companyWebsite: "website"
   };
-  var STATUS_STYLES = {
-    Draft: ["#475467", "#f2f4f7", "#d0d5dd"],
-    Due: ["#18794e", "#ecfdf3", "#abefc6"],
-    Paid: ["#175cd3", "#eff8ff", "#b2ddff"],
-    "Partially Paid": ["#9a6700", "#fffaeb", "#fedf89"],
-    Overdue: ["#b42318", "#fef3f2", "#fecdca"],
-    Cancelled: ["#667085", "#f2f4f7", "#d0d5dd"]
-  };
-  var STATUS_STYLE_FALLBACK = ["#475467", "#f2f4f7", "#d0d5dd"];
   var COMPANY_META_FALLBACK = "Add your company details";
   var CLIENT_META_FALLBACK = "Add client details";
 
@@ -1191,18 +1230,18 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   function setFieldValue(id, value) {
     const el = $(id);
     if (!el) return false;
-    const text = value === null || value === void 0 ? "" : String(value);
-    if (el.tagName === "SELECT" && ![...el.options].some((o) => o.value === text)) return false;
-    if (el.type === "date" && text !== "" && !isIsoDate(text)) return false;
-    if (el.type === "number" && text !== "" && !Number.isFinite(Number(text))) return false;
-    el.value = text;
+    const text2 = value === null || value === void 0 ? "" : String(value);
+    if (el.tagName === "SELECT" && ![...el.options].some((o) => o.value === text2)) return false;
+    if (el.type === "date" && text2 !== "" && !isIsoDate(text2)) return false;
+    if (el.type === "number" && text2 !== "" && !Number.isFinite(Number(text2))) return false;
+    el.value = text2;
     return true;
   }
   var trimmedField = (id) => String($(id).value).trim();
   var fieldOr = (id, fallback) => trimmedField(id) || fallback;
-  var setText = (id, text) => {
+  var setText = (id, text2) => {
     const el = $(id);
-    if (el) el.textContent = text;
+    if (el) el.textContent = text2;
   };
   var toggleSection = (el, visible) => {
     if (el) el.classList.toggle("section-hidden", !visible);
@@ -1221,18 +1260,18 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     return n < 0 ? -result : result;
   }
   function stripAmountText(value) {
-    let text = value.trim();
+    let text2 = value.trim();
     let negative = false;
-    if (/^\(.*\)$/.test(text)) {
+    if (/^\(.*\)$/.test(text2)) {
       negative = true;
-      text = text.slice(1, -1).trim();
+      text2 = text2.slice(1, -1).trim();
     }
-    text = text.replace(/^[A-Za-z]{3}(?=[\s\d.,+-])/, "").replace(/[\s\u00a0\u202f'£$€৳¥₹]|A\$|C\$/g, "");
-    if (/^-/.test(text)) {
+    text2 = text2.replace(/^[A-Za-z]{3}(?=[\s\d.,+-])/, "").replace(/[\s\u00a0\u202f'£$€৳¥₹]|A\$|C\$/g, "");
+    if (/^-/.test(text2)) {
       negative = !negative;
-      text = text.slice(1);
-    } else if (/^\+/.test(text)) text = text.slice(1);
-    return [text, negative];
+      text2 = text2.slice(1);
+    } else if (/^\+/.test(text2)) text2 = text2.slice(1);
+    return [text2, negative];
   }
   var THOUSANDS_COMMA = /^\d{1,3}(,\d{3})+$/;
   var THOUSANDS_DOT = /^\d{1,3}(\.\d{3})+$/;
@@ -1249,17 +1288,17 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     let comma = 0;
     for (const value of values) {
       if (typeof value !== "string") continue;
-      const [text] = stripAmountText(value);
-      if (!/^[\d.,]+$/.test(text)) continue;
-      const lastComma = text.lastIndexOf(",");
-      const lastDot = text.lastIndexOf(".");
+      const [text2] = stripAmountText(value);
+      if (!/^[\d.,]+$/.test(text2)) continue;
+      const lastComma = text2.lastIndexOf(",");
+      const lastDot = text2.lastIndexOf(".");
       if (lastComma !== -1 && lastDot !== -1) {
         if (lastDot > lastComma) dot++;
         else comma++;
       } else if (lastComma !== -1) {
-        if (!THOUSANDS_COMMA.test(text)) comma++;
+        if (!THOUSANDS_COMMA.test(text2)) comma++;
       } else if (lastDot !== -1) {
-        if (!THOUSANDS_DOT.test(text)) dot++;
+        if (!THOUSANDS_DOT.test(text2)) dot++;
       }
     }
     if (dot === comma) return fallback === "," ? "," : ".";
@@ -1269,36 +1308,36 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     if (typeof value === "number") return Number.isFinite(value) ? value : null;
     if (typeof value !== "string") return null;
     if (!value.trim()) return null;
-    let [text, negative] = stripAmountText(value);
-    if (!/^[\d.,]+$/.test(text) || !/\d/.test(text)) return null;
+    let [text2, negative] = stripAmountText(value);
+    if (!/^[\d.,]+$/.test(text2) || !/\d/.test(text2)) return null;
     if (decimal === "." || decimal === ",") {
       const group = decimal === "." ? "," : ".";
-      if (text.split(decimal).length > 2) return null;
-      const [whole, fraction] = text.split(decimal);
+      if (text2.split(decimal).length > 2) return null;
+      const [whole, fraction] = text2.split(decimal);
       if (whole.includes(group) && !(group === "," ? THOUSANDS_COMMA : THOUSANDS_DOT).test(whole)) return null;
       if (fraction !== void 0 && /[.,]/.test(fraction)) return null;
-      text = whole.split(group).join("") + (fraction !== void 0 ? "." + fraction : "");
+      text2 = whole.split(group).join("") + (fraction !== void 0 ? "." + fraction : "");
     } else {
-      const lastComma = text.lastIndexOf(",");
-      const lastDot = text.lastIndexOf(".");
+      const lastComma = text2.lastIndexOf(",");
+      const lastDot = text2.lastIndexOf(".");
       if (lastComma !== -1 && lastDot !== -1) {
-        text = lastDot > lastComma ? text.replace(/,/g, "") : text.replace(/\./g, "").replace(",", ".");
+        text2 = lastDot > lastComma ? text2.replace(/,/g, "") : text2.replace(/\./g, "").replace(",", ".");
       } else if (lastComma !== -1) {
-        text = THOUSANDS_COMMA.test(text) ? text.replace(/,/g, "") : text.replace(",", ".");
+        text2 = THOUSANDS_COMMA.test(text2) ? text2.replace(/,/g, "") : text2.replace(",", ".");
       }
-      if ((text.match(/\./g) || []).length > 1) {
-        if (!THOUSANDS_DOT.test(text)) return null;
-        text = text.replace(/\./g, "");
+      if ((text2.match(/\./g) || []).length > 1) {
+        if (!THOUSANDS_DOT.test(text2)) return null;
+        text2 = text2.replace(/\./g, "");
       }
     }
-    const n = Number(text);
+    const n = Number(text2);
     if (!Number.isFinite(n)) return null;
     return negative ? -n : n;
   }
   function esc(value) {
     return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
   }
-  var escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  var escapeRegExp = (text2) => text2.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   var joinMetaLines = (rows) => rows.map(([id, prefix]) => {
     const value = trimmedField(id);
     return value ? prefix + value : "";
@@ -1336,8 +1375,8 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     const duration = Math.min(8e3, Math.max(TOAST_MS, String(message).length * 45));
     toastTimer = setTimeout(() => el.classList.remove("show"), duration);
   }
-  function download(name, text, type = "application/json") {
-    const blob = new Blob([text], { type });
+  function download(name, text2, type = "application/json") {
+    const blob = new Blob([text2], { type });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -1422,7 +1461,11 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     zoom: 1,
     columns: defaultColumns(),
     items: [],
-    sections: defaultSections()
+    sections: defaultSections(),
+    invoiceId: ""
+  };
+  var setInvoiceId = (id) => {
+    state.invoiceId = typeof id === "string" ? id : "";
   };
   var roleCol = (role) => state.columns.find((c) => c.role === role);
   var editableColumns = () => state.columns.filter((c) => c.role !== "amount");
@@ -1514,8 +1557,8 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     "IBAN",
     "Paypal"
   ];
-  function oneEducationPaymentRows(text) {
-    return String(text || "").split(/\r?\n/).map((line2) => line2.trim()).filter(Boolean).map((line2) => {
+  function oneEducationPaymentRows(text2) {
+    return String(text2 || "").split(/\r?\n/).map((line2) => line2.trim()).filter(Boolean).map((line2) => {
       for (const label of ONE_EDUCATION_PAYMENT_LABELS) {
         const re = new RegExp("^" + escapeRegExp(label) + "\\s*:?[\\s	-]*(.*)$", "i");
         const match = line2.match(re);
@@ -1538,7 +1581,10 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       columns: state.columns,
       items: state.items,
       sections: state.sections,
-      fields
+      fields,
+      // Which saved invoice this is. Ignored when a snapshot is applied (see
+      // session.applySnapshot); read only when the autosave is restored.
+      invoiceId: state.invoiceId
     };
   }
   function serializeBrand() {
@@ -1552,17 +1598,17 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var NOTE_TYPO_REPLACE = /\bbank detailsfor payment\b/gi;
   var NOTE_TYPO_FIX = "bank details for payment";
   function readNotes(repairTypo) {
-    const text = trimmedField("notes");
-    if (repairTypo && NOTE_TYPO_PATTERN.test(text)) {
-      return { text: text.replace(NOTE_TYPO_REPLACE, NOTE_TYPO_FIX), repaired: true };
+    const text2 = trimmedField("notes");
+    if (repairTypo && NOTE_TYPO_PATTERN.test(text2)) {
+      return { text: text2.replace(NOTE_TYPO_REPLACE, NOTE_TYPO_FIX), repaired: true };
     }
-    return { text, repaired: false };
+    return { text: text2, repaired: false };
   }
   function nextInvoiceNumber(current) {
-    const text = String(current ?? "").trim();
-    if (!text) return "1";
-    const match = text.match(/^(.*?)(\d+)$/);
-    if (!match) return text + "-1";
+    const text2 = String(current ?? "").trim();
+    if (!text2) return "1";
+    const match = text2.match(/^(.*?)(\d+)$/);
+    if (!match) return text2 + "-1";
     const [, prefix, digits] = match;
     const next = (BigInt(digits) + 1n).toString();
     return prefix + next.padStart(digits.length, "0");
@@ -1577,7 +1623,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     labels: {
       title: "INVOICE",
       bill: "Bill to",
-      status: "Invoice status",
       balance: "Balance due",
       note: "Invoice note",
       payment: "Payment details",
@@ -1612,7 +1657,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     labels: {
       title: "INVOICE",
       bill: "Bill To:",
-      status: "Status:",
       balance: ":",
       note: "Notes:",
       payment: "Notes:",
@@ -1650,7 +1694,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     labels: {
       title: "Invoice",
       bill: "Bill To",
-      status: "Status",
       balance: "Balance Due",
       note: "Notes",
       payment: "Payment Details:",
@@ -1689,7 +1732,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     labels: {
       title: "INVOICE",
       bill: "To:",
-      status: "Status:",
       balance: "Balance Due:",
       note: "Invoice Note:",
       payment: "Payment Details:",
@@ -1778,7 +1820,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var renderLabels = ({ labels }) => {
     setText("pInvoiceTitle", labels.title);
     setText("pBillToLabel", labels.bill);
-    setText("pStatusLabel", labels.status);
     setText("pBalanceLabel", labels.balance);
     setText("pNoteLabel", labels.note);
     setText("pPaymentLabel", labels.payment);
@@ -1788,9 +1829,9 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       ['.metatable tr[data-section="dueDate"] td:first-child', labels.due],
       ['.metatable tr[data-section="reference"] td:first-child', labels.ref]
     ];
-    for (const [selector, text] of metaLabels) {
+    for (const [selector, text2] of metaLabels) {
       const cell = qs(selector);
-      if (cell) cell.textContent = text;
+      if (cell) cell.textContent = text2;
     }
   };
   var renderHeaderDetails = (caps, invoiceNo) => {
@@ -1810,15 +1851,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       return;
     }
     $("pPayment").innerHTML = oneEducationPaymentRows(paymentText).map((row) => `<div class="oe-payment-row ${row.key ? "" : "oe-payment-free"}">` + (row.key ? `<div class="oe-payment-key">${esc(row.key)}</div>` : "") + `<div class="oe-payment-value">${esc(row.value)}</div></div>`).join("");
-  };
-  var renderStatusBadge = () => {
-    const status = fieldValue("status");
-    const [color, background, borderColor] = STATUS_STYLES[status] || STATUS_STYLE_FALLBACK;
-    const pill = $("pStatus");
-    pill.textContent = "\u25CF " + status;
-    pill.style.color = color;
-    pill.style.background = background;
-    pill.style.borderColor = borderColor;
   };
   var applySectionVisibility = (caps, { notesText, termsText, paymentText }) => {
     qsa("[data-section]").forEach((el) => el.classList.toggle("section-hidden", !state.sections[el.dataset.section]));
@@ -1962,7 +1994,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     $("pTerms").textContent = termsText;
     setText("pFooterCompany", fieldOr("companyName", "Your Company"));
     setText("pFooterInvoice", "Invoice #" + invoiceNo);
-    renderStatusBadge();
     applySectionVisibility(caps, { notesText, termsText, paymentText });
     const visible = visibleColumns(caps);
     renderColgroup(caps, visible);
@@ -2110,6 +2141,12 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     stack.init(clone(capture()));
     notify();
   }
+  function resetHistory() {
+    if (!capture) return;
+    cancelPending();
+    stack.init(clone(capture()));
+    notify();
+  }
   function onHistoryChange(fn) {
     listener = fn;
     notify();
@@ -2147,6 +2184,112 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     return true;
   }
 
+  // js/storage/invoice-library.js
+  var ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+  var isInvoiceId = (id) => typeof id === "string" && ID_PATTERN.test(id);
+  var recordKey = (id) => STORAGE_KEYS.invoiceRecordPrefix + id;
+  var newInvoiceId = () => crypto.randomUUID();
+  function logoRefFor(dataUrl) {
+    if (!dataUrl) return "";
+    let hash = 2166136261;
+    for (let i = 0; i < dataUrl.length; i++) {
+      hash ^= dataUrl.charCodeAt(i);
+      hash = Math.imul(hash, 16777619) >>> 0;
+    }
+    return `logo_${dataUrl.length.toString(36)}_${hash.toString(36)}`;
+  }
+  var readLogos = () => {
+    const map = readJSON(STORAGE_KEYS.logos, {});
+    return map && typeof map === "object" && !Array.isArray(map) ? map : {};
+  };
+  var readLogoIndex = () => {
+    const list2 = readJSON(STORAGE_KEYS.logoIndex, null);
+    return Array.isArray(list2) ? list2 : Object.keys(readLogos());
+  };
+  function writeLogos(logos) {
+    return writeJSON(STORAGE_KEYS.logos, logos) && writeJSON(STORAGE_KEYS.logoIndex, Object.keys(logos));
+  }
+  var lastStored = { dataUrl: null, ref: "" };
+  function storeLogo(dataUrl) {
+    if (!dataUrl) return "";
+    if (dataUrl === lastStored.dataUrl && readLogoIndex().includes(lastStored.ref)) return lastStored.ref;
+    const ref = storeLogoIn(dataUrl, readLogos());
+    lastStored = ref ? { dataUrl, ref } : { dataUrl: null, ref: "" };
+    return ref;
+  }
+  function storeLogoIn(dataUrl, logos) {
+    let ref = logoRefFor(dataUrl);
+    for (let n = 2; logos[ref] && logos[ref] !== dataUrl; n++) ref = logoRefFor(dataUrl) + "_" + n;
+    if (logos[ref] === dataUrl) {
+      if (!readLogoIndex().includes(ref)) writeJSON(STORAGE_KEYS.logoIndex, Object.keys(logos));
+      return ref;
+    }
+    logos[ref] = dataUrl;
+    return writeLogos(logos) ? ref : null;
+  }
+  function removeUnusedLogos() {
+    lastStored = { dataUrl: null, ref: "" };
+    const used = new Set(listInvoices().map((entry) => readRecord(entry.id)?.logoRef).filter(Boolean));
+    const logos = readLogos();
+    let changed = false;
+    for (const ref of Object.keys(logos)) {
+      if (!used.has(ref)) {
+        delete logos[ref];
+        changed = true;
+      }
+    }
+    if (changed) writeLogos(logos);
+  }
+  var cleanEntry = (e) => e && typeof e === "object" && isInvoiceId(e.id) ? {
+    id: e.id,
+    number: String(e.number ?? ""),
+    client: String(e.client ?? ""),
+    invoiceDate: String(e.invoiceDate ?? ""),
+    total: Number.isFinite(Number(e.total)) ? Number(e.total) : 0,
+    currency: String(e.currency ?? ""),
+    updatedAt: String(e.updatedAt ?? "")
+  } : null;
+  function listInvoices() {
+    const list2 = readJSON(STORAGE_KEYS.invoiceIndex, []);
+    return (Array.isArray(list2) ? list2 : []).map(cleanEntry).filter(Boolean).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }
+  var writeIndex = (list2) => writeJSON(STORAGE_KEYS.invoiceIndex, list2);
+  function invoicesWithNumber(number, exceptId) {
+    const wanted = String(number ?? "").trim().toLowerCase();
+    if (!wanted) return [];
+    return listInvoices().filter((e) => e.id !== exceptId && e.number.trim().toLowerCase() === wanted);
+  }
+  function readRecord(id) {
+    if (!isInvoiceId(id)) return null;
+    const record = readJSON(recordKey(id), null);
+    return record && typeof record === "object" && record.data && typeof record.data === "object" ? record : null;
+  }
+  function loadSavedInvoice(id) {
+    const record = readRecord(id);
+    if (!record) return null;
+    const logo = record.logoRef ? readLogos()[record.logoRef] || "" : "";
+    return { ...record.data, logo, invoiceId: id };
+  }
+  function saveInvoiceRecord(id, snapshot, summary, updatedAt = (/* @__PURE__ */ new Date()).toISOString()) {
+    if (!isInvoiceId(id)) return { ok: false };
+    const logoRef = storeLogo(snapshot.logo || "");
+    if (logoRef === null) return { ok: false };
+    const { logo, invoiceId, ...data } = snapshot;
+    const text2 = JSON.stringify({ id, updatedAt, logoRef, data });
+    if (!writeRaw(recordKey(id), text2)) return { ok: false };
+    const list2 = listInvoices().filter((e) => e.id !== id);
+    list2.push(cleanEntry({ id, updatedAt, ...summary }));
+    if (!writeIndex(list2)) return { ok: false };
+    return { ok: true, text: text2 };
+  }
+  function deleteInvoiceRecord(id) {
+    remove(recordKey(id));
+    const ok = writeIndex(listInvoices().filter((e) => e.id !== id));
+    removeUnusedLogos();
+    return ok;
+  }
+  var readRecordText = (id) => isInvoiceId(id) ? readRaw(recordKey(id)) : null;
+
   // js/storage/invoice-storage.js
   var lastSaveOk = true;
   var pendingWrite = null;
@@ -2156,26 +2299,46 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var onInvoiceWritten = (fn) => {
     writeListeners.add(fn);
   };
-  function writeNow() {
+  function writeNow({ record = true } = {}) {
     if (pendingWrite !== null) {
       clearTimeout(pendingWrite);
       pendingWrite = null;
     }
     if (writesStopped || writesHeld) return true;
-    const text = JSON.stringify(serialize());
-    const stored = writeRaw(STORAGE_KEYS.invoice, text);
+    const snapshot = serialize();
+    const text2 = JSON.stringify(snapshot);
+    let stored = writeRaw(STORAGE_KEYS.invoice, text2);
+    let recordText = null;
+    if (stored && isInvoiceId(state.invoiceId)) {
+      if (record) {
+        const saved = saveInvoiceRecord(state.invoiceId, snapshot, invoiceSummary());
+        stored = saved.ok;
+        recordText = saved.text || null;
+      } else {
+        recordText = readRecordText(state.invoiceId);
+      }
+    }
     if (!stored && lastSaveOk) {
       toast("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
     }
     lastSaveOk = stored;
-    if (stored) writeListeners.forEach((fn) => fn(text));
+    if (stored) writeListeners.forEach((fn) => fn(text2, recordText));
     return stored;
+  }
+  function invoiceSummary() {
+    return {
+      number: trimmedField("invoiceNumber"),
+      client: trimmedField("clientName").split(/\r?\n/)[0] || "",
+      invoiceDate: fieldValue("invoiceDate"),
+      total: getTotals().total,
+      currency: fieldValue("currency")
+    };
   }
   function holdInvoiceWrites(hold) {
     writesHeld = Boolean(hold);
   }
-  function writeInvoiceNow() {
-    return writeNow();
+  function writeInvoiceNow(options) {
+    return writeNow(options);
   }
   function flushInvoiceSave() {
     if (pendingWrite !== null) writeNow();
@@ -2190,7 +2353,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     let stored = true;
     if (options && options.typing) {
       if (pendingWrite !== null) clearTimeout(pendingWrite);
-      pendingWrite = setTimeout(writeNow, AUTOSAVE_TYPING_DELAY_MS);
+      pendingWrite = setTimeout(() => writeNow(), AUTOSAVE_TYPING_DELAY_MS);
     } else {
       stored = writeNow();
     }
@@ -2209,12 +2372,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     } catch {
       return { data: null, corrupt: true, backedUp: backupUnreadableInvoice(raw) };
     }
-  }
-  function clearInvoice() {
-    if (pendingWrite !== null) clearTimeout(pendingWrite);
-    pendingWrite = null;
-    writesStopped = true;
-    return remove(STORAGE_KEYS.invoice);
   }
 
   // js/editor/design.js
@@ -2652,11 +2809,11 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   }
   function buildInvoicePrintDocument(autoPrint = true) {
     renderPreview();
-    const clone2 = $("invoice").cloneNode(true);
-    clone2.style.transform = "none";
-    clone2.style.transformOrigin = "top left";
-    clone2.style.margin = "0";
-    clone2.style.boxShadow = "none";
+    const clone3 = $("invoice").cloneNode(true);
+    clone3.style.transform = "none";
+    clone3.style.transformOrigin = "top left";
+    clone3.style.margin = "0";
+    clone3.style.boxShadow = "none";
     const old = $(FRAME_ID);
     if (old) old.remove();
     const frame = document.createElement("iframe");
@@ -2697,7 +2854,7 @@ ${collectStyleMarkup()}
 </body>
 </html>`);
     doc.close();
-    doc.body.appendChild(doc.importNode(clone2, true));
+    doc.body.appendChild(doc.importNode(clone3, true));
     let cleaned = false;
     const cleanup = () => {
       if (cleaned) return;
@@ -2738,28 +2895,28 @@ ${collectStyleMarkup()}
   }
   async function readInvoiceFile(file) {
     if (!file) throw Error("No file selected.");
-    let text;
+    let text2;
     try {
-      text = await file.text();
+      text2 = await file.text();
     } catch {
       throw Error(`"${file.name}" could not be read.`);
     }
     try {
-      return JSON.parse(text);
+      return JSON.parse(text2);
     } catch {
       throw Error(`"${file.name}" is not a valid invoice JSON file. Nothing was changed.`);
     }
   }
 
   // js/import-export/csv.js
-  function parseCSV(text) {
+  function parseCSV(text2) {
     const rows = [];
     let row = [];
     let cell = "";
     let inQuotes = false;
-    for (let i = 0; i < text.length; i++) {
-      const c = text[i];
-      const next = text[i + 1];
+    for (let i = 0; i < text2.length; i++) {
+      const c = text2[i];
+      const next = text2[i + 1];
       if (c === '"' && inQuotes && next === '"') {
         cell += '"';
         i++;
@@ -2830,8 +2987,46 @@ ${collectStyleMarkup()}
     });
   }
 
+  // js/import-export/statement-total.js
+  var LABELS = [
+    { re: /^please invoice for\b/, label: "Please invoice for" },
+    { re: /^total royalt(y|ies)\b/, label: "Total royalty" },
+    { re: /^grand total\b/, label: "Grand total" },
+    { re: /^total( amount| due| payable)?\b/, label: "Total" }
+  ];
+  var norm = (v) => String(v ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+  var isStatementTotalLabel = (text2) => LABELS.some(({ re }) => re.test(norm(text2)));
+  function findStatementTotal(rows, startIndex, valueIndex, decimal) {
+    for (const { re, label } of LABELS) {
+      for (let i = Math.max(0, startIndex); i < rows.length; i++) {
+        const row = Array.isArray(rows[i]) ? rows[i] : [];
+        const labelCell = row.findIndex((cell) => re.test(norm(cell)));
+        if (labelCell === -1) continue;
+        const candidates = [];
+        if (valueIndex >= 0) candidates.push(row[valueIndex]);
+        for (let c = row.length - 1; c > labelCell; c--) candidates.push(row[c]);
+        for (const cell of candidates) {
+          const value = parseAmount(cell, decimal);
+          if (value !== null && String(cell).trim() !== "") return { label, value: roundMoney(value) };
+        }
+        const inside = String(row[labelCell]).match(/[-(]?[£$€]?\s?\d[\d.,]*\)?\s*$/);
+        if (inside) {
+          const value = parseAmount(inside[0].trim(), decimal);
+          if (value !== null) return { label, value: roundMoney(value) };
+        }
+      }
+    }
+    return null;
+  }
+  function compareWithStatement(statement, importedTotal) {
+    const imported = roundMoney(importedTotal);
+    if (!statement) return { status: "none", imported };
+    const difference = roundMoney(imported - statement.value);
+    return { status: Math.abs(difference) < 5e-3 ? "match" : "mismatch", statement, imported, difference };
+  }
+
   // js/import-export/row-mapper.js
-  function norm(value) {
+  function norm2(value) {
     return String(value ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, " ");
   }
   var HEADER_KEYWORDS = ["sku", "name", "description", "quantity", "qty", "net qty", "royalty", "amount"];
@@ -2856,7 +3051,7 @@ ${collectStyleMarkup()}
     let best = 0;
     let bestScore = -1;
     rows.slice(0, HEADER_SEARCH_DEPTH).forEach((row, i) => {
-      const score = row.reduce((n, cell) => n + (HEADER_KEYWORDS.includes(norm(cell)) ? 1 : 0), 0);
+      const score = row.reduce((n, cell) => n + (HEADER_KEYWORDS.includes(norm2(cell)) ? 1 : 0), 0);
       if (score > bestScore) {
         bestScore = score;
         best = i;
@@ -2865,13 +3060,15 @@ ${collectStyleMarkup()}
     return best;
   };
   var isStopRow = (row) => {
-    const text = row.map((v) => norm(v)).join(" ");
-    return FOOTER_STOP_WORDS.some((word) => text.includes(word));
+    const text2 = row.map((v) => norm2(v)).join(" ");
+    return FOOTER_STOP_WORDS.some((word) => text2.includes(word));
   };
   var isBlankRow = (row) => row.every((v) => String(v ?? "").trim() === "");
-  var collectDataRows = (rows) => {
+  var dataRowRange = (rows) => {
     const clean = [];
-    for (const row of rows) {
+    let i = 0;
+    for (; i < rows.length; i++) {
+      const row = rows[i];
       if (isStopRow(row)) break;
       if (isBlankRow(row)) {
         if (clean.length) break;
@@ -2879,20 +3076,23 @@ ${collectStyleMarkup()}
       }
       clean.push(row);
     }
-    return clean;
+    return { rows: clean, end: i };
   };
-  function mapRows(rows) {
-    if (!rows.length) return [];
+  function readStatementRows(rows) {
+    if (!rows.length) return { items: [], statementTotal: null };
     const headerIndex = findHeaderRowIndex(rows);
     const headers = rows[headerIndex].map((h) => String(h ?? "").trim());
-    const dataRows = collectDataRows(rows.slice(headerIndex + 1));
+    const range = dataRowRange(rows.slice(headerIndex + 1));
+    const dataRows = range.rows;
     const mapping = state.columns.map((col) => {
-      const candidates = [norm(col.label), norm(col.key), ...COLUMN_ALIASES[col.key] || []];
-      return { col, index: headers.findIndex((h) => candidates.includes(norm(h))) };
+      const candidates = [norm2(col.label), norm2(col.key), ...COLUMN_ALIASES[col.key] || []];
+      return { col, index: headers.findIndex((h) => candidates.includes(norm2(h))) };
     }).filter((m) => m.index !== -1);
     const numeric = mapping.filter((m) => NUMERIC_COLUMN_TYPES.includes(m.col.type));
     const decimal = detectDecimalSeparator(dataRows.flatMap((row) => numeric.map((m) => row[m.index])));
-    return dataRows.map((row) => {
+    const amountIndex = mapping.find((m) => m.col.role === "amount")?.index ?? -1;
+    const statementTotal = findStatementTotal(rows, headerIndex + 1 + range.end, amountIndex, decimal);
+    const items = dataRows.map((row) => {
       const item = {};
       mapping.forEach(({ col, index }) => {
         let value = row[index];
@@ -2915,15 +3115,16 @@ ${collectStyleMarkup()}
       }
       return item;
     }).filter(Boolean);
+    return { items, statementTotal };
   }
 
   // js/import-export/spreadsheet.js
   var isCSV = (file) => file.name.toLowerCase().endsWith(".csv");
   async function readItemsFromFile(file) {
     const rows = isCSV(file) ? parseCSV(await file.text()) : await readWorkbookRows(file);
-    const items = mapRows(rows);
+    const { items, statementTotal } = readStatementRows(rows);
     if (!items.length) throw Error("No usable invoice rows were found.");
-    return items;
+    return { items, statementTotal };
   }
 
   // js/editor/sections.js
@@ -3189,7 +3390,155 @@ ${message}`));
     return { ...cleared, dateReset: resetInvoiceDate() };
   }
 
+  // js/documents.js
+  var listeners = /* @__PURE__ */ new Set();
+  var onDocumentsChange = (fn) => {
+    listeners.add(fn);
+  };
+  var notifyDocumentsChanged = () => listeners.forEach((fn) => fn());
+  var clone2 = (value) => JSON.parse(JSON.stringify(value));
+  var blankDefaults = null;
+  function captureBlankDefaults() {
+    const snapshot = clone2(serialize());
+    snapshot.items = [];
+    snapshot.logo = "";
+    delete snapshot.invoiceId;
+    blankDefaults = snapshot;
+  }
+  function switchTo(snapshot, id, { save = true } = {}) {
+    flushInvoiceSave();
+    const warnings = applySnapshot(snapshot, { persist: false });
+    setInvoiceId(id);
+    if (save) writeInvoiceNow();
+    resetHistory();
+    notifyDocumentsChanged();
+    return warnings;
+  }
+  function freshDates(fields) {
+    const issued = fields.invoiceDate;
+    const due = fields.dueDate;
+    const days = isIsoDate(issued) && isIsoDate(due) ? Math.round((/* @__PURE__ */ new Date(due + "T00:00:00") - /* @__PURE__ */ new Date(issued + "T00:00:00")) / 864e5) : DEFAULT_DUE_DAYS;
+    const start = today();
+    return { invoiceDate: start, dueDate: plusDays(start, days >= 0 ? days : DEFAULT_DUE_DAYS) };
+  }
+  function nextFreeNumber(number) {
+    let candidate = nextInvoiceNumber(number);
+    for (let i = 0; i < 1e3 && invoicesWithNumber(candidate).length; i++) candidate = nextInvoiceNumber(candidate);
+    return candidate;
+  }
+  var CLIENT_AND_CONTENT_FIELDS = ["clientName", "clientContact", "clientTax", "clientAddress", "clientEmail", "reference", "notes"];
+  function newInvoice({ blank = false } = {}) {
+    let snapshot;
+    if (blank && blankDefaults) {
+      snapshot = clone2(blankDefaults);
+      if (invoicesWithNumber(snapshot.fields.invoiceNumber).length) {
+        snapshot.fields.invoiceNumber = nextFreeNumber(snapshot.fields.invoiceNumber);
+      }
+    } else {
+      snapshot = clone2(serialize());
+      snapshot.items = [];
+      for (const id of CLIENT_AND_CONTENT_FIELDS) snapshot.fields[id] = "";
+      snapshot.fields.invoiceNumber = nextFreeNumber(snapshot.fields.invoiceNumber);
+    }
+    Object.assign(snapshot.fields, freshDates(snapshot.fields));
+    snapshot.zoom = state.zoom;
+    switchTo(snapshot, newInvoiceId());
+    toast(`New invoice ${snapshot.fields.invoiceNumber} started. The previous one is in your saved invoices.`);
+  }
+  function duplicateInvoice() {
+    const snapshot = clone2(serialize());
+    snapshot.fields.invoiceNumber = nextFreeNumber(snapshot.fields.invoiceNumber);
+    Object.assign(snapshot.fields, freshDates(snapshot.fields));
+    switchTo(snapshot, newInvoiceId());
+    toast(`Copy saved as ${snapshot.fields.invoiceNumber}.`);
+  }
+  function openInvoice(id) {
+    if (id === state.invoiceId) return;
+    const snapshot = loadSavedInvoice(id);
+    if (!snapshot) {
+      toast("That invoice could not be opened. It may have been deleted in another tab.");
+      notifyDocumentsChanged();
+      return;
+    }
+    snapshot.zoom = state.zoom;
+    try {
+      switchTo(snapshot, id, { save: false });
+      writeInvoiceNow({ record: false });
+    } catch (err) {
+      console.error("[SA Invoice Generator] invoice could not be opened:", err);
+      toast("That invoice could not be opened. The current invoice was not changed.");
+    }
+  }
+  function deleteInvoice(id) {
+    deleteInvoiceRecord(id);
+    if (id === state.invoiceId) {
+      const next = listInvoices()[0];
+      if (next) {
+        const snapshot = loadSavedInvoice(next.id);
+        if (snapshot) {
+          switchTo({ ...snapshot, zoom: state.zoom }, next.id, { save: false });
+          writeInvoiceNow({ record: false });
+          return;
+        }
+      }
+      setInvoiceId("");
+      newInvoice({ blank: false });
+      return;
+    }
+    notifyDocumentsChanged();
+  }
+  function importAsNewInvoice(raw) {
+    return switchTo(raw, newInvoiceId());
+  }
+  function restoreAtStartup() {
+    const messages = [];
+    const { data, corrupt, backedUp } = readInvoiceAutosave();
+    if (corrupt) {
+      messages.push(backedUp ? "The last open invoice could not be read. A copy was kept in browser storage." : "The last open invoice could not be read, and there was no room to keep a copy.");
+    }
+    const lastId = data && isInvoiceId(data.invoiceId) ? data.invoiceId : null;
+    const fromLibrary = lastId && readRecord(lastId) ? loadSavedInvoice(lastId) : null;
+    const tryApply = (snapshot, id, save) => {
+      try {
+        const warnings = applySnapshot(snapshot, { persist: false });
+        setInvoiceId(id);
+        if (save) writeInvoiceNow();
+        if (warnings.length) messages.push("Your invoice was opened with corrections: " + warnings.join(" "));
+        return true;
+      } catch (err) {
+        console.error("[SA Invoice Generator] saved invoice could not be restored:", err);
+        return false;
+      }
+    };
+    if (fromLibrary && tryApply(fromLibrary, lastId, false)) return messages;
+    if (data && !fromLibrary) {
+      if (tryApply(data, lastId || newInvoiceId(), true)) return messages;
+      const kept = backupUnreadableInvoice();
+      messages.push(kept ? "The last open invoice could not be restored. A copy was kept in browser storage." : "The last open invoice could not be restored.");
+    }
+    for (const entry of listInvoices()) {
+      const snapshot = loadSavedInvoice(entry.id);
+      if (snapshot && tryApply(snapshot, entry.id, false)) return messages;
+    }
+    setInvoiceId(newInvoiceId());
+    return messages;
+  }
+
   // js/editor/toolbar.js
+  function showImportCheck(el, statementTotal, importedTotal) {
+    const check = compareWithStatement(statementTotal, importedTotal);
+    if (!el) return check;
+    el.hidden = false;
+    el.className = "import-check " + (check.status === "mismatch" ? "warn" : check.status === "match" ? "ok" : "");
+    if (check.status === "match") {
+      el.textContent = `The imported lines add up to ${money(check.imported)}, matching the statement's "${check.statement.label}" row.`;
+    } else if (check.status === "mismatch") {
+      el.textContent = `The statement's "${check.statement.label}" row says ${money(check.statement.value)}, but the imported lines add up to ${money(check.imported)} (difference ${money(check.difference)}). Check for missing or misread rows, or a currency conversion on the statement.`;
+    } else {
+      el.textContent = `The imported lines add up to ${money(check.imported)}. No total row was found on the statement to check against.`;
+    }
+    return check;
+  }
   function initToolbar() {
     $("printBtn").onclick = () => {
       printInvoice();
@@ -3204,8 +3553,8 @@ ${message}`));
       e.target.value = "";
       if (!file) return;
       try {
-        const warnings = applySnapshot(await readInvoiceFile(file));
-        toast(warnings.length ? "Invoice imported with corrections: " + warnings.join(" ") : "Invoice imported. Use Undo to return to the previous invoice.");
+        const warnings = importAsNewInvoice(await readInvoiceFile(file));
+        toast(warnings.length ? "Invoice imported as a new saved invoice, with corrections: " + warnings.join(" ") : "Invoice imported as a new saved invoice. Your other invoices are unchanged.");
       } catch (err) {
         toast(err.message);
       }
@@ -3223,23 +3572,20 @@ ${message}`));
       saveInvoice();
       toast(cleared.fields || cleared.itemCells || cleared.dateReset ? `Text cleared from ${cleared.fields} field${cleared.fields === 1 ? "" : "s"}. Invoice date reset.` : "There was nothing to reset.");
     };
-    $("resetBtn").onclick = () => {
-      if (!confirm("Reset the app and delete the locally saved invoice?")) return;
-      clearInvoice();
-      location.reload();
-    };
+    $("resetBtn").onclick = () => newInvoice();
     $("importSheetBtn").onclick = () => $("sheetFile").click();
     $("sheetFile").onchange = async (e) => {
       const file = e.target.files[0];
       if (!file) return;
       toast("Reading " + file.name + "\u2026");
       try {
-        const items = await readItemsFromFile(file);
+        const { items, statementTotal } = await readItemsFromFile(file);
         setItems(items);
         renderItems();
         renderPreview();
         saveInvoice();
-        toast(items.length + " items imported.");
+        const check = showImportCheck($("importCheck"), statementTotal, getTotals().subtotal);
+        toast(items.length + " items imported." + (check.status === "mismatch" ? " Check the import: it does not match the statement's total." : ""));
       } catch (err) {
         toast(err.message);
       }
@@ -3308,12 +3654,12 @@ ${message}`));
     }
   };
   var libraryButton = (label, className, onClick) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = className;
-    button.textContent = label;
-    button.onclick = onClick;
-    return button;
+    const button2 = document.createElement("button");
+    button2.type = "button";
+    button2.className = className;
+    button2.textContent = label;
+    button2.onclick = onClick;
+    return button2;
   };
   function renderLibraryList(root, items, type) {
     if (!root) return;
@@ -3452,14 +3798,14 @@ This removes it from the saved Brand Library only. The current invoice will not 
   var UNASSIGNED_BUNDLE = "Unassigned";
   var STANDALONE_BUNDLE = "Standalone / No bundle found";
   function splitName(raw) {
-    const text = String(raw ?? "").trim();
-    if (!text) return { course: "", bundle: UNASSIGNED_BUNDLE };
-    const normalized = text.replace(/\r/g, "");
+    const text2 = String(raw ?? "").trim();
+    if (!text2) return { course: "", bundle: UNASSIGNED_BUNDLE };
+    const normalized = text2.replace(/\r/g, "");
     const match = normalized.match(/^([\s\S]*?)\s*\n\s*in\s+([\s\S]+)$/i);
     if (match) return { course: match[1].trim(), bundle: match[2].trim() };
     const fallback = normalized.match(/^([\s\S]*?)\s+in\s+(.+)$/i);
     if (fallback) return { course: fallback[1].trim(), bundle: fallback[2].trim() };
-    return { course: text, bundle: STANDALONE_BUNDLE };
+    return { course: text2, bundle: STANDALONE_BUNDLE };
   }
 
   // js/bundles/bundle-rows.js
@@ -3481,9 +3827,12 @@ This removes it from the saved Brand Library only. The current invoice will not 
     const qtyCol = col("Net Qty");
     const royaltyCol = col("Royalty");
     const out = [];
+    let lastProductRow = headerIndex;
     for (let i = headerIndex + 1; i < rows.length; i++) {
       const rawName = rows[i][nameCol];
       if (!String(rawName ?? "").trim()) continue;
+      if (isStatementTotalLabel(rawName)) break;
+      lastProductRow = i;
       const { course, bundle } = splitName(rawName);
       out.push({
         SKU: skuCol >= 0 ? rows[i][skuCol] : "",
@@ -3498,6 +3847,7 @@ This removes it from the saved Brand Library only. The current invoice will not 
     out.forEach((r) => {
       r.Decimal = decimal;
     });
+    out.statementTotal = findStatementTotal(rows, lastProductRow + 1, royaltyCol, decimal);
     return out;
   }
   function groupRows(rows) {
@@ -3597,10 +3947,10 @@ This removes it from the saved Brand Library only. The current invoice will not 
   // js/editor/bundles.js
   var VIEWS = { split: "split", summary: "summary" };
   var view = { rows: [], view: VIEWS.split, fileBase: "bundle_split" };
-  var setStatus = (text, kind = "") => {
+  var setStatus = (text2, kind = "") => {
     const el = $("bundleStatus");
     el.className = "bundle-status" + (kind ? " " + kind : "");
-    el.textContent = text;
+    el.textContent = text2;
   };
   var renderGrouped = (rows) => {
     const groups = groupRows(rows);
@@ -3677,7 +4027,14 @@ This removes it from the saved Brand Library only. The current invoice will not 
       view.fileBase = file.name.replace(/\.(xlsx|xls|csv)$/i, "") || "bundle_split";
       view.view = VIEWS.split;
       render();
-      setStatus(`${file.name} \u2014 names split and grouped by bundle.`, "ok");
+      const check = compareWithStatement(view.rows.statementTotal, getTotalPrice(getBundleSummary(view.rows)));
+      if (check.status === "mismatch") {
+        setStatus(`${file.name}: names split and grouped by bundle. The statement's "${check.statement.label}" row says ${money(check.statement.value)}, but the rows add up to ${money(check.imported)} (difference ${money(check.difference)}). Check for missing or misread rows.`, "error");
+      } else if (check.status === "match") {
+        setStatus(`${file.name}: names split and grouped by bundle. The rows add up to ${money(check.imported)}, matching the statement's "${check.statement.label}" row.`, "ok");
+      } else {
+        setStatus(`${file.name} \u2014 names split and grouped by bundle.`, "ok");
+      }
     } catch (err) {
       view.rows = [];
       render();
@@ -3777,6 +4134,399 @@ This removes it from the saved Brand Library only. The current invoice will not 
     });
   }
 
+  // js/storage/client-book.js
+  var CLIENT_FIELDS = {
+    name: "clientName",
+    contact: "clientContact",
+    tax: "clientTax",
+    address: "clientAddress",
+    email: "clientEmail"
+  };
+  var text = (v) => v === null || v === void 0 ? "" : String(v);
+  var cleanClient = (c) => c && typeof c === "object" && text(c.name).trim() ? {
+    id: typeof c.id === "string" && c.id ? c.id : crypto.randomUUID(),
+    name: text(c.name),
+    contact: text(c.contact),
+    tax: text(c.tax),
+    address: text(c.address),
+    email: text(c.email)
+  } : null;
+  function listClients() {
+    const list2 = readJSON(STORAGE_KEYS.clients, []);
+    return (Array.isArray(list2) ? list2 : []).map(cleanClient).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name, void 0, { sensitivity: "base" }));
+  }
+  var writeClients = (list2) => writeJSON(STORAGE_KEYS.clients, list2);
+  var clientKey = (name) => text(name).trim().toLowerCase();
+  function saveClient(details) {
+    const client = cleanClient(details);
+    if (!client) return { ok: false, updated: false };
+    const list2 = listClients();
+    const index = list2.findIndex((c) => clientKey(c.name) === clientKey(client.name));
+    if (index !== -1) list2[index] = { ...client, id: list2[index].id };
+    else list2.push(client);
+    return { ok: writeClients(list2), updated: index !== -1 };
+  }
+  function removeClient(id) {
+    return writeClients(listClients().filter((c) => c.id !== id));
+  }
+
+  // js/storage/backup.js
+  var BACKUP_FORMAT = "sa-invoice-generator-backup";
+  var nameKey = (v) => String(v ?? "").trim().toLowerCase();
+  var isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+  function buildBackup(now = /* @__PURE__ */ new Date()) {
+    const entries = listInvoices();
+    const allLogos = readLogos();
+    const logos = {};
+    const invoices = [];
+    for (const entry of entries) {
+      const record = readRecord(entry.id);
+      if (!record) continue;
+      if (record.logoRef && allLogos[record.logoRef]) logos[record.logoRef] = allLogos[record.logoRef];
+      const { id, ...summary } = entry;
+      invoices.push({ id: record.id || entry.id, updatedAt: record.updatedAt || entry.updatedAt, logoRef: record.logoRef || "", summary, data: record.data });
+    }
+    return {
+      format: BACKUP_FORMAT,
+      version: 1,
+      app: "SA Invoice Generator " + APP_VERSION,
+      exportedAt: now.toISOString(),
+      invoices,
+      logos,
+      clients: listClients(),
+      templates: listTemplates(),
+      brands: listBrands()
+    };
+  }
+  var backupFileName = (now = /* @__PURE__ */ new Date()) => `sa-invoice-generator-backup-${now.toISOString().slice(0, 10)}.json`;
+  function recordBackupMade(now = /* @__PURE__ */ new Date()) {
+    writeRaw(STORAGE_KEYS.lastBackupAt, now.toISOString());
+  }
+  function lastBackupAt() {
+    const value = readRaw(STORAGE_KEYS.lastBackupAt);
+    const date = value ? new Date(value) : null;
+    return date && !Number.isNaN(date.getTime()) ? date : null;
+  }
+  function backupIsDue(days, now = /* @__PURE__ */ new Date()) {
+    if (!listInvoices().length) return false;
+    const last = lastBackupAt();
+    return !last || (now - last) / 864e5 >= days;
+  }
+  function inspectBackup(data) {
+    if (!isObject(data) || data.format !== BACKUP_FORMAT) {
+      throw Error("This file is not an SA Invoice Generator backup. Nothing was changed.");
+    }
+    if (data.version !== 1) throw Error("This backup was made by a newer version of the app and cannot be restored here.");
+    const arr = (v) => Array.isArray(v) ? v : [];
+    return {
+      invoices: arr(data.invoices).length,
+      clients: arr(data.clients).length,
+      templates: arr(data.templates).length,
+      brands: arr(data.brands).length,
+      exportedAt: typeof data.exportedAt === "string" ? data.exportedAt : ""
+    };
+  }
+  function restoreBackup(data) {
+    inspectBackup(data);
+    const result = { added: 0, updated: 0, unchanged: 0, invalid: 0, clients: 0, templates: 0, brands: 0, failed: false, changedIds: [] };
+    const local = new Map(listInvoices().map((e) => [e.id, e]));
+    const logos = isObject(data.logos) ? data.logos : {};
+    for (const item of Array.isArray(data.invoices) ? data.invoices : []) {
+      if (!isObject(item) || !isInvoiceId(item.id)) {
+        result.invalid++;
+        continue;
+      }
+      let snapshot;
+      try {
+        ({ snapshot } = normalizeSnapshot(item.data));
+      } catch {
+        result.invalid++;
+        continue;
+      }
+      const updatedAt = typeof item.updatedAt === "string" && !Number.isNaN(new Date(item.updatedAt).getTime()) ? item.updatedAt : (/* @__PURE__ */ new Date(0)).toISOString();
+      const existing = local.get(item.id);
+      if (existing && existing.updatedAt >= updatedAt) {
+        result.unchanged++;
+        continue;
+      }
+      const logo = isSafeLogo(logos[item.logoRef]) ? logos[item.logoRef] : "";
+      const s = isObject(item.summary) ? item.summary : {};
+      const fields = snapshot.fields || {};
+      const summary = {
+        number: s.number ?? fields.invoiceNumber ?? "",
+        client: s.client ?? String(fields.clientName ?? "").split(/\r?\n/)[0],
+        invoiceDate: s.invoiceDate ?? fields.invoiceDate ?? "",
+        total: Number(s.total) || 0,
+        currency: s.currency ?? fields.currency ?? ""
+      };
+      if (!saveInvoiceRecord(item.id, { ...snapshot, logo }, summary, updatedAt).ok) {
+        result.failed = true;
+        return result;
+      }
+      if (existing) result.updated++;
+      else result.added++;
+      result.changedIds.push(item.id);
+    }
+    const clients = listClients();
+    const clientNames = new Set(clients.map((c) => clientKey(c.name)));
+    for (const raw of Array.isArray(data.clients) ? data.clients : []) {
+      const client = cleanClient(raw);
+      if (!client || clientNames.has(clientKey(client.name))) continue;
+      clients.push(client);
+      clientNames.add(clientKey(client.name));
+      result.clients++;
+    }
+    if (result.clients && !writeClients(clients)) {
+      result.failed = true;
+      return result;
+    }
+    const mergeNamed = (incoming, list2, write, counter) => {
+      const names = new Set(list2.map((x) => nameKey(x.name)));
+      for (const entry of Array.isArray(incoming) ? incoming : []) {
+        if (!isObject(entry) || !nameKey(entry.name) || !isObject(entry.data) || names.has(nameKey(entry.name))) continue;
+        const copy = JSON.parse(JSON.stringify({ name: String(entry.name).trim(), data: entry.data }));
+        if (copy.data.logo && !isSafeLogo(copy.data.logo)) copy.data.logo = "";
+        list2.push(copy);
+        names.add(nameKey(entry.name));
+        result[counter]++;
+      }
+      if (result[counter] && !write(list2)) result.failed = true;
+    };
+    mergeNamed(data.templates, listTemplates(), writeTemplates, "templates");
+    if (result.failed) return result;
+    mergeNamed(data.brands, listBrands(), writeBrands, "brands");
+    return result;
+  }
+
+  // js/editor/clients.js
+  function refreshClientPicker() {
+    const select = $("savedClients");
+    if (!select) return;
+    const clients = listClients();
+    const current = clientKey(fieldValue("clientName"));
+    select.textContent = "";
+    const placeholder = new Option(clients.length ? "Choose a saved client" : "No saved clients yet", "");
+    select.add(placeholder);
+    for (const c of clients) {
+      const option = new Option(c.name.split(/\r?\n/)[0], c.id);
+      option.selected = clientKey(c.name) === current;
+      select.add(option);
+    }
+    $("removeClientBtn").disabled = !select.value;
+  }
+  function applyClient(id) {
+    const client = listClients().find((c) => c.id === id);
+    if (!client) return;
+    for (const [prop, fieldId] of Object.entries(CLIENT_FIELDS)) $(fieldId).value = client[prop];
+    renderPreview();
+    saveInvoice();
+    toast("Client details filled in: " + client.name.split(/\r?\n/)[0]);
+  }
+  function initClientBook() {
+    const select = $("savedClients");
+    if (!select) return;
+    select.addEventListener("change", () => {
+      $("removeClientBtn").disabled = !select.value;
+      if (select.value) applyClient(select.value);
+    });
+    $("saveClientBtn").onclick = () => {
+      if (!trimmedField("clientName")) return toast("Enter the client company name first.");
+      const details = {};
+      for (const [prop, fieldId] of Object.entries(CLIENT_FIELDS)) details[prop] = fieldValue(fieldId).trim();
+      const { ok, updated } = saveClient(details);
+      if (!ok) return toast("The client could not be saved: browser storage is full or unavailable.");
+      refreshClientPicker();
+      toast(updated ? "Saved client updated." : "Client saved for later invoices.");
+    };
+    $("removeClientBtn").onclick = async () => {
+      const client = listClients().find((c) => c.id === select.value);
+      if (!client) return;
+      const ok = await confirmAction({
+        title: "Remove saved client?",
+        message: `"${client.name.split(/\r?\n/)[0]}" will be removed from saved clients. Invoices already made for this client are not changed.`,
+        confirmLabel: "Remove client",
+        danger: true
+      });
+      if (!ok) return;
+      if (!removeClient(client.id)) return toast("The client could not be removed.");
+      refreshClientPicker();
+      toast("Client removed.");
+    };
+    $("clientName").addEventListener("change", refreshClientPicker);
+    refreshClientPicker();
+  }
+
+  // js/editor/invoices.js
+  var button = (label, className, onClick, title = "") => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = className;
+    b.textContent = label;
+    if (title) b.title = title;
+    b.onclick = onClick;
+    return b;
+  };
+  function renderInvoiceList() {
+    const root = $("invoiceList");
+    if (!root) return;
+    const all = listInvoices();
+    const query = ($("invoiceSearch")?.value || "").trim().toLowerCase();
+    const shown = query ? all.filter((e) => e.number.toLowerCase().includes(query) || e.client.toLowerCase().includes(query)) : all;
+    $("invoiceCount").textContent = `${all.length} saved`;
+    root.textContent = "";
+    if (!shown.length) {
+      const empty = document.createElement("div");
+      empty.className = "invoice-empty";
+      empty.textContent = all.length ? "No saved invoice matches your search." : "No saved invoices yet. Your invoice is saved here as soon as you change it.";
+      root.appendChild(empty);
+      return;
+    }
+    for (const entry of shown) {
+      const current = entry.id === state.invoiceId;
+      const row = document.createElement("div");
+      row.className = "invoice-row" + (current ? " current" : "");
+      const main = document.createElement("div");
+      main.className = "invoice-main";
+      const number = document.createElement("div");
+      number.className = "invoice-number";
+      number.textContent = entry.number || "No number";
+      const sub = document.createElement("div");
+      sub.className = "invoice-sub";
+      sub.textContent = [entry.client || "No client", entry.invoiceDate ? dateFmt(entry.invoiceDate) : ""].filter(Boolean).join(", ");
+      main.append(number, sub);
+      const total = document.createElement("div");
+      total.className = "invoice-total";
+      total.textContent = money(entry.total, entry.currency || "GBP");
+      row.append(main, total);
+      if (current) {
+        const tag = document.createElement("span");
+        tag.className = "invoice-open-now";
+        tag.textContent = "Editing";
+        row.appendChild(tag);
+      } else {
+        row.appendChild(button("Open", "btn small", () => openInvoice(entry.id)));
+      }
+      row.appendChild(button("Delete", "btn small danger", () => confirmDelete(entry), "Delete this invoice"));
+      root.appendChild(row);
+    }
+  }
+  async function confirmDelete(entry) {
+    const ok = await confirmAction({
+      title: "Delete this invoice?",
+      message: `Invoice ${entry.number || "with no number"}${entry.client ? " for " + entry.client : ""} will be deleted from this browser. This cannot be undone unless you have a backup or an exported copy.`,
+      confirmLabel: "Delete invoice",
+      danger: true
+    });
+    if (!ok) return;
+    deleteInvoice(entry.id);
+    toast("Invoice deleted.");
+  }
+  function updateNumberWarning() {
+    const warning = $("invoiceNumberWarning");
+    if (!warning) return;
+    const others = invoicesWithNumber(trimmedField("invoiceNumber"), state.invoiceId);
+    warning.hidden = !others.length;
+    if (others.length) {
+      warning.textContent = `Another saved invoice already uses this number${others[0].client ? " (" + others[0].client + ")" : ""}.`;
+    }
+  }
+  function updateBackupHints() {
+    const last = lastBackupAt();
+    $("lastBackupHint").textContent = last ? "Last backup: " + dateFmt(last.toISOString().slice(0, 10)) : "No backup yet";
+    const due = backupIsDue(BACKUP_REMINDER_DAYS);
+    $("backupReminder").hidden = !due;
+    if (due) {
+      $("backupReminderText").textContent = last ? `Your last full backup was on ${dateFmt(last.toISOString().slice(0, 10))}. Back up regularly: clearing browser data deletes your invoices.` : "You have not made a full backup yet. Clearing browser data deletes your invoices.";
+    }
+  }
+  function backUpEverything() {
+    flushInvoiceSave();
+    const backup = buildBackup();
+    download(backupFileName(), JSON.stringify(backup, null, 1));
+    recordBackupMade();
+    updateBackupHints();
+    toast(`Backup downloaded: ${backup.invoices.length} invoice${backup.invoices.length === 1 ? "" : "s"}. Keep the file somewhere safe, such as another drive.`);
+  }
+  async function restoreFromFile(file) {
+    if (!file) return;
+    let data;
+    try {
+      data = JSON.parse(await file.text());
+    } catch {
+      return toast(`"${file.name}" is not a backup file. Nothing was changed.`);
+    }
+    let summary;
+    try {
+      summary = inspectBackup(data);
+    } catch (err) {
+      return toast(err.message);
+    }
+    const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+    const ok = await confirmAction({
+      title: "Restore from backup?",
+      message: `This backup${summary.exportedAt ? " from " + dateFmt(summary.exportedAt.slice(0, 10)) : ""} holds ${plural(summary.invoices, "invoice")}, ${plural(summary.clients, "client")}, ${plural(summary.templates, "template")} and ${plural(summary.brands, "brand")}. They are added to what is here; nothing is deleted. Where the same invoice is in both, the copy changed most recently is kept.`,
+      confirmLabel: "Restore"
+    });
+    if (!ok) return;
+    flushInvoiceSave();
+    const result = restoreBackup(data);
+    if (result.changedIds.includes(state.invoiceId)) {
+      const snapshot = loadSavedInvoice(state.invoiceId);
+      if (snapshot) {
+        applySnapshot({ ...snapshot, zoom: state.zoom }, { persist: false });
+        resetHistory();
+      }
+    }
+    refreshLibraries();
+    refreshClientPicker();
+    notifyDocumentsChanged();
+    updateBackupHints();
+    const parts = [];
+    if (result.added) parts.push(`${result.added} invoice${result.added === 1 ? "" : "s"} added`);
+    if (result.updated) parts.push(`${result.updated} updated to a newer copy`);
+    if (result.clients) parts.push(plural(result.clients, "client") + " added");
+    if (result.templates) parts.push(plural(result.templates, "template") + " added");
+    if (result.brands) parts.push(plural(result.brands, "brand") + " added");
+    if (result.invalid) parts.push(`${result.invalid} damaged invoice${result.invalid === 1 ? " was" : "s were"} skipped`);
+    let message = parts.length ? "Restored: " + parts.join(", ") + "." : "Nothing new to restore: everything in the backup is already here.";
+    if (result.failed) message = "The restore stopped because browser storage is full. " + (parts.length ? "Done so far: " + parts.join(", ") + "." : "");
+    toast(message);
+  }
+  function initInvoiceList() {
+    $("newInvoiceBtn").onclick = () => newInvoice();
+    $("blankInvoiceBtn").onclick = () => newInvoice({ blank: true });
+    $("duplicateInvoiceBtn").onclick = duplicateInvoice;
+    $("invoiceSearch").addEventListener("input", renderInvoiceList);
+    $("backupBtn").onclick = backUpEverything;
+    $("backupNowBtn").onclick = backUpEverything;
+    $("restoreBtn").onclick = () => $("restoreFile").click();
+    $("restoreFile").onchange = (e) => {
+      const file = e.target.files[0];
+      e.target.value = "";
+      restoreFromFile(file);
+    };
+    $("invoiceNumber").addEventListener("input", updateNumberWarning);
+    let pending = null;
+    const scheduleRender = () => {
+      if (pending) return;
+      pending = setTimeout(() => {
+        pending = null;
+        renderInvoiceList();
+        updateNumberWarning();
+      }, 400);
+    };
+    onDocumentsChange(() => {
+      renderInvoiceList();
+      updateNumberWarning();
+      updateBackupHints();
+      refreshClientPicker();
+    });
+    onInvoiceWritten(scheduleRender);
+    renderInvoiceList();
+    updateNumberWarning();
+    updateBackupHints();
+  }
+
   // js/compat.js
   function installCompatibilityGlobals() {
     window.loadInvoiceTemplate = loadTemplate;
@@ -3799,77 +4549,79 @@ This removes it from the saved Brand Library only. The current invoice will not 
   // js/storage/tab-sync.js
   var lastKnown = null;
   var asking = false;
-  function sameInvoice(a, b) {
+  function sameRecord(a, b) {
     if (a === b) return true;
     if (a === null || b === null) return false;
     try {
-      const strip = (text) => {
-        const data = JSON.parse(text);
-        if (data && typeof data === "object") delete data.zoom;
-        return JSON.stringify(data);
+      const strip = (text2) => {
+        const record = JSON.parse(text2);
+        delete record.updatedAt;
+        if (record.data) delete record.data.zoom;
+        return JSON.stringify(record);
       };
       return strip(a) === strip(b);
     } catch {
       return false;
     }
   }
-  async function askWhichVersion() {
+  async function ask() {
     const dialog = $("appConfirmDialog");
-    if (dialog?.open) {
-      await new Promise((resolve) => dialog.addEventListener("close", resolve, { once: true }));
-    }
-    const stored = readRaw(STORAGE_KEYS.invoice);
-    if (sameInvoice(stored, lastKnown)) {
+    if (dialog?.open) await new Promise((resolve) => dialog.addEventListener("close", resolve, { once: true }));
+    const id = state.invoiceId;
+    const stored = readRecordText(id);
+    if (sameRecord(stored, lastKnown)) {
       asking = false;
       holdInvoiceWrites(false);
       return;
     }
-    const wasReset = stored === null;
+    const deleted = stored === null;
     const loadOther = await confirmAction({
-      title: "Invoice changed in another tab",
-      message: (wasReset ? "The invoice was reset in another tab or window of SA Invoice Generator. " : "This invoice was also edited in another tab or window of SA Invoice Generator. ") + "Load that version here, or keep this tab's version and save it over the other one?",
-      confirmLabel: wasReset ? "Start the new invoice" : "Load the other version",
-      cancelLabel: "Keep this version"
+      title: deleted ? "Invoice deleted in another tab" : "Invoice changed in another tab",
+      message: deleted ? "This invoice was deleted in another tab or window of SA Invoice Generator. Keep it (it will be saved again), or close it?" : "This invoice was also edited in another tab or window of SA Invoice Generator. Load that version here, or keep this tab's version and save it over the other one?",
+      confirmLabel: deleted ? "Close it" : "Load the other version",
+      cancelLabel: deleted ? "Keep it" : "Keep this version"
     });
     asking = false;
     holdInvoiceWrites(false);
     if (!loadOther) {
       writeInvoiceNow();
-      toast("This tab's invoice was saved.");
+      notifyDocumentsChanged();
+      toast(deleted ? "The invoice was saved again." : "This tab's version was saved.");
       return;
     }
-    if (wasReset) {
-      holdInvoiceWrites(true);
-      location.reload();
+    if (deleted) {
+      deleteInvoice(id);
       return;
     }
-    try {
-      const latest = readRaw(STORAGE_KEYS.invoice);
-      applySnapshot(JSON.parse(latest));
-      lastKnown = latest;
-      toast("Loaded the version from the other tab. Use Undo to go back.");
-    } catch {
-      toast("The other tab's invoice could not be read. This tab's version was kept.");
+    const snapshot = loadSavedInvoice(id);
+    if (!snapshot) {
+      toast("The other version could not be read. This tab's version was kept.");
       writeInvoiceNow();
+      return;
     }
+    applySnapshot({ ...snapshot, zoom: state.zoom }, { persist: false });
+    lastKnown = readRecordText(id);
+    resetHistory();
+    notifyDocumentsChanged();
+    toast("Loaded the version saved in the other tab.");
   }
   function initTabSync() {
-    lastKnown = readRaw(STORAGE_KEYS.invoice);
-    onInvoiceWritten((text) => {
-      lastKnown = text;
+    lastKnown = readRecordText(state.invoiceId);
+    onInvoiceWritten((_text, recordText) => {
+      if (recordText) lastKnown = recordText;
     });
     window.addEventListener("storage", (event) => {
       if (event.storageArea !== localStorage) return;
-      if (event.key === STORAGE_KEYS.templates || event.key === STORAGE_KEYS.brands) {
-        refreshLibraries();
-        return;
-      }
-      if (event.key !== STORAGE_KEYS.invoice && event.key !== null) return;
-      if (sameInvoice(event.newValue, lastKnown)) return;
+      const key = event.key;
+      if (key === STORAGE_KEYS.templates || key === STORAGE_KEYS.brands) return refreshLibraries();
+      if (key === STORAGE_KEYS.clients) return refreshClientPicker();
+      if (key === STORAGE_KEYS.invoiceIndex) return notifyDocumentsChanged();
+      if (key !== recordKey(state.invoiceId) && key !== null) return;
+      if (sameRecord(key === null ? null : event.newValue, lastKnown)) return;
       if (asking) return;
       asking = true;
       holdInvoiceWrites(true);
-      askWhichVersion();
+      ask();
     });
   }
 
@@ -3891,20 +4643,8 @@ This removes it from the saved Brand Library only. The current invoice will not 
     setAccent(DEFAULT_ACCENT);
   }
   function restoreAutosave() {
-    const { data, corrupt, backedUp } = readInvoiceAutosave();
-    if (corrupt) {
-      toast(backedUp ? "The saved invoice could not be read. A copy was kept in browser storage; a new invoice was started." : "The saved invoice could not be read, and there was no room to keep a copy.");
-      return;
-    }
-    if (!data) return;
-    try {
-      const warnings = applySnapshot(data, { persist: false });
-      if (warnings.length) toast("Your saved invoice was opened with corrections: " + warnings.join(" "));
-    } catch (err) {
-      console.error("[SA Invoice Generator] the autosaved invoice could not be restored:", err);
-      const kept = backupUnreadableInvoice();
-      toast(kept ? "The saved invoice could not be restored. A copy was kept in browser storage." : "The saved invoice could not be restored.");
-    }
+    const messages = restoreAtStartup();
+    if (messages.length) toast(messages.join(" "));
   }
   function checkVersion() {
     const pageVersion = document.querySelector('meta[name="sa-app-version"]')?.content;
@@ -3927,6 +4667,7 @@ This removes it from the saved Brand Library only. The current invoice will not 
     step("bundle tools", initBundleTools);
     step("defaults", seedDefaults);
     step("first render", renderAll);
+    step("blank defaults", captureBlankDefaults);
     step("restore autosave", restoreAutosave);
     step("history", () => configureHistory({
       capture: serialize,
@@ -3934,6 +4675,8 @@ This removes it from the saved Brand Library only. The current invoice will not 
     }));
     step("history controls", initHistoryControls);
     step("libraries", refreshLibraries);
+    step("saved invoices", initInvoiceList);
+    step("client book", initClientBook);
     step("tab sync", initTabSync);
     step("version check", checkVersion);
     step("compatibility globals", installCompatibilityGlobals);

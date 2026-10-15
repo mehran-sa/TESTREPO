@@ -20,7 +20,7 @@ export default {
   cssClass: "template-classic",
   fontStack: "Arial / Liberation Sans",
   labels: {
-    title: "Invoice", bill: "Bill To", status: "Status", balance: "Balance Due",
+    title: "Invoice", bill: "Bill To", balance: "Balance Due",
     note: "Notes", payment: "Payment Details:", terms: "Terms",
     date: "Date", due: "Due Date", ref: "Reference"
   },

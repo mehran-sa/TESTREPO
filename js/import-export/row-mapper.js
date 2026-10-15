@@ -9,6 +9,7 @@
 import { num, parseAmount, detectDecimalSeparator } from "../utils.js";
 import { NUMERIC_COLUMN_TYPES, FIXED_AMOUNT_KEY } from "../constants.js";
 import { state, roleCol } from "../state.js";
+import { findStatementTotal } from "./statement-total.js";
 
 /** Loose comparison key for header matching. */
 export function norm(value) {
@@ -63,9 +64,14 @@ const isStopRow = row => {
 const isBlankRow = row => row.every(v => String(v ?? "").trim() === "");
 
 /** Data rows between the header and the first footer / trailing blank row. */
-export const collectDataRows = rows => {
+export const collectDataRows = rows => dataRowRange(rows).rows;
+
+/** The data rows plus the index (within `rows`) where the data stopped. */
+export const dataRowRange = rows => {
   const clean = [];
-  for (const row of rows) {
+  let i = 0;
+  for (; i < rows.length; i++) {
+    const row = rows[i];
     if (isStopRow(row)) break;
     if (isBlankRow(row)) {
       // Blank rows before any data are padding; a blank row after data ends it.
@@ -74,7 +80,7 @@ export const collectDataRows = rows => {
     }
     clean.push(row);
   }
-  return clean;
+  return { rows: clean, end: i };
 };
 
 /**
@@ -82,11 +88,20 @@ export const collectDataRows = rows => {
  * @returns {Array<Record<string, string|number>>}
  */
 export function mapRows(rows) {
-  if (!rows.length) return [];
+  return readStatementRows(rows).items;
+}
+
+/**
+ * Maps rows onto line items and also reads the statement's own total row.
+ * @returns {{items: Array<Record<string, string|number>>, statementTotal: {label: string, value: number}|null}}
+ */
+export function readStatementRows(rows) {
+  if (!rows.length) return { items: [], statementTotal: null };
 
   const headerIndex = findHeaderRowIndex(rows);
   const headers = rows[headerIndex].map(h => String(h ?? "").trim());
-  const dataRows = collectDataRows(rows.slice(headerIndex + 1));
+  const range = dataRowRange(rows.slice(headerIndex + 1));
+  const dataRows = range.rows;
 
   // Which sheet column (by index) feeds each invoice column. The first header
   // that matches wins, as before.
@@ -100,7 +115,12 @@ export function mapRows(rows) {
   const numeric = mapping.filter(m => NUMERIC_COLUMN_TYPES.includes(m.col.type));
   const decimal = detectDecimalSeparator(dataRows.flatMap(row => numeric.map(m => row[m.index])));
 
-  return dataRows.map(row => {
+  const amountIndex = mapping.find(m => m.col.role === "amount")?.index ?? -1;
+  // Searched only below the data, so a line item named "Total ..." is never
+  // mistaken for the statement's total.
+  const statementTotal = findStatementTotal(rows, headerIndex + 1 + range.end, amountIndex, decimal);
+
+  const items = dataRows.map(row => {
     const item = {};
     mapping.forEach(({ col, index }) => {
       let value = row[index];
@@ -145,4 +165,5 @@ export function mapRows(rows) {
 
     return item;
   }).filter(Boolean);
+  return { items, statementTotal };
 }

@@ -79,7 +79,10 @@ export function serialize() {
     columns: state.columns,
     items: state.items,
     sections: state.sections,
-    fields
+    fields,
+    // Which saved invoice this is. Ignored when a snapshot is applied (see
+    // session.applySnapshot); read only when the autosave is restored.
+    invoiceId: state.invoiceId
   };
 }
 

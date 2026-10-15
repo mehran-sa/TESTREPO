@@ -121,6 +121,17 @@ export function configureHistory({ capture: captureFn, restore: restoreFn, onCha
   notify();
 }
 
+/**
+ * Starts a fresh history from the current state. Used when a different saved
+ * invoice is opened, so Undo never steps back into another invoice.
+ */
+export function resetHistory() {
+  if (!capture) return;
+  cancelPending();
+  stack.init(clone(capture()));
+  notify();
+}
+
 /** Lets the UI subscribe to button-enabled state. */
 export function onHistoryChange(fn) {
   listener = fn;

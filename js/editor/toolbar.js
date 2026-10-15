@@ -5,12 +5,35 @@ import { printInvoice, exportInvoicePDF } from "../print/pdf.js";
 import { exportInvoiceJSON, readInvoiceFile } from "../import-export/json.js";
 import { readItemsFromFile } from "../import-export/spreadsheet.js";
 import { setItems } from "../state.js";
-import { applySnapshot, renderAll } from "../session.js";
+import { renderAll } from "../session.js";
 import { confirmAction } from "../ui/confirm-dialog.js";
 import { resetInvoiceContent } from "../invoice/reset-text.js";
 import { renderItems } from "./items.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
-import { saveInvoice, clearInvoice } from "../storage/invoice-storage.js";
+import { saveInvoice } from "../storage/invoice-storage.js";
+import { importAsNewInvoice, newInvoice } from "../documents.js";
+import { compareWithStatement } from "../import-export/statement-total.js";
+import { getTotals } from "../invoice/calculations.js";
+import { money } from "../invoice/formatters.js";
+
+/**
+ * Shows how the imported lines compare with the statement's own total.
+ * @returns the comparison
+ */
+export function showImportCheck(el, statementTotal, importedTotal) {
+  const check = compareWithStatement(statementTotal, importedTotal);
+  if (!el) return check;
+  el.hidden = false;
+  el.className = "import-check " + (check.status === "mismatch" ? "warn" : check.status === "match" ? "ok" : "");
+  if (check.status === "match") {
+    el.textContent = `The imported lines add up to ${money(check.imported)}, matching the statement's "${check.statement.label}" row.`;
+  } else if (check.status === "mismatch") {
+    el.textContent = `The statement's "${check.statement.label}" row says ${money(check.statement.value)}, but the imported lines add up to ${money(check.imported)} (difference ${money(check.difference)}). Check for missing or misread rows, or a currency conversion on the statement.`;
+  } else {
+    el.textContent = `The imported lines add up to ${money(check.imported)}. No total row was found on the statement to check against.`;
+  }
+  return check;
+}
 
 export function initToolbar() {
   $("printBtn").onclick = () => { printInvoice(); };
@@ -23,10 +46,11 @@ export function initToolbar() {
     e.target.value = "";
     if (!file) return;
     try {
-      const warnings = applySnapshot(await readInvoiceFile(file));
+      // Opened as a new saved invoice: nothing already saved is replaced.
+      const warnings = importAsNewInvoice(await readInvoiceFile(file));
       toast(warnings.length
-        ? "Invoice imported with corrections: " + warnings.join(" ")
-        : "Invoice imported. Use Undo to return to the previous invoice.");
+        ? "Invoice imported as a new saved invoice, with corrections: " + warnings.join(" ")
+        : "Invoice imported as a new saved invoice. Your other invoices are unchanged.");
     } catch (err) {
       toast(err.message);
     }
@@ -52,11 +76,9 @@ export function initToolbar() {
       : "There was nothing to reset.");
   };
 
-  $("resetBtn").onclick = () => {
-    if (!confirm("Reset the app and delete the locally saved invoice?")) return;
-    clearInvoice();
-    location.reload();
-  };
+  // "New invoice" (this button was "Reset" before 2.2.0). Nothing is deleted:
+  // the current invoice stays in the saved invoices list.
+  $("resetBtn").onclick = () => newInvoice();
 
   $("importSheetBtn").onclick = () => $("sheetFile").click();
   $("sheetFile").onchange = async e => {
@@ -64,12 +86,13 @@ export function initToolbar() {
     if (!file) return;
     toast("Reading " + file.name + "\u2026");
     try {
-      const items = await readItemsFromFile(file);
+      const { items, statementTotal } = await readItemsFromFile(file);
       setItems(items);
       renderItems();
       renderPreview();
       saveInvoice();
-      toast(items.length + " items imported.");
+      const check = showImportCheck($("importCheck"), statementTotal, getTotals().subtotal);
+      toast(items.length + " items imported." + (check.status === "mismatch" ? " Check the import: it does not match the statement's total." : ""));
     } catch (err) {
       toast(err.message);
     }

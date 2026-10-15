@@ -4,7 +4,7 @@
  * Clears user-entered text and returns the invoice date to today, its normal
  * default. It deliberately leaves alone everything that
  * is configuration rather than content: template selection, columns, section
- * toggles, currency, dates, status, discount/tax/shipping rates, accent colour,
+ * toggles, currency, dates, discount/tax/shipping rates, accent colour,
  * logo and its sizing, and both saved libraries. Nothing is removed from
  * localStorage - the autosave is simply rewritten with the cleared invoice.
  *
@@ -22,7 +22,7 @@ import { state } from "../state.js";
  * Not included, deliberately:
  *   invoiceNumber - an identifier rather than prose, and the app's own default.
  *                   Move it into this list if you want it cleared too.
- *   status, currency, invoiceDate, dueDate, discount, tax, shipping - not text.
+ *   currency, invoiceDate, dueDate, discount, tax, shipping - not text.
  */
 export const TEXT_FIELD_IDS = [
   "companyName", "companyReg", "companyVat", "companyAddress",

@@ -19,6 +19,7 @@
 
 import { splitName } from "./name-splitter.js";
 import { parseAmount, detectDecimalSeparator } from "../utils.js";
+import { findStatementTotal, isStatementTotalLabel } from "../import-export/statement-total.js";
 
 /** How many leading rows are searched for the header. */
 const HEADER_SEARCH_DEPTH = 40;
@@ -50,10 +51,15 @@ export function extractBundleRows(rows) {
   const royaltyCol = col("Royalty");
 
   const out = [];
+  let lastProductRow = headerIndex;
   for (let i = headerIndex + 1; i < rows.length; i++) {
     const rawName = rows[i][nameCol];
     if (!String(rawName ?? "").trim()) continue;
+    // A total row whose label sits in the Name column ends the products; it
+    // used to be read as a course called "Total royalty".
+    if (isStatementTotalLabel(rawName)) break;
 
+    lastProductRow = i;
     const { course, bundle } = splitName(rawName);
     out.push({
       SKU: skuCol >= 0 ? rows[i][skuCol] : "",
@@ -70,6 +76,8 @@ export function extractBundleRows(rows) {
   // sheet's unambiguous amounts.
   const decimal = detectDecimalSeparator(out.flatMap(r => [r.NetQty, r.Royalty]));
   out.forEach(r => { r.Decimal = decimal; });
+  // The statement's own total, searched below the last product row only.
+  out.statementTotal = findStatementTotal(rows, lastProductRow + 1, royaltyCol, decimal);
   return out;
 }
 

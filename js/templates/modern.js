@@ -13,7 +13,7 @@ export default {
   cssClass: "template-modern",
   fontStack: "Inter / Segoe UI / Arial",
   labels: {
-    title: "INVOICE", bill: "Bill to", status: "Invoice status", balance: "Balance due",
+    title: "INVOICE", bill: "Bill to", balance: "Balance due",
     note: "Invoice note", payment: "Payment details", terms: "Terms",
     date: "Invoice date", due: "Due date", ref: "Reference"
   },

@@ -2,17 +2,18 @@
 
 import { parseCSV } from "./csv.js";
 import { readWorkbookRows } from "./xlsx.js";
-import { mapRows } from "./row-mapper.js";
+import { readStatementRows } from "./row-mapper.js";
 
 const isCSV = file => file.name.toLowerCase().endsWith(".csv");
 
 /**
- * Reads a CSV/XLSX/XLS file into line items.
+ * Reads a CSV/XLSX/XLS file into line items, plus the statement's own total
+ * row when it has one (for the import check).
  * Throws with a user-facing message when nothing usable is found.
  */
 export async function readItemsFromFile(file) {
   const rows = isCSV(file) ? parseCSV(await file.text()) : await readWorkbookRows(file);
-  const items = mapRows(rows);
+  const { items, statementTotal } = readStatementRows(rows);
   if (!items.length) throw Error("No usable invoice rows were found.");
-  return items;
+  return { items, statementTotal };
 }

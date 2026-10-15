@@ -7,7 +7,7 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.1.0";
+export const APP_VERSION = "2.2.0";
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
@@ -23,8 +23,20 @@ export const STORAGE_KEYS = {
   invoiceBackup: "invoiceStudioPro.v2.unreadableBackup",
   templates: "invoiceStudio.templates.v1",
   brands: "invoiceStudio.brands.v1",
-  sidebarWidth: "invoiceStudio.sidebarWidth"
+  sidebarWidth: "invoiceStudio.sidebarWidth",
+  /* Added in 2.2.0: the saved-invoices library, logos shared by those
+     invoices, the client address book and the last full backup time. */
+  invoiceIndex: "invoiceStudio.invoiceIndex.v1",
+  invoiceRecordPrefix: "invoiceStudio.invoice.",
+  logos: "invoiceStudio.logos.v1",
+  /** Keys present in the logos map: small, so it can be checked on every save. */
+  logoIndex: "invoiceStudio.logoIndex.v1",
+  clients: "invoiceStudio.clients.v1",
+  lastBackupAt: "invoiceStudio.lastBackupAt"
 };
+
+/** Days without a full backup before the app suggests making one. */
+export const BACKUP_REMINDER_DAYS = 30;
 
 /** Bounds applied to user-controlled numeric input. */
 export const LIMITS = {
@@ -78,15 +90,19 @@ export const NUMERIC_COLUMN_TYPES = ["number", "currency", "percentage"];
 
 /** Toggleable invoice sections: [key, editor label]. Keys match data-section. */
 export const SECTION_DEFS = [
-  ["logo", "Logo"], ["company", "Company details"], ["client", "Client details"], ["status", "Invoice status"],
+  ["logo", "Logo"], ["company", "Company details"], ["client", "Client details"],
   ["invoiceDate", "Invoice date"], ["dueDate", "Due date"], ["reference", "Reference / PO"], ["balance", "Balance due"],
   ["notes", "Notes"], ["discount", "Discount"], ["tax", "Tax"], ["shipping", "Shipping"], ["payment", "Payment details"],
   ["terms", "Terms"], ["footer", "Footer"]
 ];
 
-/** Form controls whose values are persisted and restored verbatim. */
+/**
+ * Form controls whose values are persisted and restored verbatim.
+ * Invoice status was removed in 2.2.0; a "status" value in older saved data or
+ * files is ignored.
+ */
 export const FIELD_IDS = [
-  "logoWidth", "logoHeight", "logoFit", "logoAlign", "invoiceNumber", "status", "invoiceDate", "dueDate",
+  "logoWidth", "logoHeight", "logoFit", "logoAlign", "invoiceNumber", "invoiceDate", "dueDate",
   "currency", "reference", "companyName", "companyReg", "companyVat", "companyAddress", "companyPhone",
   "companyEmail", "companyWebsite", "clientName", "clientContact", "clientTax", "clientAddress", "clientEmail",
   "discount", "tax", "shipping", "notes", "paymentDetails", "terms", "template", "accent", "accentHex"
@@ -104,17 +120,6 @@ export const LEGACY_BRAND_COMPANY_FIELDS = {
   companyName: "name", companyReg: "reg", companyVat: "vat", companyAddress: "address",
   companyPhone: "phone", companyEmail: "email", companyWebsite: "website"
 };
-
-/** Status pill colours: [text, background, border]. */
-export const STATUS_STYLES = {
-  Draft: ["#475467", "#f2f4f7", "#d0d5dd"],
-  Due: ["#18794e", "#ecfdf3", "#abefc6"],
-  Paid: ["#175cd3", "#eff8ff", "#b2ddff"],
-  "Partially Paid": ["#9a6700", "#fffaeb", "#fedf89"],
-  Overdue: ["#b42318", "#fef3f2", "#fecdca"],
-  Cancelled: ["#667085", "#f2f4f7", "#d0d5dd"]
-};
-export const STATUS_STYLE_FALLBACK = ["#475467", "#f2f4f7", "#d0d5dd"];
 
 export const COMPANY_META_FALLBACK = "Add your company details";
 export const CLIENT_META_FALLBACK = "Add client details";

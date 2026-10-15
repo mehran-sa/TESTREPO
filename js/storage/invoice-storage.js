@@ -7,7 +7,10 @@ import { STORAGE_KEYS, AUTOSAVE_TYPING_DELAY_MS } from "../constants.js";
 import { readRaw, writeRaw, remove } from "./local-storage.js";
 import { serialize } from "../invoice/invoice-data.js";
 import { recordChange } from "../history/invoice-history.js";
-import { toast } from "../utils.js";
+import { toast, trimmedField, fieldValue } from "../utils.js";
+import { state } from "../state.js";
+import { getTotals } from "../invoice/calculations.js";
+import { saveInvoiceRecord, isInvoiceId, readRecordText } from "./invoice-library.js";
 
 /** Whether the previous autosave succeeded; used to report a failure once. */
 let lastSaveOk = true;
@@ -23,20 +26,44 @@ const writeListeners = new Set();
 
 export const onInvoiceWritten = fn => { writeListeners.add(fn); };
 
-function writeNow() {
+function writeNow({ record = true } = {}) {
   if (pendingWrite !== null) {
     clearTimeout(pendingWrite);
     pendingWrite = null;
   }
   if (writesStopped || writesHeld) return true;
-  const text = JSON.stringify(serialize());
-  const stored = writeRaw(STORAGE_KEYS.invoice, text);
+  const snapshot = serialize();
+  const text = JSON.stringify(snapshot);
+  let stored = writeRaw(STORAGE_KEYS.invoice, text);
+  // The same invoice is kept up to date in the saved-invoices library.
+  let recordText = null;
+  if (stored && isInvoiceId(state.invoiceId)) {
+    if (record) {
+      const saved = saveInvoiceRecord(state.invoiceId, snapshot, invoiceSummary());
+      stored = saved.ok;
+      recordText = saved.text || null;
+    } else {
+      // Only the "open invoice" pointer changed; the saved record is as read.
+      recordText = readRecordText(state.invoiceId);
+    }
+  }
   if (!stored && lastSaveOk) {
     toast("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
   }
   lastSaveOk = stored;
-  if (stored) writeListeners.forEach(fn => fn(text));
+  if (stored) writeListeners.forEach(fn => fn(text, recordText));
   return stored;
+}
+
+/** What the saved-invoices list shows for the current invoice. */
+export function invoiceSummary() {
+  return {
+    number: trimmedField("invoiceNumber"),
+    client: trimmedField("clientName").split(/\r?\n/)[0] || "",
+    invoiceDate: fieldValue("invoiceDate"),
+    total: getTotals().total,
+    currency: fieldValue("currency")
+  };
 }
 
 /** Holds or releases autosave writes; see js/storage/tab-sync.js. */
@@ -44,9 +71,13 @@ export function holdInvoiceWrites(hold) {
   writesHeld = Boolean(hold);
 }
 
-/** Writes the current invoice now, replacing whatever is stored. */
-export function writeInvoiceNow() {
-  return writeNow();
+/**
+ * Writes the current invoice now, replacing whatever is stored.
+ * @param {{record?: boolean}} [options] record: false updates only which
+ *        invoice is open, without re-saving (and re-dating) its record.
+ */
+export function writeInvoiceNow(options) {
+  return writeNow(options);
 }
 
 /** Writes any pending typing edit immediately. */
@@ -87,7 +118,7 @@ export function saveInvoice(options) {
     // Keystrokes are written once typing pauses, not on every key: serialising
     // the invoice (logo included) per keystroke made typing lag.
     if (pendingWrite !== null) clearTimeout(pendingWrite);
-    pendingWrite = setTimeout(writeNow, AUTOSAVE_TYPING_DELAY_MS);
+    pendingWrite = setTimeout(() => writeNow(), AUTOSAVE_TYPING_DELAY_MS);
   } else {
     stored = writeNow();
   }

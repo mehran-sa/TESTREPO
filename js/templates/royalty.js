@@ -17,7 +17,7 @@ export default {
   cssClass: "template-royalty",
   fontStack: "Calibri Regular + Bold",
   labels: {
-    title: "INVOICE", bill: "To:", status: "Status:", balance: "Balance Due:",
+    title: "INVOICE", bill: "To:", balance: "Balance Due:",
     note: "Invoice Note:", payment: "Payment Details:", terms: "Terms:",
     date: "Date:", due: "Due Date:", ref: "Reference:"
   },

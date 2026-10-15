@@ -103,7 +103,9 @@ BUNDLE_XLSX = write("bundles.xlsx", xlsx([
     ["SKU", "Name", "Net Qty", "Royalty"],
     ["1", "Alpha course\n in Mega Bundle", 3, 12.25],
     ["2", "Beta course\n in Mega Bundle", 1, 7.75],
-    ["3", "Gamma course\n in Small Bundle", 2, 5]]), "wb")
+    ["3", "Gamma course\n in Small Bundle", 2, 5],
+    ["", "Total royalty", "", 25]]), "wb")
+MISMATCH_CSV = write("mismatch.csv", "Name,Royalty\nCourse A,10\nCourse B,5\n\nTotal royalty,20\n")
 CSV = write("items.csv", 'SKU,Description,Qty,Rate\nA1,"Widget, large",2,"1,234.50"\nA2,Gadget,1,£99.99\n')
 NOT_INVOICE = write("package.json", json.dumps({"name": "something-else", "version": "1.0.0"}))
 BROKEN = write("broken.json", "{oops")
@@ -310,7 +312,8 @@ try:
         p2.goto(URL); p2.wait_for_timeout(300)
         p2.set_input_files("#jsonFile", json_path); p2.wait_for_timeout(300)
         imported = p2.evaluate(f"() => JSON.parse(JSON.stringify({S}.serialize()))")
-        strip = lambda s: {k: v for k, v in s.items() if k != "zoom"}
+        # The imported copy is a new saved invoice, so its id differs.
+        strip = lambda s: {k: v for k, v in s.items() if k not in ("zoom", "invoiceId")}
         check("JSON import reproduces the exported invoice exactly", strip(imported) == strip(exported))
         check("imported totals match", p2.text_content("#pTotal") == total())
         for path, label in [(BROKEN, "broken JSON"), (NOT_INVOICE, "non-invoice JSON")]:
@@ -331,14 +334,23 @@ try:
         page.set_input_files("#sheetFile", ITEMS_XLSX); page.wait_for_timeout(1200)
         check("Excel parser stays in its worker (no XLSX object in the page)",
               page.evaluate("() => typeof window.XLSX") == "undefined")
+        check("statement check: imported lines match the statement total",
+              "matching the statement" in page.text_content("#importCheck")
+              and "ok" in page.get_attribute("#importCheck", "class"))
         check("XLSX import (local SheetJS) skips preamble and footer rows",
               page.locator(".itemcard").count() == 2 and page.text_content("#pSubtotal") == "£40.49",
               page.text_content("#pSubtotal"))
 
+        page.set_input_files("#sheetFile", MISMATCH_CSV); page.wait_for_timeout(300)
+        check("statement check: a missing row is flagged with the difference",
+              "warn" in page.get_attribute("#importCheck", "class") and "£20.00" in page.text_content("#importCheck")
+              and "£15.00" in page.text_content("#importCheck"), page.text_content("#importCheck"))
+
         # ---- bundle splitter
         page.click("[data-tab=bundles]")
         page.set_input_files("#bundleFile", BUNDLE_XLSX); page.wait_for_timeout(800)
-        check("bundle sheet grouped", page.locator(".bundle-group").count() == 2)
+        check("bundle sheet grouped (total row not read as a course)", page.locator(".bundle-group").count() == 2)
+        check("bundle statement total matches", "matching the statement" in page.text_content("#bundleStatus"))
         page.click("#bundleSummaryViewBtn")
         check("bundle summary total", "25.00" in page.text_content("#bundleResults"))
         with page.expect_download() as dl:
@@ -401,12 +413,91 @@ try:
         check("reset text clears text but keeps amounts and invoice number",
               s["fields"]["companyName"] == "" and s["fields"]["invoiceNumber"] == "INV-PDF"
               and page.text_content("#pSubtotal") == "£25.00")
-        page.click("#resetBtn"); page.wait_for_timeout(600)
+        check("invoice status is removed",
+              page.locator("#status").count() == 0 and page.locator('[data-section="status"]').count() == 0)
+
+        # ---- saved invoices
+        tpl_before = snapshot()["fields"]["template"]
+        page.click("#resetBtn"); page.wait_for_timeout(300)  # "New invoice"
         s = snapshot()
-        check("full reset starts a blank invoice", s["items"] == [] and s["fields"]["invoiceNumber"] == "INV-1001")
-        check("full reset keeps saved templates and brands",
-              page.locator("#savedTemplates .library-item").count() == 1
-              and page.locator("#savedBrands .library-item").count() == 1)
+        check("New invoice: next number, no client or items, design kept",
+              s["fields"]["invoiceNumber"] == "INV-PDF-1" and s["items"] == [] and s["fields"]["clientName"] == ""
+              and s["fields"]["template"] == tpl_before and s["fields"]["accentHex"] == "#ff0000", str(s["fields"]["invoiceNumber"]))
+        page.click("[data-tab=invoices]")
+        rows = page.locator("#invoiceList .invoice-row")
+        check("both invoices are in the saved list", rows.count() == 2, str(rows.count()))
+        page.locator("#invoiceList .invoice-row", has_text="INV-PDF").filter(has_not_text="INV-PDF-1").locator("button", has_text="Open").click()
+        page.wait_for_timeout(200)
+        check("opening a saved invoice restores it", page.input_value("#invoiceNumber") == "INV-PDF"
+              and page.text_content("#pSubtotal") == "£25.00")
+        check("undo history starts fresh for the opened invoice", page.is_disabled("#undoBtn"))
+        check("opening an invoice does not move it up the most-recently-changed list",
+              "INV-PDF-1" in rows.first.text_content())
+        page.click("[data-tab=details]")
+        page.fill("#invoiceNumber", "INV-PDF-1"); page.wait_for_timeout(100)
+        check("duplicate invoice number is flagged", page.is_visible("#invoiceNumberWarning"))
+        page.fill("#invoiceNumber", "INV-PDF"); page.wait_for_timeout(100)
+        check("warning clears for a unique number", not page.is_visible("#invoiceNumberWarning"))
+        page.click("[data-tab=invoices]")
+        page.click("#duplicateInvoiceBtn"); page.wait_for_timeout(300)
+        check("Duplicate copies the invoice with the next unused number",
+              page.input_value("#invoiceNumber") == "INV-PDF-2" and page.text_content("#pSubtotal") == "£25.00"
+              and rows.count() == 3, page.input_value("#invoiceNumber"))
+        page.fill("#invoiceSearch", "pdf-2"); page.wait_for_timeout(100)
+        check("search filters the list", rows.count() == 1)
+        page.fill("#invoiceSearch", "")
+        page.locator("#invoiceList .invoice-row", has_text="INV-PDF-1").locator("button", has_text="Delete").click()
+        confirm_dialog()
+        check("delete a saved invoice (with confirmation)", rows.count() == 2)
+
+        # ---- client address book
+        page.click("[data-tab=details]")
+        page.fill("#clientName", "Acme Learning Ltd"); page.fill("#clientAddress", "1 High Street\nLondon")
+        page.fill("#clientEmail", "accounts@acme.example")
+        page.click("#saveClientBtn"); page.wait_for_timeout(100)
+        check("save a client", "Acme Learning Ltd" in page.text_content("#savedClients"))
+        page.click("#resetBtn"); page.wait_for_timeout(300)
+        page.click("[data-tab=details]")
+        page.select_option("#savedClients", label="Acme Learning Ltd"); page.wait_for_timeout(100)
+        check("pick a saved client fills the Bill to fields",
+              page.input_value("#clientAddress") == "1 High Street\nLondon" and "Acme Learning Ltd" in page.text_content("#pClientName"))
+
+        # ---- full backup and restore
+        check("backup reminder shows when there is no backup", page.is_visible("#backupReminder"))
+        page.click("[data-tab=invoices]")
+        with page.expect_download() as dl:
+            page.click("#backupBtn")
+        backup_path = os.path.join(FIX, dl.value.suggested_filename)
+        dl.value.save_as(backup_path)
+        backup = json.load(open(backup_path))
+        n_saved = rows.count()
+        check("backup file holds every invoice, client, template and brand",
+              backup["format"] == "sa-invoice-generator-backup" and len(backup["invoices"]) == n_saved
+              and len(backup["clients"]) == 1 and len(backup["templates"]) == 1 and len(backup["brands"]) == 1
+              and len(backup["logos"]) <= 1, f"{len(backup['invoices'])} vs {n_saved}")
+        check("backup reminder clears after a backup", not page.is_visible("#backupReminder"))
+
+        ctx4 = browser.new_context(viewport={"width": 1400, "height": 900})
+        ctx4.on("request", on_request)
+        p4 = ctx4.new_page()
+        p4.on("pageerror", lambda e: errors.append("pageerror(restore): " + str(e)))
+        p4.goto(URL); p4.wait_for_timeout(300)
+        p4.click("[data-tab=invoices]")
+        p4.set_input_files("#restoreFile", backup_path)
+        p4.wait_for_selector("#appConfirmDialog[open]"); p4.click("#appConfirmAccept"); p4.wait_for_timeout(300)
+        check("restore adds every invoice, client, template and brand on another device",
+              p4.locator("#invoiceList .invoice-row").count() == n_saved
+              and "Acme Learning Ltd" in p4.text_content("#savedClients")
+              and p4.locator("#savedTemplates .library-item").count() == 1
+              and p4.locator("#savedBrands .library-item").count() == 1, p4.text_content("#toast"))
+        p4.locator("#invoiceList .invoice-row", has_text="INV-PDF-2").locator("button", has_text="Open").click()
+        p4.wait_for_timeout(200)
+        check("a restored invoice opens with its items and totals", p4.text_content("#pSubtotal") == "£25.00")
+        p4.set_input_files("#restoreFile", backup_path)
+        p4.wait_for_selector("#appConfirmDialog[open]"); p4.click("#appConfirmAccept"); p4.wait_for_timeout(300)
+        check("restoring the same backup again adds nothing",
+              p4.locator("#invoiceList .invoice-row").count() == n_saved and "Nothing new" in p4.text_content("#toast"))
+        ctx4.close()
 
         # ---- library deletion
         page.click("[data-tab=design]")

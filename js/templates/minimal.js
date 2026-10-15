@@ -19,7 +19,7 @@ export default {
   cssClass: "template-minimal",
   fontStack: "Nimbus Sans Regular + Bold",
   labels: {
-    title: "INVOICE", bill: "Bill To:", status: "Status:", balance: ":",
+    title: "INVOICE", bill: "Bill To:", balance: ":",
     note: "Notes:", payment: "Notes:", terms: "Terms:",
     date: "Date:", due: "Due date:", ref: ":"
   },
