@@ -7,7 +7,9 @@
  * silently, so the names are re-exported here and nowhere else.
  *
  * `window.InvoiceStudio` additionally provides a small, documented seam used by
- * the regression harness. Nothing inside the application reads from it.
+ * the regression harness. Nothing inside the application reads from it. It
+ * keeps its original name after the rename to SA Invoice Generator so existing
+ * scripts keep working; `window.SAInvoiceGenerator` is the same object.
  */
 
 import { loadTemplate, deleteTemplate, loadBrand, deleteBrand, refreshLibraries } from "./editor/library.js";
@@ -28,7 +30,7 @@ export function installCompatibilityGlobals() {
   window.buildInvoicePrintDocument = buildInvoicePrintDocument;
 
   // Namespaced seam for tooling and tests.
-  window.InvoiceStudio = {
+  window.InvoiceStudio = window.SAInvoiceGenerator = {
     state,
     serialize,
     serializeBrand,

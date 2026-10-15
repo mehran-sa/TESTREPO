@@ -13,9 +13,12 @@
  * @property {string} Bundle
  * @property {string|number} NetQty
  * @property {string|number} Royalty
+ * @property {"."|","} Decimal  The sheet's decimal separator, used to read
+ *                              NetQty and Royalty when they are text.
  */
 
 import { splitName } from "./name-splitter.js";
+import { parseAmount, detectDecimalSeparator } from "../utils.js";
 
 /** How many leading rows are searched for the header. */
 const HEADER_SEARCH_DEPTH = 40;
@@ -62,6 +65,11 @@ export function extractBundleRows(rows) {
   }
 
   if (!out.length) throw new Error("No product rows were found under the Name column.");
+
+  // One separator for the whole sheet, so "1,234" reads the same way as the
+  // sheet's unambiguous amounts.
+  const decimal = detectDecimalSeparator(out.flatMap(r => [r.NetQty, r.Royalty]));
+  out.forEach(r => { r.Decimal = decimal; });
   return out;
 }
 
@@ -81,20 +89,27 @@ export function groupRows(rows) {
 /**
  * One entry per bundle, with royalty summed as the bundle price.
  * Non-numeric royalty/quantity cells are skipped rather than poisoning the sum.
- * @returns {Array<{Bundle: string, BundlePrice: number, NetQty: number}>}
+ * Formatted amounts such as "£1,234.50" are read as numbers; Number() treated
+ * them as non-numeric, so they were silently left out of the bundle price.
+ * HasQty records whether the sheet gave any quantity for the bundle, so a sheet
+ * without a Net Qty column is not mistaken for a net quantity of zero.
+ * @returns {Array<{Bundle: string, BundlePrice: number, NetQty: number, HasQty: boolean}>}
  */
 export function getBundleSummary(rows) {
   const map = new Map();
 
   for (const row of rows) {
     if (!map.has(row.Bundle)) {
-      map.set(row.Bundle, { Bundle: row.Bundle, BundlePrice: 0, NetQty: 0 });
+      map.set(row.Bundle, { Bundle: row.Bundle, BundlePrice: 0, NetQty: 0, HasQty: false });
     }
     const item = map.get(row.Bundle);
-    const royalty = Number(row.Royalty);
-    const qty = Number(row.NetQty);
-    if (Number.isFinite(royalty)) item.BundlePrice += royalty;
-    if (Number.isFinite(qty)) item.NetQty += qty;
+    const royalty = parseAmount(row.Royalty, row.Decimal);
+    const qty = parseAmount(row.NetQty, row.Decimal);
+    if (royalty !== null) item.BundlePrice += royalty;
+    if (qty !== null) {
+      item.NetQty += qty;
+      item.HasQty = true;
+    }
   }
 
   return [...map.values()];

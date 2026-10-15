@@ -14,5 +14,15 @@ export function exportInvoiceJSON() {
  */
 export async function readInvoiceFile(file) {
   if (!file) throw Error("No file selected.");
-  return JSON.parse(await file.text());
+  let text;
+  try {
+    text = await file.text();
+  } catch {
+    throw Error(`"${file.name}" could not be read.`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw Error(`"${file.name}" is not a valid invoice JSON file. Nothing was changed.`);
+  }
 }

@@ -19,13 +19,17 @@ export function initToolbar() {
   $("exportBtn").onclick = () => exportInvoiceJSON();
   $("importBtn").onclick = () => $("jsonFile").click();
   $("jsonFile").onchange = async e => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
     try {
-      applySnapshot(await readInvoiceFile(e.target.files[0]));
-      toast("Invoice imported.");
+      const warnings = applySnapshot(await readInvoiceFile(file));
+      toast(warnings.length
+        ? "Invoice imported with corrections: " + warnings.join(" ")
+        : "Invoice imported. Use Undo to return to the previous invoice.");
     } catch (err) {
       toast(err.message);
     }
-    e.target.value = "";
   };
 
   // Clears invoice text only. Kept separate from the full reset below.
@@ -58,6 +62,7 @@ export function initToolbar() {
   $("sheetFile").onchange = async e => {
     const file = e.target.files[0];
     if (!file) return;
+    toast("Reading " + file.name + "\u2026");
     try {
       const items = await readItemsFromFile(file);
       setItems(items);

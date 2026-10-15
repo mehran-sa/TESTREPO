@@ -10,7 +10,7 @@
  */
 
 import { $, today, plusDays, toast } from "./utils.js";
-import { DEFAULT_DUE_DAYS } from "./constants.js";
+import { DEFAULT_DUE_DAYS, APP_VERSION } from "./constants.js";
 import * as TemplateRegistry from "./templates/template-registry.js";
 import modernTemplate from "./templates/modern.js";
 import minimalTemplate from "./templates/minimal.js";
@@ -32,16 +32,17 @@ import { configureHistory } from "./history/invoice-history.js";
 import { renderAll, applySnapshot } from "./session.js";
 import { serialize } from "./invoice/invoice-data.js";
 import { state } from "./state.js";
-import { loadInvoice } from "./storage/invoice-storage.js";
+import { readInvoiceAutosave, backupUnreadableInvoice } from "./storage/invoice-storage.js";
 import { DEFAULT_ACCENT } from "./constants.js";
 import { installCompatibilityGlobals } from "./compat.js";
+import { initTabSync } from "./storage/tab-sync.js";
 
 /** Runs a startup step, reporting rather than aborting on failure. */
 function step(name, fn) {
   try {
     fn();
   } catch (err) {
-    console.error(`[InvoiceStudio] startup step "${name}" failed:`, err);
+    console.error(`[SA Invoice Generator] startup step "${name}" failed:`, err);
   }
 }
 
@@ -58,18 +59,48 @@ function seedDefaults() {
   setAccent(DEFAULT_ACCENT);
 }
 
+/**
+ * Restores the autosave. An autosave that cannot be read or applied is copied
+ * to a backup key first: the editor autosaves on the next change, and before
+ * this the unreadable invoice was simply overwritten and lost.
+ */
 function restoreAutosave() {
-  const saved = loadInvoice();
-  if (!saved) return;
+  const { data, corrupt, backedUp } = readInvoiceAutosave();
+  if (corrupt) {
+    toast(backedUp
+      ? "The saved invoice could not be read. A copy was kept in browser storage; a new invoice was started."
+      : "The saved invoice could not be read, and there was no room to keep a copy.");
+    return;
+  }
+  if (!data) return;
   try {
-    applySnapshot(saved);
+    // Not written back: nothing has changed yet (see applySnapshot).
+    const warnings = applySnapshot(data, { persist: false });
+    if (warnings.length) toast("Your saved invoice was opened with corrections: " + warnings.join(" "));
   } catch (err) {
-    console.error("[InvoiceStudio] the autosaved invoice could not be restored:", err);
-    toast("The saved invoice could not be restored.");
+    console.error("[SA Invoice Generator] the autosaved invoice could not be restored:", err);
+    const kept = backupUnreadableInvoice();
+    toast(kept
+      ? "The saved invoice could not be restored. A copy was kept in browser storage."
+      : "The saved invoice could not be restored.");
+  }
+}
+
+/**
+ * After an update, a browser can keep some old script files from its cache and
+ * mix them with new ones. index.html and the scripts each carry the release
+ * number; if they differ, the user is told to reload fully.
+ */
+function checkVersion() {
+  const pageVersion = document.querySelector('meta[name="sa-app-version"]')?.content;
+  if (pageVersion && pageVersion !== APP_VERSION) {
+    toast("Some app files are from an older version. Reload with Ctrl+Shift+R (Cmd+Shift+R on a Mac).");
   }
 }
 
 export function init() {
+  // The scripts are running, so the "could not start" banner does not apply.
+  document.getElementById("bootError")?.remove();
   step("templates", registerTemplates);
 
   step("tabs", initTabs);
@@ -98,6 +129,9 @@ export function init() {
   step("history controls", initHistoryControls);
 
   step("libraries", refreshLibraries);
+  // After the autosave is restored, so the starting point is this tab's view.
+  step("tab sync", initTabSync);
+  step("version check", checkVersion);
   step("compatibility globals", installCompatibilityGlobals);
 }
 

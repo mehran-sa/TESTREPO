@@ -212,6 +212,9 @@ const renderSummary = totals => {
 
 /* -------------------------------------------------------------- logo */
 
+/** The logo currently set on the preview image (by reference). */
+let renderedLogo = null;
+
 const renderLogo = () => {
   setText("pLogoFallback", (trimmedField("companyName")[0] || "I").toUpperCase());
 
@@ -230,12 +233,18 @@ const renderLogo = () => {
   setText("logoHeightValue", height);
 
   if (state.logo) {
-    img.src = state.logo;
+    // Only reassign when the logo changed: re-setting a multi-megabyte data
+    // URL on every render (every keystroke) made the image decode again.
+    if (renderedLogo !== state.logo) {
+      img.src = state.logo;
+      renderedLogo = state.logo;
+    }
     box.classList.add("has-logo");
     img.style.display = "block";
     $("pLogoFallback").style.display = "none";
   } else {
     img.removeAttribute("src");
+    renderedLogo = null;
     box.classList.remove("has-logo");
     img.style.display = "none";
     $("pLogoFallback").style.display = "grid";

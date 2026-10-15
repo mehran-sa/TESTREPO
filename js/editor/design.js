@@ -17,6 +17,39 @@ export function setAccent(value) {
   $("accentHex").value = color;
 }
 
+/**
+ * Scales a large raster logo down so its longest side is LIMITS.logoMaxSide.
+ *
+ * The logo prints at most 240 x 140 CSS px, so 1200 px is still sharp at print
+ * resolution. The whole invoice, logo included, is stored on every save and
+ * copied into saved templates and brands, so a multi-megabyte photo made each
+ * save slow and could fill browser storage. SVG logos are left untouched.
+ *
+ * @returns {string|null} the smaller data URL, or null to keep the original
+ */
+function shrinkLogo(image, type, originalDataUrl) {
+  if (!/^image\/(png|jpeg|webp|gif)$/.test(type)) return null;
+  const { naturalWidth: w, naturalHeight: h } = image;
+  const longest = Math.max(w, h);
+  if (!longest || longest <= LIMITS.logoMaxSide) return null;
+  const scale = LIMITS.logoMaxSide / longest;
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(w * scale));
+    canvas.height = Math.max(1, Math.round(h * scale));
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    // JPEG and WebP stay lossy at high quality; PNG and GIF become PNG, which
+    // keeps transparency.
+    const outType = type === "image/jpeg" || type === "image/webp" ? type : "image/png";
+    const result = canvas.toDataURL(outType, 0.92);
+    return result.startsWith("data:image/") && result.length < originalDataUrl.length ? result : null;
+  } catch {
+    return null;
+  }
+}
+
 export function initLogoControls() {
   $("logoFile").onchange = e => {
     const file = e.target.files && e.target.files[0];
@@ -31,11 +64,15 @@ export function initLogoControls() {
       const probe = new Image();
       probe.onerror = () => toast("The selected logo image is not valid.");
       probe.onload = () => {
-        setLogo(String(reader.result));
+        const original = String(reader.result);
+        const shrunk = shrinkLogo(probe, file.type, original);
+        setLogo(shrunk || original);
         setText("logoHint", file.name + " added");
         renderPreview();
         saveInvoice();
-        toast("Logo added.");
+        toast(shrunk
+          ? `Logo added and resized to at most ${LIMITS.logoMaxSide} px, which keeps saving fast.`
+          : "Logo added.");
       };
       probe.src = String(reader.result);
     };

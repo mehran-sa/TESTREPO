@@ -107,3 +107,20 @@ export function readNotes(repairTypo) {
   }
   return { text, repaired: false };
 }
+
+/**
+ * The invoice number with its trailing number increased by one, keeping any
+ * zero padding: "INV-1001" -> "INV-1002", "JF2026-09" -> "JF2026-10",
+ * "A-099" -> "A-100". A number with no digits at the end gets "-1" added, and
+ * an empty number becomes "1".
+ * @param {string} current
+ */
+export function nextInvoiceNumber(current) {
+  const text = String(current ?? "").trim();
+  if (!text) return "1";
+  const match = text.match(/^(.*?)(\d+)$/);
+  if (!match) return text + "-1";
+  const [, prefix, digits] = match;
+  const next = (BigInt(digits) + 1n).toString();
+  return prefix + next.padStart(digits.length, "0");
+}

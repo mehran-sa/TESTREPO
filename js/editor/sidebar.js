@@ -1,10 +1,13 @@
 /**
  * Draggable sidebar width.
  *
- * Note: the width is written to the --sidebar-width custom property and to
- * localStorage, but no stylesheet currently consumes that property, so the
- * handle has no visible effect. This behaviour is carried over unchanged from
- * the original application; see README "Known issues".
+ * The width is written to the --sidebar-width custom property, which the app
+ * grid in css/layout.css reads, and to localStorage. Previously no stylesheet
+ * consumed the property and the handle had no size, so it could not be used.
+ *
+ * Mouse: drag the handle; double-click restores the default width.
+ * Keyboard: focus the handle, then Left/Right arrows resize and Home restores
+ * the default. The handle is hidden on narrow screens, where the layout stacks.
  */
 
 import { $, clamp } from "../utils.js";
@@ -47,4 +50,16 @@ export function initSidebarResizer() {
     resizer.classList.remove("dragging");
   });
   resizer.addEventListener("dblclick", () => persistWidth(LIMITS.sidebar.fallback));
+
+  const KEY_STEP = 20;
+  resizer.addEventListener("keydown", e => {
+    const current = Number(readRaw(STORAGE_KEYS.sidebarWidth)) || LIMITS.sidebar.fallback;
+    let next = null;
+    if (e.key === "ArrowLeft") next = current - KEY_STEP;
+    else if (e.key === "ArrowRight") next = current + KEY_STEP;
+    else if (e.key === "Home") next = LIMITS.sidebar.fallback;
+    if (next === null) return;
+    e.preventDefault();
+    persistWidth(clamp(next, LIMITS.sidebar.min, LIMITS.sidebar.max));
+  });
 }

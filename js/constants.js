@@ -3,11 +3,24 @@
  * graph, so every other module may safely import from here.
  */
 
+/**
+ * App release. index.html carries the same value in <meta name="sa-app-version">;
+ * a mismatch means the browser mixed cached files from two releases.
+ */
+export const APP_VERSION = "2.1.0";
+
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
 
+/**
+ * localStorage keys. These keep their original names after the rename to
+ * SA Invoice Generator so that invoices, templates and brands saved by earlier
+ * versions are still found. Do not rename them.
+ */
 export const STORAGE_KEYS = {
   invoice: "invoiceStudioPro.v2",
+  /** Copy of an autosave that could not be read, kept instead of overwritten. */
+  invoiceBackup: "invoiceStudioPro.v2.unreadableBackup",
   templates: "invoiceStudio.templates.v1",
   brands: "invoiceStudio.brands.v1",
   sidebarWidth: "invoiceStudio.sidebarWidth"
@@ -21,8 +34,13 @@ export const LIMITS = {
   sidebar: { min: 320, max: 720, fallback: 430 },
   percent: { min: 0, max: 100 },
   columnWidth: { min: 5 },
-  logoBytes: 3e6
+  logoBytes: 3e6,
+  /** Raster logos larger than this (longest side, px) are scaled down on upload. */
+  logoMaxSide: 1200
 };
+
+/** Typing edits are written to storage after this pause rather than per key. */
+export const AUTOSAVE_TYPING_DELAY_MS = 300;
 
 export const DEFAULT_ACCENT = "#2563eb";
 export const DEFAULT_DUE_DAYS = 14;
@@ -36,10 +54,24 @@ export const HISTORY_DEBOUNCE_MS = 700;
 
 export const LOGO_HINT_DEFAULT = "PNG, JPG, WEBP or SVG. Maximum 3 MB.";
 export const SIDEBAR_RESIZE_MIN_VIEWPORT = 1180;
-export const XLSX_CDN = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+/**
+ * Excel parsing worker. It loads SheetJS 0.20.3 from js/vendor, so Excel import
+ * works offline and never contacts a CDN. Resolved relative to index.html.
+ */
+export const XLSX_WORKER_SRC = "js/import-export/xlsx-worker.js";
+/** A spreadsheet that takes longer than this to parse is stopped. */
+export const XLSX_PARSE_TIMEOUT_MS = 30000;
 
 /** Number of visible columns the template-specific fixed widths are designed for. */
 export const FIXED_WIDTH_COLUMN_COUNT = 4;
+
+/**
+ * Line-item property holding an amount taken as-is from an imported statement,
+ * used only when the statement's quantity is 0 (quantity x rate cannot express
+ * a non-zero amount then). Column keys can never contain "$", so this cannot
+ * collide with a column. Editing the line's quantity or rate removes it.
+ */
+export const FIXED_AMOUNT_KEY = "$fixedAmount";
 
 /** Column types edited as numbers and stored as numbers. */
 export const NUMERIC_COLUMN_TYPES = ["number", "currency", "percentage"];

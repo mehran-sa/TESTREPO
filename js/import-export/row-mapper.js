@@ -6,7 +6,8 @@
  * by keyword score and the data is cut at the first footer or trailing blank.
  */
 
-import { num } from "../utils.js";
+import { num, parseAmount, detectDecimalSeparator } from "../utils.js";
+import { NUMERIC_COLUMN_TYPES, FIXED_AMOUNT_KEY } from "../constants.js";
 import { state, roleCol } from "../state.js";
 
 /** Loose comparison key for header matching. */
@@ -87,28 +88,61 @@ export function mapRows(rows) {
   const headers = rows[headerIndex].map(h => String(h ?? "").trim());
   const dataRows = collectDataRows(rows.slice(headerIndex + 1));
 
-  return dataRows.map(row => {
-    const source = {};
-    headers.forEach((h, i) => { source[h] = row[i]; });
+  // Which sheet column (by index) feeds each invoice column. The first header
+  // that matches wins, as before.
+  const mapping = state.columns.map(col => {
+    const candidates = [norm(col.label), norm(col.key), ...(COLUMN_ALIASES[col.key] || [])];
+    return { col, index: headers.findIndex(h => candidates.includes(norm(h))) };
+  }).filter(m => m.index !== -1);
 
+  // One decimal separator for the whole sheet, judged from its numeric cells,
+  // so "1,234" is read the same way as the sheet's unambiguous values.
+  const numeric = mapping.filter(m => NUMERIC_COLUMN_TYPES.includes(m.col.type));
+  const decimal = detectDecimalSeparator(dataRows.flatMap(row => numeric.map(m => row[m.index])));
+
+  return dataRows.map(row => {
     const item = {};
-    state.columns.forEach(col => {
-      const candidates = [norm(col.label), norm(col.key), ...(COLUMN_ALIASES[col.key] || [])];
-      const match = Object.keys(source).find(k => candidates.includes(norm(k)));
-      if (match !== undefined) item[col.key] = source[match];
+    mapping.forEach(({ col, index }) => {
+      let value = row[index];
+      // Numeric cells are stored as numbers, the same as values typed in the
+      // editor. Text such as "1,234.50" or "£99.99" used to be stored as-is and
+      // then counted as 0. Text that is not a number is kept unchanged.
+      if (NUMERIC_COLUMN_TYPES.includes(col.type)) {
+        const parsed = parseAmount(value, decimal);
+        if (parsed !== null) value = parsed;
+      }
+      item[col.key] = value;
     });
+
+    // Decided before any defaults are filled in, so a row with nothing that
+    // matches a column is still dropped rather than becoming a blank line.
+    if (!Object.values(item).some(v => String(v ?? "").trim())) return null;
 
     const quantityCol = roleCol("quantity");
     const rateCol = roleCol("rate");
     const amountCol = roleCol("amount");
 
-    if (quantityCol && item[quantityCol.key] === "") item[quantityCol.key] = 1;
+    // A blank quantity cell, or a sheet with no quantity column at all, means
+    // one unit. Without the second case every line of a statement that lists
+    // only a royalty/amount was calculated as 0 x rate = 0.
+    if (quantityCol && String(item[quantityCol.key] ?? "").trim() === "") item[quantityCol.key] = 1;
 
-    // Statements often give a line total but no unit rate; back-derive it.
+    // Statements often give a line total but no unit rate; back-derive it so
+    // that quantity x rate reproduces the line total. The divisor is the real
+    // quantity: Math.max(1, quantity) flipped the sign of refund lines and
+    // halved lines with a fractional quantity.
     if (rateCol && amountCol && num(item[rateCol.key]) === 0 && num(item[amountCol.key])) {
-      item[rateCol.key] = num(item[amountCol.key]) / Math.max(1, num(item[quantityCol?.key] || 1));
+      item[rateCol.key] = num(item[amountCol.key]) / (num(item[quantityCol?.key]) || 1);
     }
 
-    return Object.values(item).some(v => String(v ?? "").trim()) ? item : null;
+    // Quantity 0 with a non-zero line total (a net-zero sales line that still
+    // carries an adjustment): quantity x rate would give 0, so the statement's
+    // amount is kept as the line amount.
+    if (quantityCol && amountCol && num(item[quantityCol.key]) === 0 &&
+        String(item[quantityCol.key]).trim() !== "" && num(item[amountCol.key])) {
+      item[FIXED_AMOUNT_KEY] = num(item[amountCol.key]);
+    }
+
+    return item;
   }).filter(Boolean);
 }

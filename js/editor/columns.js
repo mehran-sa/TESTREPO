@@ -8,6 +8,9 @@ import { renderPreview } from "../invoice/invoice-renderer.js";
 import { renderItems } from "./items.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
 
+/** Private drag type, so drops from outside the column list are ignored. */
+const COLUMN_DRAG_TYPE = "application/x-sa-invoice-column";
+
 export function normalizeKey(value) {
   return String(value || "column").trim().toLowerCase()
     .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "column";
@@ -20,7 +23,9 @@ const columnRowMarkup = (col, idx) =>
   `<div class="colgrid">` +
   `<div class="field"><label>Heading</label><input class="labelinput" value="${esc(col.label)}"></div>` +
   `<div class="field"><label>Type</label><select class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div>` +
-  `<div class="field"><label>Width %</label><input class="width" type="number" min="5" max="80" value="${col.width}"></div>` +
+  // num() keeps the width numeric: it is interpolated into markup, so a crafted
+  // imported file could otherwise inject HTML through this attribute.
+  `<div class="field"><label>Width %</label><input class="width" type="number" min="5" max="80" value="${num(col.width)}"></div>` +
   `<div class="field"><label>Alignment</label><select class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div>` +
   `<div class="field"><label>Calculation role</label><select class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div>` +
   `</div>`;
@@ -72,11 +77,19 @@ export function renderColumns() {
       saveInvoice();
     };
 
-    row.ondragstart = e => e.dataTransfer.setData("text/plain", idx);
+    row.ondragstart = e => {
+      e.dataTransfer.setData(COLUMN_DRAG_TYPE, String(idx));
+      e.dataTransfer.setData("text/plain", String(idx));
+    };
     row.ondragover = e => e.preventDefault();
     row.ondrop = e => {
       e.preventDefault();
-      moveColumn(num(e.dataTransfer.getData("text/plain")), idx);
+      // Only accept drags that started on a column row. Dropping text or a file
+      // here used to be read as index 0 and silently moved the first column.
+      if (![...e.dataTransfer.types].includes(COLUMN_DRAG_TYPE)) return;
+      const from = Number(e.dataTransfer.getData(COLUMN_DRAG_TYPE));
+      if (!Number.isInteger(from) || from < 0 || from >= state.columns.length || from === idx) return;
+      moveColumn(from, idx);
       renderColumns();
       renderItems();
       renderPreview();

@@ -5,7 +5,7 @@
 
 import { STORAGE_KEYS, BRAND_FIELD_IDS, LEGACY_BRAND_COMPANY_FIELDS } from "../constants.js";
 import { readJSON, writeJSON } from "./local-storage.js";
-import { $ } from "../utils.js";
+import { setFieldValue } from "../utils.js";
 
 export function listBrands() {
   const list = readJSON(STORAGE_KEYS.brands, []);
@@ -33,15 +33,15 @@ export function applyBrandRecord(record) {
   const data = JSON.parse(JSON.stringify(record || {}));
 
   if (data.fields && typeof data.fields === "object") {
-    BRAND_FIELD_IDS.forEach(id => { if (id in data.fields) $(id).value = data.fields[id]; });
+    BRAND_FIELD_IDS.forEach(id => { if (id in data.fields) setFieldValue(id, data.fields[id]); });
   }
   if (data.company && typeof data.company === "object") {
     Object.entries(LEGACY_BRAND_COMPANY_FIELDS).forEach(([id, key]) => {
-      if (key in data.company) $(id).value = data.company[key] ?? "";
+      if (key in data.company) setFieldValue(id, data.company[key] ?? "");
     });
   }
-  if (typeof data.currency === "string") $("currency").value = data.currency;
-  if (typeof data.template === "string") $("template").value = data.template;
+  if (typeof data.currency === "string") setFieldValue("currency", data.currency);
+  if (typeof data.template === "string") setFieldValue("template", data.template);
 
   return typeof data.logo === "string" ? data.logo : undefined;
 }

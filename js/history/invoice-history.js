@@ -42,16 +42,37 @@ let listener = null;
 let suspended = false;
 let timer = null;
 
-/** Snapshots share arrays with live state, so every entry is deep-copied. */
-const clone = value => JSON.parse(JSON.stringify(value));
+/**
+ * Snapshots share arrays with live state, so every entry is deep-copied.
+ *
+ * The logo is the exception. It is an immutable string (a data URL of up to
+ * about 4 MB), so entries can safely share it. A JSON round trip made a fresh
+ * copy for every entry, which with a large logo and the 60-entry limit could
+ * hold a few hundred megabytes of duplicate image data.
+ */
+const clone = value => {
+  if (!value || typeof value !== "object") return value;
+  const { logo, ...rest } = value;
+  const copy = JSON.parse(JSON.stringify(rest));
+  if (logo !== undefined) copy.logo = logo;
+  return copy;
+};
 
-/** Comparison key: everything except the preview-only zoom level. */
+/**
+ * Comparison key: everything except the preview-only zoom level. The logo is
+ * compared separately (by value, which is fast for identical strings) so the
+ * image is not re-serialised on every commit.
+ */
 const signature = snapshot => {
   if (!snapshot) return null;
   const rest = { ...snapshot };
   delete rest.zoom;
+  delete rest.logo;
   return JSON.stringify(rest);
 };
+
+const sameEntry = (a, b) =>
+  Boolean(a) && Boolean(b) && a.logo === b.logo && signature(a) === signature(b);
 
 const notify = () => {
   listener?.({ canUndo: stack.canUndo(), canRedo: stack.canRedo() });
@@ -70,7 +91,7 @@ function commit() {
   if (!capture) return false;
 
   const snapshot = clone(capture());
-  if (signature(stack.current()) === signature(snapshot)) return false;
+  if (sameEntry(stack.current(), snapshot)) return false;
 
   stack.push(snapshot);
   notify();

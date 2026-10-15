@@ -1,7 +1,7 @@
 /** Line item editor: the per-item cards in the Items tab. */
 
 import { $, esc, num } from "../utils.js";
-import { NUMERIC_COLUMN_TYPES } from "../constants.js";
+import { NUMERIC_COLUMN_TYPES, FIXED_AMOUNT_KEY } from "../constants.js";
 import { state, editableColumns, addItem, removeItemAt, clearItems, createBlankItem } from "../state.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
@@ -42,6 +42,9 @@ export function renderItems() {
       input.oninput = () => {
         const col = state.columns.find(c => c.key === input.dataset.key);
         item[input.dataset.key] = isNumericType(col?.type) ? num(input.value) : input.value;
+        // Editing quantity or rate means the line is now quantity x rate again,
+        // so an amount kept from an imported statement no longer applies.
+        if (col && (col.role === "quantity" || col.role === "rate")) delete item[FIXED_AMOUNT_KEY];
         renderPreview();
         saveInvoice({ typing: true });
       };

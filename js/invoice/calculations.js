@@ -8,10 +8,17 @@
  *   discount applies to the subtotal
  *   tax applies to the discounted subtotal
  *   shipping is added last and is never taxed
+ *
+ * Money is rounded to two decimal places at each step that produces a printed
+ * figure: every line amount, the subtotal, the discount, the tax, shipping and
+ * the total. The invoice therefore always adds up as printed. Previously the
+ * unrounded values were summed, so two lines printed as 0.13 could show a
+ * subtotal of 0.25, and subtotal - discount + tax could differ from the total
+ * by a penny.
  */
 
-import { fieldValue, num, clamp } from "../utils.js";
-import { LIMITS } from "../constants.js";
+import { fieldValue, num, clamp, roundMoney } from "../utils.js";
+import { LIMITS, FIXED_AMOUNT_KEY } from "../constants.js";
 import { state, roleCol } from "../state.js";
 
 /**
@@ -20,15 +27,19 @@ import { state, roleCol } from "../state.js";
  */
 export function calculateItemValue(item, col) {
   if (col.role === "amount") {
+    // A statement line with quantity 0 but a non-zero amount keeps that amount.
+    if (typeof item[FIXED_AMOUNT_KEY] === "number" && Number.isFinite(item[FIXED_AMOUNT_KEY])) {
+      return roundMoney(item[FIXED_AMOUNT_KEY]);
+    }
     const q = roleCol("quantity");
     const r = roleCol("rate");
-    return q && r ? num(item[q.key]) * num(item[r.key]) : num(item[col.key]);
+    return roundMoney(q && r ? num(item[q.key]) * num(item[r.key]) : num(item[col.key]));
   }
   return item[col.key] ?? "";
 }
 
 /** Money value of a single line. */
-export const calculateItemTotal = (item, amountCol) => num(calculateItemValue(item, amountCol));
+export const calculateItemTotal = (item, amountCol) => roundMoney(calculateItemValue(item, amountCol));
 
 /**
  * When no column carries the amount role, a synthetic column is used so that a
@@ -37,13 +48,13 @@ export const calculateItemTotal = (item, amountCol) => num(calculateItemValue(it
 export const amountColumn = () => roleCol("amount") || { role: "none", key: "amount" };
 
 export const calculateSubtotal = (items, amountCol) =>
-  items.reduce((sum, item) => sum + calculateItemTotal(item, amountCol), 0);
+  roundMoney(items.reduce((sum, item) => sum + calculateItemTotal(item, amountCol), 0));
 
-export const calculateDiscount = (subtotal, discountRate) => subtotal * discountRate / 100;
+export const calculateDiscount = (subtotal, discountRate) => roundMoney(subtotal * discountRate / 100);
 
-export const calculateTax = (taxableAmount, taxRate) => taxableAmount * taxRate / 100;
+export const calculateTax = (taxableAmount, taxRate) => roundMoney(taxableAmount * taxRate / 100);
 
-export const calculateTotal = (taxable, tax, shipping) => taxable + tax + shipping;
+export const calculateTotal = (taxable, tax, shipping) => roundMoney(taxable + tax + shipping);
 
 /** Sum of the quantity column, used by the One Education in-table totals row. */
 export const calculateQuantityTotal = items => {
@@ -68,10 +79,10 @@ const clampPercent = value => clamp(value, LIMITS.percent.min, LIMITS.percent.ma
 export function calculateTotals({ subtotal, discountRate, taxRate, shipping }) {
   const dr = clampPercent(discountRate);
   const disc = calculateDiscount(subtotal, dr);
-  const taxable = subtotal - disc;
+  const taxable = roundMoney(subtotal - disc);
   const tr = clampPercent(taxRate);
   const tax = calculateTax(taxable, tr);
-  const ship = Math.max(0, shipping);
+  const ship = roundMoney(Math.max(0, shipping));
   return { subtotal, dr, disc, tr, tax, ship, total: calculateTotal(taxable, tax, ship) };
 }
 

@@ -81,8 +81,13 @@ export function refreshLibraries() {
 export function loadTemplate(index) {
   const entry = getTemplate(index);
   if (!entry) return;
-  applySnapshot(JSON.parse(JSON.stringify(entry.data)));
-  toast("Template loaded: " + entry.name);
+  try {
+    const warnings = applySnapshot(JSON.parse(JSON.stringify(entry.data)));
+    toast("Template loaded: " + entry.name + (warnings.length ? " (with corrections)" : ""));
+  } catch (err) {
+    console.error("[SA Invoice Generator] template could not be loaded:", err);
+    toast(`Template "${entry.name}" could not be loaded. The current invoice was not changed.`);
+  }
 }
 
 export function deleteTemplate(index) {

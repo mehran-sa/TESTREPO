@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Invoice Studio Pro</title>
+<title>SA Invoice Generator</title>
+<meta name="application-name" content="SA Invoice Generator">
+<meta name="sa-app-version" content="2.1.0">
+<meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
+<!-- Local-only policy: scripts, styles, fonts and images load from this app or
+     from embedded data, and the page cannot send data to any server
+     (connect-src 'none'). Excel import uses the bundled js/vendor copy. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
 
@@ -21,10 +28,21 @@
 <link rel="stylesheet" href="css/print.css">
 </head>
 <body>
+<!-- Shown until js/app.js starts and removes it. If the scripts cannot run
+     (most often because index.html was opened directly from disk, where
+     browsers block JavaScript modules), the user sees why instead of an editor
+     whose buttons do nothing. -->
+<div class="boot-error" id="bootError" role="alert">
+  <strong>SA Invoice Generator could not start.</strong>
+  If you opened <code>index.html</code> directly from disk, open <code>SA-Invoice-Generator.html</code> instead,
+  or run <code>python3 serve.py</code> in this folder.
+  If you have just updated the app, reload with Ctrl+Shift+R (Cmd+Shift+R on a Mac).
+  See README.md for details.
+</div>
 <div class="app" id="appRoot">
 <aside class="sidebar" id="sidebar">
   <div class="topbar">
-    <div class="brand"><div class="mark">I</div><div><h1>Invoice Studio Pro</h1><p>Templates, columns and royalty imports · drag right edge to resize</p></div></div>
+    <div class="brand"><div class="mark" aria-hidden="true">SA</div><div><h1>SA Invoice Generator</h1><p>Templates, columns and royalty imports<span class="resize-hint"> · drag right edge to resize</span></p></div></div>
   </div>
   <div class="actions">
     <button class="btn" id="undoBtn" disabled title="Undo the last invoice change (Ctrl/Cmd + Z)" aria-keyshortcuts="Control+Z Meta+Z">Undo</button>
@@ -37,7 +55,7 @@
     <button class="btn danger" id="resetBtn">Reset</button>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
-  <div class="notice">All invoice values are blank/default. No financial data from the uploaded samples has been copied into the application.</div>
+  <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Export JSON to keep a backup copy.</div>
   <nav class="tabs">
     <button class="tab active" data-tab="details">Details</button>
     <button class="tab" data-tab="items">Items</button>
@@ -50,10 +68,10 @@
     <section class="panel">
       <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
       <div class="grid2">
-        <div class="field"><label>Invoice number</label><input id="invoiceNumber" value="INV-1001"></div>
+        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div></div>
         <div class="field"><label>Status</label><select id="status"><option>Draft</option><option selected>Due</option><option>Paid</option><option>Partially Paid</option><option>Overdue</option><option>Cancelled</option></select></div>
         <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
-        <div class="field"><label>Due date</label><input id="dueDate" type="date"></div>
+        <div class="field"><label>Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
         <div class="field"><label>Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
         <div class="field"><label>Reference / PO</label><input id="reference"></div>
       </div>
@@ -154,7 +172,7 @@
 
     </section>
   </div>
-<div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar"></div>
+<div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar (double-click to reset)" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
 
   <div class="tabpane" id="tab-bundles">
     <section class="panel">
