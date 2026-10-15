@@ -142,3 +142,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
    column (a date input's built-in minimum width overflowed on phones). */
 .grid2>*,.grid3>*,.colgrid>*,.itemrow-fields>*{min-width:0}
 .field input,.field select,.field textarea{min-width:0;max-width:100%}
+
+/* Tabs: three now, so they get more room and a larger label. */
+.tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tab{font-size:12px;padding:11px 4px 10px}
+details.panel{padding:0}
+details.panel>summary{padding:14px 38px 14px 14px;margin:0}
+details.panel>summary::after{right:16px;color:var(--sa-text)}
+details.panel>summary:hover h2{color:var(--sa-green-dark)}
+details.panel>.panel-body{padding:0 14px 14px}
+details.panel:not([open]){background:#fcfcfc}
+/* Phones: keep the toolbar on one line. */
+@media (max-width:420px){.sidebar > .actions{gap:5px}.sidebar > .actions .btn:not(.icon-btn){padding:9px 8px;letter-spacing:0}.sidebar > .actions .btn.icon-btn{width:34px}}

@@ -1,5 +1,5 @@
 /**
- * Invoices tab: the saved-invoices list, new / duplicate / delete, the
+ * Saved tab: the saved-invoices list, new / duplicate / delete, the
  * duplicate-number warning, and full backup and restore.
  */
 

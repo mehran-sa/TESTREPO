@@ -13,7 +13,7 @@ export function refreshClientPicker() {
   const clients = listClients();
   const current = clientKey(fieldValue("clientName"));
   select.textContent = "";
-  const placeholder = new Option(clients.length ? "Choose a saved client" : "No saved clients yet", "");
+  const placeholder = new Option(clients.length ? "Choose a client" : "None saved yet", "");
   select.add(placeholder);
   for (const c of clients) {
     // First line only: client names can span several lines.

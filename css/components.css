@@ -10,7 +10,7 @@
 .confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-list{margin:10px 0 0;padding-left:18px;color:#344054;font-size:12.5px;line-height:1.5}.confirm-dialog .dialog-list li+li{margin-top:4px}
 .confirm-dialog .field{margin-top:12px}.confirm-dialog p[hidden]{display:none}
 .confirm-dialog .dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #e4e7ec;background:#f9fafb}
-.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11.5px;font-weight:750;color:#344054}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11.5px;font-weight:750;color:#344054}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
 .tabpane{display:none}.tabpane.active{display:block}
 .panel{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--panel)}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panelhead h2{font-size:14px;margin:0}.hint{font-size:11.5px;line-height:1.45;color:#5b6475}
 .grid2,.grid3{display:grid;gap:10px}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}.full{grid-column:1/-1}
@@ -100,3 +100,15 @@
 .toast.error{pointer-events:auto;background:#b42318;display:flex;align-items:center;gap:10px;max-width:min(520px,calc(100vw - 32px))}
 .toast-close{border:0;background:rgba(255,255,255,.18);color:#fff;width:26px;height:26px;border-radius:6px;font-size:16px;line-height:1;cursor:pointer;flex:none}
 .toast-close:hover,.toast-close:focus-visible{background:rgba(255,255,255,.3)}
+
+/* Collapsible panels (<details class="panel">) */
+details.panel>summary{list-style:none;cursor:pointer;user-select:none;position:relative;padding-right:24px}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"";position:absolute;right:4px;top:50%;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);transition:transform .15s;color:#667085}
+details.panel:not([open])>summary::after{transform:translateY(-35%) rotate(-45deg)}
+details.panel:not([open])>summary{margin-bottom:0}
+details.panel>summary:focus-visible{outline:3px solid rgba(70,183,81,.35);outline-offset:4px}
+details.panel[open]>summary .when-closed{display:none}
+details.panel>summary .hint{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;text-align:right}
+.panel-actions{margin-bottom:10px}
+@media (prefers-reduced-motion:reduce){details.panel>summary::after{transition:none}}

@@ -23,6 +23,7 @@ import { initItemControls } from "./editor/items.js";
 import { initColumnControls } from "./editor/columns.js";
 import { setAccent, initLogoControls, initZoomControls, applyLogoDefaults, fitPreviewOnNarrowScreens } from "./editor/design.js";
 import { initJumpButton } from "./editor/jump.js";
+import { initPanels } from "./editor/panels.js";
 import { initSidebarResizer } from "./editor/sidebar.js";
 import { initToolbar } from "./editor/toolbar.js";
 import { initLibraryControls, refreshLibraries } from "./editor/library.js";
@@ -118,6 +119,8 @@ export function init() {
   step("libraries", refreshLibraries);
   step("saved invoices", initInvoiceList);
   step("client book", initClientBook);
+  // After the invoice is restored, so "Your company" can start closed when filled.
+  step("panels", initPanels);
   step("save indicator", initSaveState);
   step("jump button", initJumpButton);
   step("fit preview", fitPreviewOnNarrowScreens);

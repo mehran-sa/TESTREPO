@@ -7,7 +7,7 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.5.0";
+export const APP_VERSION = "2.6.0";
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
@@ -36,7 +36,9 @@ export const STORAGE_KEYS = {
   /* Added in 2.4.0: dismissed privacy note, snoozed backup reminder. */
   privacyNoticeHidden: "invoiceStudio.privacyNoticeHidden",
   backupReminderSnoozedUntil: "invoiceStudio.backupReminderSnoozedUntil",
-  undoHintShown: "invoiceStudio.undoHintShown"
+  undoHintShown: "invoiceStudio.undoHintShown",
+  /** Which sidebar panels were left open (added in 2.6.0). */
+  panelsOpen: "invoiceStudio.panelsOpen"
 };
 
 /** "Later" on the backup reminder hides it for this many days. */

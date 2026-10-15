@@ -168,9 +168,48 @@ try:
             page.click("#appConfirmAccept")
             page.wait_for_timeout(150)
 
+        # ---- tabs and collapsible panels (fresh profile, first use)
+        cfresh = browser.new_context(viewport={"width": 1400, "height": 900})
+        cfresh.on("request", on_request)
+        pf = cfresh.new_page(); pf.goto(URL); pf.wait_for_timeout(500)
+        check("three tabs: Invoice, Saved, Design",
+              pf.eval_on_selector_all(".tab", "t => t.map(x => x.textContent)") == ["Invoice", "Saved", "Design"])
+        opened = pf.evaluate("() => Object.fromEntries([...document.querySelectorAll('details.panel')].map(d => [d.id, d.open]))")
+        check("first use: everyday panels open, rarely used ones closed",
+              all(opened[k] for k in ["panel-invoice", "panel-client", "panel-items", "panel-totals", "panel-footer", "panel-company"])
+              and not any(opened[k] for k in ["panel-bundles", "panel-columns", "panel-sections", "panel-library"]), str(opened))
+        pf.fill("#companyName", "SA Learning Ltd"); pf.fill("#paymentDetails", "Sort code 00-00-00")
+        pf.click("#addItemBtn"); pf.locator(".itemrow").last.locator('[data-key="rate"]').fill("120"); pf.wait_for_timeout(500)
+        check("panel summaries show what is inside",
+              pf.text_content("#sumItems") == "1 item, £120.00" and pf.text_content("#sumTotals") == "Total £120.00"
+              and pf.text_content("#sumColumns") == "5 of 5 shown")
+        pf.reload(); pf.wait_for_timeout(500)
+        check("filled-in Your company and payment panels start closed",
+              not pf.evaluate("() => document.getElementById('panel-company').open")
+              and not pf.evaluate("() => document.getElementById('panel-footer').open")
+              and pf.text_content("#sumCompany") == "SA Learning Ltd")
+        pf.click("#tabbtn-design"); pf.click("#panel-columns > summary"); pf.reload(); pf.wait_for_timeout(500)
+        check("a panel stays open after reload once opened", pf.evaluate("() => document.getElementById('panel-columns').open"))
+        pf.focus("#tabbtn-invoice"); pf.keyboard.press("ArrowRight")
+        check("arrow keys move between tabs",
+              pf.evaluate("() => document.activeElement.id") == "tabbtn-invoices"
+              and pf.get_attribute("#tabbtn-invoices", "aria-selected") == "true")
+        pf.click("#tabbtn-invoice"); pf.click("#panel-company > summary")  # open
+        pf.fill("#companyName", "")
+        pf.click("#panel-company > summary")  # close it again
+        pf.click("#pdfBtn"); pf.wait_for_selector("#appConfirmDialog[open]"); pf.click("#appConfirmCancel"); pf.wait_for_timeout(300)
+        check("Go back and fix opens a closed panel at the problem field",
+              pf.evaluate("() => document.getElementById('panel-company').open && document.activeElement.id === 'companyName'"))
+        cfresh.close()
+
         # ---- start-up and branding
         page.goto(URL)
         page.wait_for_timeout(500)
+        # The main walkthrough uses every panel: open them all (remembered).
+        page.evaluate("""() => { const all = {};
+            document.querySelectorAll('details.panel').forEach(d => { d.open = true; all[d.id] = true; });
+            localStorage.setItem('invoiceStudio.panelsOpen', JSON.stringify(all)); }""")
+        page.wait_for_timeout(100)
         check("title is SA Invoice Generator", page.title() == "SA Invoice Generator")
         check("header shows SA Invoice Generator", page.text_content(".brand h1") == "SA Invoice Generator")
         check("start-up failure banner is removed once the app runs", page.locator("#bootError").count() == 0)
@@ -188,7 +227,7 @@ try:
         page.fill("#clientName", "Client One\nClient Two Ltd")
         page.fill("#reference", "PO-77")
         page.fill("#paymentDetails", "Account Name: SA Test\nSort Code: 00-00-00")
-        page.click("[data-tab=items]")
+        page.click("[data-tab=invoice]")
         for desc, qty, rate in [("Consulting", "3", "19.99"), ("Support", "1", "0.125"), ("Support", "1", "0.125")]:
             page.click("#addItemBtn")
             card = page.locator(".itemrow").last
@@ -196,7 +235,7 @@ try:
             card.locator('[data-key="description"]').fill(desc)
             card.locator('[data-key="quantity"]').fill(qty)
             card.locator('[data-key="rate"]').fill(rate)
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#discount", "10")
         page.fill("#tax", "20")
         page.fill("#shipping", "4.99")
@@ -222,7 +261,7 @@ try:
         check("totals unchanged after reload", total() == "£70.04")
 
         # ---- edit and delete items
-        page.click("[data-tab=items]")
+        page.click("[data-tab=invoice]")
         page.locator(".itemrow").first.locator('[data-key="quantity"]').fill("4")
         page.wait_for_timeout(50)
         check("item row shows its line total as you type",
@@ -250,7 +289,7 @@ try:
         check("redo (Ctrl+Y) removes it again", page.locator(".itemrow").count() == 2)
 
         # ---- columns
-        page.click("[data-tab=columns]")
+        page.click("[data-tab=design]")
         page.click("#addColumnBtn")
         check("add column", page.locator(".columnrow").count() == 6)
         last = page.locator(".columnrow").last
@@ -328,7 +367,7 @@ try:
               page.locator("#savedTemplates .library-item").count() == 1)
         page.click("#saveBrandBtn"); name_dialog("SA Brand")
         check("save brand", "SA Brand" in page.text_content("#savedBrands"))
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#companyName", "Changed Co")
         page.fill("#clientName", "Keep This Client")
         page.click("[data-tab=design]")
@@ -337,7 +376,7 @@ try:
               page.input_value("#companyName") == "SA Test Ltd" and page.input_value("#clientName") == "Keep This Client")
         page.locator("#savedTemplates .library-item button", has_text="Load").click(); page.wait_for_timeout(150)
         check("load template restores the saved invoice", page.input_value("#clientName").startswith("Client One"))
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
 
         # ---- export JSON, then import into a clean browser profile
         exported = snapshot()
@@ -370,7 +409,7 @@ try:
         ctx2.close()
 
         # ---- spreadsheet imports (CSV and bundled Excel reader)
-        page.click("[data-tab=items]")
+        page.click("[data-tab=invoice]")
         page.set_input_files("#sheetFile", CSV); page.wait_for_timeout(300)
         check("CSV import with formatted amounts", page.text_content("#pSubtotal") == "£2,568.99", page.text_content("#pSubtotal"))
         page.set_input_files("#sheetFile", ITEMS_XLSX); page.wait_for_timeout(1200)
@@ -389,7 +428,7 @@ try:
               and "£15.00" in page.text_content("#importCheck"), page.text_content("#importCheck"))
 
         # ---- bundle splitter
-        page.click("[data-tab=bundles]")
+        page.click("[data-tab=invoice]")
         page.set_input_files("#bundleFile", BUNDLE_XLSX); page.wait_for_timeout(800)
         check("bundle sheet grouped (total row not read as a course)", page.locator(".bundle-group").count() == 2)
         check("bundle statement total matches", "matching the statement" in page.text_content("#bundleStatus"))
@@ -403,7 +442,7 @@ try:
         check("apply bundles to invoice", page.text_content("#pSubtotal") == "£25.00")
 
         # ---- print / PDF
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#invoiceNumber", "INV-PDF")
         menu("printBtn")
         page.wait_for_selector("#appConfirmDialog[open]")
@@ -475,7 +514,7 @@ try:
         page.click("#appConfirmCancel"); page.wait_for_timeout(300)
         check("export check: Go back and fix opens the first problem field",
               page.evaluate("() => document.activeElement.id") == "companyName"
-              and "active" in page.get_attribute('[data-tab="details"]', "class"))
+              and "active" in page.get_attribute('[data-tab="invoice"]', "class"))
         page.focus("#moreBtn"); page.keyboard.press("ArrowDown")
         check("More menu opens from the keyboard with the first item focused",
               page.evaluate("() => document.activeElement.id") == "printBtn")
@@ -492,7 +531,7 @@ try:
         check("undo history starts fresh for the opened invoice", page.is_disabled("#undoBtn"))
         check("opening an invoice does not move it up the most-recently-changed list",
               "INV-PDF-1" in rows.first.text_content())
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#invoiceNumber", "INV-PDF-1"); page.wait_for_timeout(100)
         check("duplicate invoice number is flagged", page.is_visible("#invoiceNumberWarning"))
         page.fill("#invoiceNumber", "INV-PDF"); page.wait_for_timeout(100)
@@ -510,13 +549,13 @@ try:
         check("delete a saved invoice (with confirmation)", rows.count() == 2)
 
         # ---- client address book
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#clientName", "Acme Learning Ltd"); page.fill("#clientAddress", "1 High Street\nLondon")
         page.fill("#clientEmail", "accounts@acme.example")
         page.click("#saveClientBtn"); page.wait_for_timeout(100)
         check("save a client", "Acme Learning Ltd" in page.text_content("#savedClients"))
         page.click("#resetBtn"); page.wait_for_timeout(300)
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.select_option("#savedClients", label="Acme Learning Ltd"); page.wait_for_timeout(100)
         check("pick a saved client fills the Bill to fields",
               page.input_value("#clientAddress") == "1 High Street\nLondon" and "Acme Learning Ltd" in page.text_content("#pClientName"))
@@ -576,14 +615,14 @@ try:
 
         # ---- invoice numbering, typing flush, large logos
         page.set_viewport_size({"width": 1400, "height": 900})
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.fill("#invoiceNumber", "JF2026-09")
         page.click("#nextNumberBtn")
         check("Next number button increments with padding", page.input_value("#invoiceNumber") == "JF2026-10")
         page.fill("#reference", "typed just before reload")
         page.reload(); page.wait_for_timeout(400)
         check("typing saved just before a reload is not lost", page.input_value("#reference") == "typed just before reload")
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.set_input_files("#logoFile", BIG_LOGO); page.wait_for_timeout(1500)
         dims = page.evaluate("""() => new Promise(r => { const i = new Image();
             i.onload = () => r([i.naturalWidth, i.naturalHeight, window.SAInvoiceGenerator.state.logo.length]); i.src = window.SAInvoiceGenerator.state.logo; })""")
@@ -634,7 +673,7 @@ try:
         page.evaluate("() => localStorage.removeItem('invoiceStudio.lastBackupAt')"); page.reload(); page.wait_for_timeout(400)
         page.click("#backupLaterBtn"); page.reload(); page.wait_for_timeout(400)
         check("backup reminder Later snoozes it", page.is_hidden("#backupReminder"))
-        page.click("[data-tab=items]")
+        page.click("[data-tab=invoice]")
         page.set_input_files("#sheetFile", BROKEN); page.wait_for_timeout(600)
         check("errors stay on screen with a dismiss button",
               "error" in page.get_attribute("#toast", "class") and page.is_visible("#toast .toast-close"))
@@ -642,7 +681,7 @@ try:
         still = "show" in page.get_attribute("#toast", "class")
         page.click("#toast .toast-close")
         check("error is still shown after the normal fade time, and dismisses", still and "show" not in page.get_attribute("#toast", "class"))
-        page.click("[data-tab=details]")
+        page.click("[data-tab=invoice]")
         page.click("#reference"); page.keyboard.press("Control+z"); page.wait_for_timeout(100)
         check("first Ctrl+Z in a text field explains what undo does", "Ctrl+Z undoes your last change" in page.text_content("#toast"))
         page.keyboard.press("Control+y")

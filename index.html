@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.5.0">
+<meta name="sa-app-version" content="2.6.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
@@ -69,41 +69,16 @@
   </div>
   <div class="notice privacy-notice" id="privacyNotice"><span>Saved only in this browser on this device. Nothing is uploaded.</span><button class="notice-close" id="privacyNoticeClose" type="button" aria-label="Hide this message" title="Hide">&times;</button></div>
   <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <span class="notice-actions"><button class="btn small" id="backupNowBtn" type="button">Back up now</button><button class="btn small" id="backupLaterBtn" type="button" title="Remind me again in 7 days">Later</button></span></div>
-  <nav class="tabs">
-    <button class="tab" data-tab="invoices">Invoices</button>
-    <button class="tab active" data-tab="details">Details</button>
-    <button class="tab" data-tab="items">Items</button>
-    <button class="tab" data-tab="columns">Columns</button>
-    <button class="tab" data-tab="design">Design</button>
-    <button class="tab" data-tab="bundles">Bundles</button>
+  <nav class="tabs" role="tablist" aria-label="Editor">
+    <button class="tab active" type="button" role="tab" id="tabbtn-invoice" data-tab="invoice" aria-controls="tab-invoice" aria-selected="true">Invoice</button>
+    <button class="tab" type="button" role="tab" id="tabbtn-invoices" data-tab="invoices" aria-controls="tab-invoices" aria-selected="false" tabindex="-1">Saved</button>
+    <button class="tab" type="button" role="tab" id="tabbtn-design" data-tab="design" aria-controls="tab-design" aria-selected="false" tabindex="-1">Design</button>
   </nav>
 
-  <div class="tabpane" id="tab-invoices">
-    <section class="panel">
-      <div class="panelhead"><h2>Saved invoices</h2><span class="hint" id="invoiceCount"></span></div>
-      <div class="importbox">
-        <button class="btn small primary" id="newInvoiceBtn" type="button">New invoice</button>
-        <button class="btn small" id="duplicateInvoiceBtn" type="button">Duplicate</button>
-        <button class="btn small" id="blankInvoiceBtn" type="button">New blank</button>
-      </div>
-      <p class="hint">Every change is saved automatically. New invoice keeps your company details, design and payment details, clears the client and items, and uses the next unused number. New blank starts from the app defaults.</p>
-      <div class="field"><label for="invoiceSearch">Search</label><input id="invoiceSearch" type="search" placeholder="Invoice number or client" autocomplete="off"></div>
-      <div id="invoiceList" class="invoice-list" aria-live="polite"></div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><h2>Backup</h2><span class="hint" id="lastBackupHint"></span></div>
-      <p class="hint">Saves every invoice, client, template and brand to one file on your computer. Restoring adds them back and never deletes anything already here.</p>
-      <div class="importbox">
-        <button class="btn small primary" id="backupBtn" type="button">Back up everything</button>
-        <button class="btn small" id="restoreBtn" type="button">Restore from backup</button>
-        <input type="file" id="restoreFile" class="hidden" accept=".json,application/json">
-      </div>
-    </section>
-  </div>
-
-  <div class="tabpane active" id="tab-details">
-    <section class="panel">
-      <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
+  <div class="tabpane active" id="tab-invoice" role="tabpanel" aria-labelledby="tabbtn-invoice">
+    <details class="panel" id="panel-invoice" data-default="open" open>
+      <summary class="panelhead"><h2>Invoice</h2><span class="hint when-closed" id="sumInvoice"></span></summary>
+      <div class="panel-body">
       <div class="grid2">
         <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
         <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
@@ -111,24 +86,11 @@
         <div class="field"><label for="currency">Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
         <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
       </div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><h2>Your company</h2><span class="hint">Seller</span></div>
-      <div class="grid2">
-        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
-        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
-        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
-        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
-        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
-        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
-        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
-        <div class="field full"><label for="logoFile">Logo</label>
-<div class="logo-actions"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><button class="btn small danger" id="removeLogoBtn" type="button">Remove</button></div>
-<div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
-      </div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><h2>Bill to</h2><span class="hint">Customer</span></div>
+    </div>
+    </details>
+    <details class="panel" id="panel-client" data-default="open" open>
+      <summary class="panelhead"><h2>Bill to</h2><span class="hint when-closed" id="sumClient"></span></summary>
+      <div class="panel-body">
       <div class="grid2">
         <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
         <div class="field full"><label for="clientName">Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
@@ -137,24 +99,12 @@
         <div class="field full"><label for="clientAddress">Address</label><textarea id="clientAddress"></textarea></div>
         <div class="field full"><label for="clientEmail">Email</label><input id="clientEmail"></div>
       </div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><h2>Totals and footer</h2></div>
-      <div class="grid3">
-        <div class="field"><label for="discount">Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label for="tax">Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label for="shipping">Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
-        <div class="field full"><label for="notes">Notes</label><textarea id="notes" placeholder="Optional"></textarea></div>
-        <div class="field full"><label for="paymentDetails">Payment details</label><textarea id="paymentDetails"></textarea></div>
-        <div class="field full"><label for="terms">Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
-      </div>
-    </section>
-  </div>
-
-  <div class="tabpane" id="tab-items">
-    <section class="panel">
-      <div class="panelhead"><h2>Line items</h2><button class="btn small" id="addItemBtn">+ Add item</button></div>
-      <div class="importbox">
+    </div>
+    </details>
+    <details class="panel" id="panel-items" data-default="open" open>
+      <summary class="panelhead"><h2>Line items</h2><span class="hint" id="sumItems"></span></summary>
+      <div class="panel-body">
+      <div class="importbox"><button class="btn small primary" id="addItemBtn">+ Add item</button>
         <button class="btn small" id="importSheetBtn">Import CSV / Excel</button>
         <button class="btn small danger" id="clearItemsBtn">Clear all</button>
         <input id="sheetFile" class="hidden" type="file" accept=".csv,.xlsx,.xls">
@@ -162,60 +112,11 @@
       <p class="hint">Spreadsheet columns are matched against your current column names and common aliases.</p>
       <div class="import-check" id="importCheck" role="status" hidden></div>
       <div id="itemsEditor"></div>
-    </section>
-  </div>
-
-  <div class="tabpane" id="tab-columns">
-    <section class="panel">
-      <div class="panelhead"><h2>Column manager</h2><button class="btn small" id="addColumnBtn">+ Add column</button></div>
-      <p class="hint">Add, remove, rename, reorder, resize, align, or hide columns. One column can be assigned as Quantity, Rate and Amount.</p>
-      <div id="columnEditor"></div>
-      <button class="btn small" id="restoreColumnsBtn">Restore default columns</button>
-    </section>
-  </div>
-
-  <div class="tabpane" id="tab-design">
-    <section class="panel">
-      <div class="panelhead"><h2>Invoice template</h2><span class="hint">Live switching</span></div>
-      <div class="field"><label for="template">Design</label>
-        <select id="template">
-          <option value="modern">Modern</option>
-          <option value="minimal">Minimal</option>
-          <option value="classic">Classic, bordered table</option>
-          <option value="royalty">Royalty statement</option>
-        </select>
-        <div class="hint" id="fontHint" style="margin-top:6px"></div>
-      </div>
-      <div class="grid2" style="margin-top:10px">
-        <div class="field"><label for="accent">Accent colour</label><input id="accent" type="color" value="#46b751"></div>
-        <div class="field"><label for="accentHex">Accent HEX</label><input id="accentHex" value="#46b751"></div>
-        <div class="field"><label for="logoWidth">Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
-        <div class="field"><label for="logoHeight">Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
-        <div class="field"><label for="logoFit">Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
-        <div class="field"><label for="logoAlign">Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
-        <div class="field"><label for="logoFallback">Without a logo, show</label><select id="logoFallback"><option value="initial" selected>Company initial</option><option value="none">Nothing</option></select></div>
-      </div>
-    </section>
-    <section class="panel">
-      <div class="panelhead"><h2>Show / hide sections</h2></div>
-      <div id="sectionToggles"></div><div class="section" id="templateManagerSection">
-<h2>Brand & Template Library</h2>
-<div class="actions">
-<button class="btn small primary" id="saveTemplateBtn">Save Template</button>
-<button class="btn small" id="saveBrandBtn">Save Brand</button>
-</div>
-<div class="hint" style="margin-top:6px">Brands save your seller/company identity and visual setup without replacing client details, invoice numbers, dates or line items.</div>
-<div id="savedTemplates" class="hint"></div>
-<div id="savedBrands" class="hint"></div>
-</div>
-
-    </section>
-  </div>
-<div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar (double-click to reset)" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
-
-  <div class="tabpane" id="tab-bundles">
-    <section class="panel">
-      <div class="panelhead"><h2>Bundle name splitter</h2></div>
+    </div>
+    </details>
+    <details class="panel" id="panel-bundles" data-default="closed" open>
+      <summary class="panelhead"><h2>Royalty bundle splitter</h2><span class="hint">For royalty statements</span></summary>
+      <div class="panel-body">
       <p class="hint">Splits the Name column of a royalty sheet into course and bundle. Review the result, then apply it to the invoice as line items.</p>
       <label class="bundle-drop" id="bundleDrop" for="bundleFile">
         <strong>Drop a royalty sheet here</strong>
@@ -237,8 +138,125 @@
         <div class="bundle-meta" id="bundleMeta"></div>
         <div id="bundleResults"></div>
       </div>
-    </section>
+    </div>
+    </details>
+    <details class="panel" id="panel-totals" data-default="open" open>
+      <summary class="panelhead"><h2>Totals</h2><span class="hint" id="sumTotals"></span></summary>
+      <div class="panel-body">
+      <div class="grid3">
+        <div class="field"><label for="discount">Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="tax">Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="shipping">Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
+      </div>
+    </div>
+    </details>
+    <details class="panel" id="panel-footer" data-default="auto-footer" open>
+      <summary class="panelhead"><h2>Notes, payment and terms</h2><span class="hint when-closed" id="sumFooter"></span></summary>
+      <div class="panel-body">
+      <div class="grid3">
+        <div class="field full"><label for="notes">Notes</label><textarea id="notes" placeholder="Optional, shown on this invoice"></textarea></div>
+        <div class="field full"><label for="paymentDetails">Payment details</label><textarea id="paymentDetails" placeholder="Bank details or how to pay"></textarea></div>
+        <div class="field full"><label for="terms">Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
+      </div>
+    </div>
+    </details>
+    <details class="panel" id="panel-company" data-default="auto" open>
+      <summary class="panelhead"><h2>Your company</h2><span class="hint when-closed" id="sumCompany"></span></summary>
+      <div class="panel-body">
+      <div class="grid2">
+        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
+        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
+        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
+        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
+        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
+        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
+        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
+        <div class="field full"><label for="logoFile">Logo</label>
+<div class="logo-actions"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><button class="btn small danger" id="removeLogoBtn" type="button">Remove</button></div>
+<div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
+      </div>
+    </div>
+    </details>
   </div>
+
+  <div class="tabpane" id="tab-invoices" role="tabpanel" aria-labelledby="tabbtn-invoices">
+    <details class="panel" id="panel-saved" data-default="open" open>
+      <summary class="panelhead"><h2>Saved invoices</h2><span class="hint" id="invoiceCount"></span></summary>
+      <div class="panel-body">
+      <div class="importbox">
+        <button class="btn small primary" id="newInvoiceBtn" type="button">New invoice</button>
+        <button class="btn small" id="duplicateInvoiceBtn" type="button">Duplicate</button>
+        <button class="btn small" id="blankInvoiceBtn" type="button">New blank</button>
+      </div>
+      <p class="hint">Every change is saved automatically. New invoice keeps your company details, design and payment details, clears the client and items, and uses the next unused number. New blank starts from the app defaults.</p>
+      <div class="field"><label for="invoiceSearch">Search</label><input id="invoiceSearch" type="search" placeholder="Invoice number or client" autocomplete="off"></div>
+      <div id="invoiceList" class="invoice-list" aria-live="polite"></div>
+    </div>
+    </details>
+    <details class="panel" id="panel-backup" data-default="open" open>
+      <summary class="panelhead"><h2>Backup</h2><span class="hint" id="lastBackupHint"></span></summary>
+      <div class="panel-body">
+      <p class="hint">Saves every invoice, client, template and brand to one file on your computer. Restoring adds them back and never deletes anything already here.</p>
+      <div class="importbox">
+        <button class="btn small primary" id="backupBtn" type="button">Back up everything</button>
+        <button class="btn small" id="restoreBtn" type="button">Restore from backup</button>
+        <input type="file" id="restoreFile" class="hidden" accept=".json,application/json">
+      </div>
+    </div>
+    </details>
+  </div>
+
+  <div class="tabpane" id="tab-design" role="tabpanel" aria-labelledby="tabbtn-design">
+    <details class="panel" id="panel-template" data-default="open" open>
+      <summary class="panelhead"><h2>Invoice template</h2><span class="hint when-closed" id="sumTemplate"></span></summary>
+      <div class="panel-body">
+      <div class="field"><label for="template">Design</label>
+        <select id="template">
+          <option value="modern">Modern</option>
+          <option value="minimal">Minimal</option>
+          <option value="classic">Classic, bordered table</option>
+          <option value="royalty">Royalty statement</option>
+        </select>
+        <div class="hint" id="fontHint" style="margin-top:6px"></div>
+      </div>
+      <div class="grid2" style="margin-top:10px">
+        <div class="field"><label for="accent">Accent colour</label><input id="accent" type="color" value="#46b751"></div>
+        <div class="field"><label for="accentHex">Accent HEX</label><input id="accentHex" value="#46b751"></div>
+        <div class="field"><label for="logoWidth">Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
+        <div class="field"><label for="logoHeight">Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
+        <div class="field"><label for="logoFit">Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
+        <div class="field"><label for="logoAlign">Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
+        <div class="field"><label for="logoFallback">Without a logo, show</label><select id="logoFallback"><option value="initial" selected>Company initial</option><option value="none">Nothing</option></select></div>
+      </div>
+    </div>
+    </details>
+    <details class="panel" id="panel-columns" data-default="closed" open>
+      <summary class="panelhead"><h2>Columns</h2><span class="hint" id="sumColumns"></span></summary>
+      <div class="panel-body">
+      <div class="importbox panel-actions"><button class="btn small" id="addColumnBtn">+ Add column</button></div>
+      <p class="hint">Add, remove, rename, reorder, resize, align, or hide columns. One column can be assigned as Quantity, Rate and Amount.</p>
+      <div id="columnEditor"></div>
+      <button class="btn small" id="restoreColumnsBtn">Restore default columns</button>
+    </div>
+    </details>
+    <details class="panel" id="panel-sections" data-default="closed" open>
+      <summary class="panelhead"><h2>Show or hide sections</h2><span class="hint" id="sumSections"></span></summary>
+      <div class="panel-body"><div id="sectionToggles"></div></div>
+    </details>
+    <details class="panel" id="panel-library" data-default="closed" open>
+      <summary class="panelhead"><h2>Templates and brands</h2><span class="hint" id="sumLibrary"></span></summary>
+      <div class="panel-body" id="templateManagerSection">
+<div class="actions">
+<button class="btn small primary" id="saveTemplateBtn">Save Template</button>
+<button class="btn small" id="saveBrandBtn">Save Brand</button>
+</div>
+<div class="hint" style="margin-top:6px">Brands save your seller/company identity and visual setup without replacing client details, invoice numbers, dates or line items.</div>
+<div id="savedTemplates" class="hint"></div>
+<div id="savedBrands" class="hint"></div>
+      </div>
+    </details>
+  </div>
+<div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar (double-click to reset)" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
 
 </aside>
 
