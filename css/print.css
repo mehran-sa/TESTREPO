@@ -10,5 +10,5 @@
 @media print{
   .invoice-stage{width:auto!important;height:auto!important}
   .invoice-stage>.invoice{position:static!important;transform:none!important}
-  .jump-btn{display:none!important}
+  .jump-btn,.boot-error{display:none!important}
 }

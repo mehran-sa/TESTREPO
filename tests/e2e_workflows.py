@@ -168,6 +168,23 @@ try:
             page.click("#appConfirmAccept")
             page.wait_for_timeout(150)
 
+        # ---- start-up: the "could not start" banner must never flash
+        probe = """window.__bootFrames = []; const t = () => { const el = document.getElementById('bootError');
+            window.__bootFrames.push(!!el && getComputedStyle(el).visibility === 'visible' && el.getBoundingClientRect().height > 0);
+            if (window.__bootFrames.length < 90) requestAnimationFrame(t); }; requestAnimationFrame(t);"""
+        cboot = browser.new_context(); pb = cboot.new_page(); pb.add_init_script(probe)
+        if not SINGLE:
+            pb.route("**/js/app.js", lambda route: (time.sleep(0.5), route.continue_()))  # slow script load
+        pb.goto(URL); pb.wait_for_timeout(2000)
+        check("start-up error banner never flashes during a normal start",
+              not any(pb.evaluate("() => window.__bootFrames")) and pb.locator("#bootError").count() == 0)
+        cboot.close()
+        if not SINGLE:
+            cfail = browser.new_context(); pfail = cfail.new_page()
+            pfail.goto("file://" + os.path.join(ROOT, "index.html")); pfail.wait_for_timeout(3600)
+            check("start-up error banner still appears when the app cannot start", pfail.is_visible("#bootError"))
+            cfail.close()
+
         # ---- tabs and collapsible panels (fresh profile, first use)
         cfresh = browser.new_context(viewport={"width": 1400, "height": 900})
         cfresh.on("request", on_request)
