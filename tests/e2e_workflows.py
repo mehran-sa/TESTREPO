@@ -297,6 +297,14 @@ try:
         page.wait_for_timeout(50)
         check("accent HEX can be typed character by character",
               page.input_value("#accentHex") == "#ff0000" and page.input_value("#accent") == "#ff0000")
+        check("StaffAsia interface stays green when the invoice accent changes",
+              page.evaluate("() => getComputedStyle(document.getElementById('pdfBtn')).backgroundColor") == "rgb(70, 183, 81)"
+              and page.evaluate("() => getComputedStyle(document.querySelector('.tab.active')).borderBottomColor") == "rgb(70, 183, 81)")
+        check("brand fonts load from the app (Epilogue headings, Poppins interface)",
+              page.evaluate("() => document.fonts.check('700 16px Epilogue') && document.fonts.check('600 12px Poppins')")
+              and page.evaluate("() => getComputedStyle(document.querySelector('.brand-title h1')).fontFamily").startswith("Epilogue"))
+        check("the invoice keeps its own template font",
+              page.evaluate("() => getComputedStyle(document.getElementById('invoice')).fontFamily").startswith("Inter"))
         page.set_input_files("#logoFile", LOGO)
         page.wait_for_timeout(400)
         check("logo upload shows in preview", (page.get_attribute("#pLogo", "src") or "").startswith("data:image/png"))
@@ -645,6 +653,10 @@ try:
         check("phone: page fits the screen without sideways scrolling",
               pm.evaluate("() => document.documentElement.scrollWidth") <= 390
               and pm.evaluate("() => document.getElementById('invoiceStage').getBoundingClientRect().right") <= 390)
+        overflow = pm.evaluate("""() => [...document.querySelectorAll('.sidebar input:not([type=file]):not([type=checkbox]), .sidebar select, .sidebar textarea, .sidebar .btn')]
+            .filter(e => e.offsetParent).filter(e => { const p = e.closest('.panel') || e.closest('.sidebar');
+              return e.getBoundingClientRect().right > p.getBoundingClientRect().right + 0.5; }).map(e => e.id || e.className)""")
+        check("phone: no field or button sticks out of its panel", not overflow, str(overflow))
         check("phone: Preview button is shown", pm.is_visible("#jumpBtn") and "Preview" in pm.text_content("#jumpBtn"))
         pm.click("#jumpBtn"); pm.wait_for_timeout(900)
         check("phone: Preview button scrolls to the invoice, then offers Edit", "Edit" in pm.text_content("#jumpBtn"))

@@ -7,7 +7,7 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.4.0";
+export const APP_VERSION = "2.5.0";
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
@@ -62,7 +62,8 @@ export const LIMITS = {
 /** Typing edits are written to storage after this pause rather than per key. */
 export const AUTOSAVE_TYPING_DELAY_MS = 300;
 
-export const DEFAULT_ACCENT = "#2563eb";
+/** StaffAsia green: the default accent for new invoices (saved invoices keep theirs). */
+export const DEFAULT_ACCENT = "#46b751";
 export const DEFAULT_DUE_DAYS = 14;
 export const TOAST_MS = 2200;
 export const PRINT_SETTLE_MS = 180;
