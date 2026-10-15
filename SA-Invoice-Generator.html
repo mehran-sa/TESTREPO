@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.2.0">
+<meta name="sa-app-version" content="2.3.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
      (connect-src 'none'). Excel import uses the bundled js/vendor copy. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-SnG+f/ng1izZIZRZQp8hIqGrBNlxkZq6CyDZiFuTgGI='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-h+DJ6772RrKzbM50W0mYDH/dwHSnS3aEnPXmutLfol4='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI4IiB5MT0iOCIgeDI9IjU2IiB5Mj0iNTYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjU2M2ViIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdjM2FlZCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9InVybCgjZykiLz4KICA8cGF0aCBkPSJNMTkgMTNoMThsMTAgMTB2MjhIMTl6IiBmaWxsPSIjZmZmIi8+CiAgPHBhdGggZD0iTTM3IDEzdjExaDEwIiBmaWxsPSIjZGJlYWZlIi8+CiAgPHJlY3QgeD0iMjQiIHk9IjMwIiB3aWR0aD0iMTgiIGhlaWdodD0iMyIgcng9IjEuNSIgZmlsbD0iIzI1NjNlYiIvPgogIDxyZWN0IHg9IjI0IiB5PSIzNyIgd2lkdGg9IjE4IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMyNTYzZWIiIG9wYWNpdHk9Ii44MiIvPgogIDxyZWN0IHg9IjI0IiB5PSI0NCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMyNTYzZWIiIG9wYWNpdHk9Ii42NiIvPgo8L3N2Zz4K">
 <link rel="alternate icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAADIElEQVRYhb2WTWwNURTHf+fOfS3a0lQRX4umrc8UKWkiJDZWWomvbiQsiGBBRGKtCxvsWIqFiAUpDSUsm2BbQihFLHykkb5Sn5VX71q8zrw7fTNzp9I6yST3nvn4nfs/58y9gmX1hwbmqpw+CqYVaAQqlAFlQAwoCmP7En8MKCNhX/HeMIY+D67w8/OFu3cbf/tM8QcN+z+1C3IRqPJ9kwQP+/K8IM/27u7aF0EAY/CrdkBTAi/6s+pPfv3123NfSUF27/WUr7zEb54Mfqtdqwo5TweXSYODMrJqXuXQHg2m7f+u3Ppe3uzVQL0L3tyYYfUSXVAAECMogGAOv0YMd+6NpIarwrtrNFDpkr1lZYYDO2aQZEM/DE1NZZw9/TUdvHCvWrngY5GmssV1muPHquwVJsELcxd8IgEA1C3LcORoJRJRQ5EsF1yN5TytGaC+qYyDhyvdcAPKBZ+oAgB5A0vXlbF123RnW2sXXBlBjBtaUyHUVIR9vdMkEa7sAErhxZcnqoBvQRFGwmVcEZas3OqCFApEWor60kmyR3VBW8cX+t+PxjKXL9bcPFkdKBANl4Cl42RXMQEc3jKdvnfxASxdpIOxHUBIdsYXYcmDYVWwUtDaUk5rS3mqDEjUNwn7dJzs9m/UVuDBsxwDn//EQufXeGxYkQkUiJLd5ug0u5pdhNfuj/B2ID6AunlWADGyq3AA7i3VVuDcoaoobnQKiJY9dKXZz/+1DcUFZ9yfMGHfDuxM508+ZsMpWFjrcWJn6XbtK5B0RtBp4HYAm9dk+JD1QqAFs8NzOwDXAUW74ONT0NyQobkhVQYKf0JHirWCYTHMSnrw5fMctzrHlLBUKR7RQChuWr7v7dPRRDjwVZPnsYJNJbJb82ePcvT15hwHl+g+T4AD5o1SyOUo2UvSMelwECPdamSo5pIyPFURADdc/hkODHvlmfOqp0dGtZhdAlnnAbJk5e4+j4EbxOzr6Jk5qAC6uub0e3k2iqFvqmUHhhGz69TD2ht+wQbW3m7KvB/ZAx7sxrBCQXW07BNe+XeQfjHmtleeOd/RM3PQZ/4F4LjQfeYXilgAAAAASUVORK5CYII=">
 
@@ -68,18 +68,21 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 .actions{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:750;color:var(--ink)}
 .btn:hover{border-color:#9da9b9;transform:translateY(-1px)}
 .btn:disabled{opacity:.42;cursor:default}
-.btn:disabled:hover{border-color:var(--line);transform:none}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--danger)}.btn.small{padding:6px 8px;font-size:11px}.btn.icon{width:31px;height:31px;padding:0}
-.library-title{font-size:10px;font-weight:800;color:#475467;margin:10px 0 6px}.library-list{display:grid;gap:6px}.library-item{display:flex;align-items:center;gap:6px;padding:6px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}.library-item .library-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:700;color:#344054}.library-empty{font-size:10px;color:var(--muted);padding:3px 0}
-.confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #e4e7ec;background:#f9fafb}
-.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:800}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
+.btn:disabled:hover{border-color:var(--line);transform:none}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--danger)}.btn.small{padding:6px 9px;font-size:11.5px}.btn.icon{width:31px;height:31px;padding:0}
+.library-title{font-size:11.5px;font-weight:800;color:#475467;margin:10px 0 6px}.library-list{display:grid;gap:6px}.library-item{display:flex;align-items:center;gap:6px;padding:6px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}.library-item .library-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:700;color:#344054}.library-empty{font-size:11.5px;color:var(--muted);padding:3px 0}
+.confirm-dialog{width:min(420px,calc(100vw - 32px));border:0;border-radius:12px;padding:0;box-shadow:0 24px 70px rgba(16,24,40,.28);color:var(--ink)}.confirm-dialog::backdrop{background:rgba(16,24,40,.45)}.confirm-dialog .dialog-body{padding:18px}.confirm-dialog h3{margin:0 0 7px;font-size:15px}.confirm-dialog p{margin:0;color:#475467;font-size:12px;line-height:1.5}.confirm-dialog .dialog-list{margin:10px 0 0;padding-left:18px;color:#344054;font-size:12.5px;line-height:1.5}.confirm-dialog .dialog-list li+li{margin-top:4px}
+.confirm-dialog .field{margin-top:12px}.confirm-dialog p[hidden]{display:none}
+.confirm-dialog .dialog-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #e4e7ec;background:#f9fafb}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#f1f4f8;padding:5px;border-radius:10px;margin-bottom:14px}.tab{border:0;background:transparent;border-radius:7px;padding:8px 4px;font-size:11.5px;font-weight:750;color:#344054}.tab.active{background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.08);color:var(--accent)}
 .tabpane{display:none}.tabpane.active{display:block}
-.panel{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--panel)}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panelhead h2{font-size:13px;margin:0}.hint{font-size:10px;color:var(--muted)}
+.panel{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--panel)}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panelhead h2{font-size:14px;margin:0}.hint{font-size:11.5px;line-height:1.45;color:#5b6475}
 .grid2,.grid3{display:grid;gap:10px}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}.full{grid-column:1/-1}
-.field label{display:block;font-size:9.5px;font-weight:850;text-transform:uppercase;letter-spacing:.05em;color:#475467;margin-bottom:4px}.field input,.field select,.field textarea{width:100%;border:1px solid #cfd6e0;border-radius:8px;padding:8px 9px;background:#fff;min-height:36px}.field textarea{min-height:69px;resize:vertical}.field textarea.compact-textarea{min-height:54px}
-.toggleline{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e0e5ec;font-size:12px}.toggleline:last-child{border-bottom:0}.switch{position:relative;width:38px;height:21px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#c9d1dc;border-radius:20px;transition:.2s}.slider:before{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(17px)}
-.columnrow{border:1px solid #dde3eb;border-radius:9px;padding:9px;margin-bottom:8px;background:#fbfcfe}.columnhead{display:flex;align-items:center;gap:6px;margin-bottom:7px}.drag{color:#98a2b3;cursor:grab;font-size:17px}.columnhead strong{font-size:11px;flex:1}.colgrid{display:grid;grid-template-columns:1.2fr .8fr .6fr;gap:7px}.tiny{font-size:10px}
-.itemcard{border:1px solid #dde3eb;border-radius:9px;padding:10px;margin-bottom:8px;background:#fbfcfe}.itemtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.itemtop strong{font-size:11px}.itemgrid{display:grid;gap:7px;grid-template-columns:repeat(2,1fr)}.itemgrid .field textarea{min-height:48px}
-.importbox{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.notice{font-size:11px;color:#475467;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.14);padding:9px;border-radius:9px;margin-bottom:12px}
+/* Labels: readable size, sentence case (they were 9.5px grey capitals). */
+.field label{display:block;font-size:12px;font-weight:650;color:#344054;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #cfd6e0;border-radius:8px;padding:8px 9px;background:#fff;min-height:36px}.field textarea{min-height:69px;resize:vertical}.field textarea.compact-textarea{min-height:54px}
+.toggleline{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e0e5ec;font-size:13px}.toggleline:last-child{border-bottom:0}.switch{position:relative;width:38px;height:21px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#c9d1dc;border-radius:20px;transition:.2s}.slider:before{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(17px)}
+.columnrow{border:1px solid #dde3eb;border-radius:9px;padding:9px;margin-bottom:8px;background:#fbfcfe}.columnhead{display:flex;align-items:center;gap:6px;margin-bottom:7px}.drag{color:#98a2b3;cursor:grab;font-size:17px}.columnhead strong{font-size:12px;flex:1}.colgrid{display:grid;grid-template-columns:1.2fr .8fr .6fr;gap:7px}.tiny{font-size:11.5px}
+.itemcard{border:1px solid #dde3eb;border-radius:9px;padding:10px;margin-bottom:8px;background:#fbfcfe}.itemtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.itemtop strong{font-size:12px}.itemgrid{display:grid;gap:7px;grid-template-columns:repeat(2,1fr)}.itemgrid .field textarea{min-height:48px}
+.importbox{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.notice{font-size:12px;line-height:1.45;color:#475467;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.14);padding:9px;border-radius:9px;margin-bottom:12px}
 .hidden{display:none!important}
 .field-warning{margin-top:4px;color:var(--danger)}
 /* Saved invoices list */
@@ -87,8 +90,8 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 .invoice-row{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #e0e5ec;border-radius:8px;background:#fbfcfe}
 .invoice-row.current{border-color:var(--accent);background:rgba(var(--accent-rgb),.05)}
 .invoice-row .invoice-main{flex:1;min-width:0}
-.invoice-row .invoice-number{font-size:12px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.invoice-row .invoice-sub{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-number{font-size:13px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invoice-row .invoice-sub{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .invoice-row .invoice-total{font-size:11.5px;font-weight:750;white-space:nowrap}
 .invoice-row .invoice-open-now{font-size:10px;font-weight:800;color:var(--accent);white-space:nowrap}
 .invoice-empty{font-size:11px;color:var(--muted);padding:6px 0}
@@ -113,6 +116,22 @@ body.resizing-sidebar{cursor:col-resize;user-select:none}
 /* Start-up failure banner; removed by js/app.js as soon as the app runs. */
 .boot-error{position:sticky;top:0;z-index:100;padding:12px 16px;background:#fef3f2;border-bottom:1px solid #fecdca;color:#7a271a;font-size:13px;line-height:1.5}
 .boot-error code{background:#fff;border:1px solid #fecdca;border-radius:4px;padding:1px 4px}
+
+/* Save status next to the app name */
+.save-state{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:11.5px;font-weight:650;color:#475467;padding:4px 9px;border-radius:999px;background:#f2f4f7;white-space:nowrap}
+.save-state .save-dot{width:7px;height:7px;border-radius:50%;background:#12b76a}
+.save-state.pending .save-dot{background:#98a2b3}
+.save-state.held{background:#fffaeb;color:#7a4d00}.save-state.held .save-dot{background:#f79009}
+.save-state.failed{background:#fef3f2;color:#b42318}.save-state.failed .save-dot{background:#d92d20}
+
+/* Toolbar "More" menu */
+.menu-wrap{position:relative}
+.menu{position:absolute;top:calc(100% + 4px);left:0;z-index:40;min-width:232px;display:grid;gap:1px;padding:5px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 40px rgba(16,24,40,.16)}
+.menu[hidden]{display:none}
+.menu.align-right{left:auto;right:0}
+.menu-item{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:7px;padding:9px 10px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.menu-item:hover,.menu-item:focus-visible{background:#f2f4f7;outline:none}
+.menu-sep{height:1px;background:#eaecf0;margin:4px 2px}
 
 /* css/bundles.css */
 /* Bundles tab: royalty sheet import, bundle grouping and summary.
@@ -837,16 +856,23 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
 <aside class="sidebar" id="sidebar">
   <div class="topbar">
     <div class="brand"><div class="mark" aria-hidden="true">SA</div><div><h1>SA Invoice Generator</h1><p>Templates, columns and royalty imports<span class="resize-hint"> · drag right edge to resize</span></p></div></div>
+    <div class="save-state" id="saveState" aria-live="off"><span class="save-dot" aria-hidden="true"></span><span id="saveStateText">Saved</span></div>
   </div>
   <div class="actions">
     <button class="btn" id="undoBtn" disabled title="Undo the last invoice change (Ctrl/Cmd + Z)" aria-keyshortcuts="Control+Z Meta+Z">Undo</button>
     <button class="btn" id="redoBtn" disabled title="Redo (Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z)" aria-keyshortcuts="Control+Y Meta+Y Control+Shift+Z Meta+Shift+Z">Redo</button>
     <button class="btn primary" id="pdfBtn" title="Opens the browser print dialog for an A4 invoice. Choose Save as PDF.">Export PDF</button>
-    <button class="btn" id="printBtn" title="Prints only the invoice, never the editor/sidebar.">Print</button>
-    <button class="btn" id="exportBtn">Export JSON</button>
-    <button class="btn" id="importBtn">Import JSON</button>
-    <button class="btn" id="resetTextBtn" title="Clears text entered in the current invoice. Saved templates and brands are kept.">Reset Text</button>
-    <button class="btn" id="resetBtn" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
+    <button class="btn" id="resetBtn" type="button" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
+    <div class="menu-wrap">
+      <button class="btn" id="moreBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="moreMenu">More <span aria-hidden="true">&#9662;</span></button>
+      <div class="menu" id="moreMenu" role="menu" aria-labelledby="moreBtn" hidden>
+        <button class="menu-item" id="printBtn" type="button" role="menuitem" title="Prints only the invoice, never the editor.">Print</button>
+        <button class="menu-item" id="exportBtn" type="button" role="menuitem" title="Saves this invoice as a file you can import later or on another device.">Export JSON (this invoice)</button>
+        <button class="menu-item" id="importBtn" type="button" role="menuitem" title="Opens an exported invoice file as a new saved invoice.">Import JSON as new invoice</button>
+        <div class="menu-sep" role="separator"></div>
+        <button class="menu-item" id="resetTextBtn" type="button" role="menuitem" title="Clears the text in this invoice. Amounts, saved templates and brands are kept.">Reset text</button>
+      </div>
+    </div>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
   <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Back up everything on the Invoices tab to keep a copy.</div>
@@ -888,23 +914,23 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
       <div class="grid2">
         <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
-        <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
-        <div class="field"><label>Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
-        <div class="field"><label>Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
-        <div class="field"><label>Reference / PO</label><input id="reference"></div>
+        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
+        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
+        <div class="field"><label for="currency">Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
+        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
       </div>
     </section>
     <section class="panel">
       <div class="panelhead"><h2>Your company</h2><span class="hint">Seller</span></div>
       <div class="grid2">
-        <div class="field full"><label>Company name</label><input id="companyName" value="Your Company Ltd."></div>
-        <div class="field"><label>Registration number</label><input id="companyReg"></div>
-        <div class="field"><label>VAT / tax number</label><input id="companyVat"></div>
-        <div class="field full"><label>Address</label><textarea id="companyAddress"></textarea></div>
-        <div class="field"><label>Phone</label><input id="companyPhone"></div>
-        <div class="field"><label>Email</label><input id="companyEmail"></div>
-        <div class="field"><label>Website</label><input id="companyWebsite"></div>
-        <div class="field full"><label>Logo</label>
+        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
+        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
+        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
+        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
+        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
+        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
+        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
+        <div class="field full"><label for="logoFile">Logo</label>
 <div class="logo-actions"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><button class="btn small danger" id="removeLogoBtn" type="button">Remove</button></div>
 <div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
       </div>
@@ -913,22 +939,22 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       <div class="panelhead"><h2>Bill to</h2><span class="hint">Customer</span></div>
       <div class="grid2">
         <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
-        <div class="field full"><label>Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
-        <div class="field"><label>Contact</label><input id="clientContact"></div>
-        <div class="field"><label>VAT / tax</label><input id="clientTax"></div>
-        <div class="field full"><label>Address</label><textarea id="clientAddress"></textarea></div>
-        <div class="field full"><label>Email</label><input id="clientEmail"></div>
+        <div class="field full"><label for="clientName">Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
+        <div class="field"><label for="clientContact">Contact</label><input id="clientContact"></div>
+        <div class="field"><label for="clientTax">VAT / tax</label><input id="clientTax"></div>
+        <div class="field full"><label for="clientAddress">Address</label><textarea id="clientAddress"></textarea></div>
+        <div class="field full"><label for="clientEmail">Email</label><input id="clientEmail"></div>
       </div>
     </section>
     <section class="panel">
       <div class="panelhead"><h2>Totals and footer</h2></div>
       <div class="grid3">
-        <div class="field"><label>Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label>Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label>Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
-        <div class="field full"><label>Notes</label><textarea id="notes" placeholder="Optional"></textarea></div>
-        <div class="field full"><label>Payment details</label><textarea id="paymentDetails"></textarea></div>
-        <div class="field full"><label>Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
+        <div class="field"><label for="discount">Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="tax">Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="shipping">Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
+        <div class="field full"><label for="notes">Notes</label><textarea id="notes" placeholder="Optional"></textarea></div>
+        <div class="field full"><label for="paymentDetails">Payment details</label><textarea id="paymentDetails"></textarea></div>
+        <div class="field full"><label for="terms">Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
       </div>
     </section>
   </div>
@@ -959,7 +985,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   <div class="tabpane" id="tab-design">
     <section class="panel">
       <div class="panelhead"><h2>Invoice template</h2><span class="hint">Live switching</span></div>
-      <div class="field"><label>Design</label>
+      <div class="field"><label for="template">Design</label>
         <select id="template">
           <option value="modern">Modern Professional</option>
           <option value="minimal">Janets PDF - Exact Layout</option>
@@ -969,12 +995,12 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         <div class="hint" id="fontHint" style="margin-top:6px">Font: Inter / Segoe UI</div><div class="hint" style="margin-top:3px">Measured PDF sizes: 27.75 pt invoice title, 12 pt invoice number, 11.25 pt balance, and 9.75 pt body/table text. Nimbus Sans is used when installed; Helvetica/Arial is the fallback.</div>
       </div>
       <div class="grid2" style="margin-top:10px">
-        <div class="field"><label>Accent colour</label><input id="accent" type="color" value="#2563eb"></div>
-        <div class="field"><label>Accent HEX</label><input id="accentHex" value="#2563eb"></div>
-        <div class="field"><label>Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
-        <div class="field"><label>Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
-        <div class="field"><label>Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
-        <div class="field"><label>Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
+        <div class="field"><label for="accent">Accent colour</label><input id="accent" type="color" value="#2563eb"></div>
+        <div class="field"><label for="accentHex">Accent HEX</label><input id="accentHex" value="#2563eb"></div>
+        <div class="field"><label for="logoWidth">Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
+        <div class="field"><label for="logoHeight">Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
+        <div class="field"><label for="logoFit">Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
+        <div class="field"><label for="logoAlign">Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
       </div>
     </section>
     <section class="panel">
@@ -1080,10 +1106,23 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   <div class="dialog-body">
     <h3 id="appConfirmTitle"></h3>
     <p id="appConfirmMessage"></p>
+    <ul class="dialog-list" id="appConfirmList" hidden></ul>
   </div>
   <div class="dialog-actions">
     <button class="btn" type="button" id="appConfirmCancel">Cancel</button>
     <button class="btn primary" type="button" id="appConfirmAccept">Confirm</button>
+  </div>
+</dialog>
+<dialog class="confirm-dialog" id="appPromptDialog" aria-labelledby="appPromptTitle">
+  <div class="dialog-body">
+    <h3 id="appPromptTitle"></h3>
+    <p id="appPromptMessage"></p>
+    <div class="field"><label for="appPromptInput" id="appPromptLabel"></label><input id="appPromptInput" autocomplete="off" aria-describedby="appPromptError"></div>
+    <div class="hint field-warning" id="appPromptError" role="alert" hidden></div>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn" type="button" id="appPromptCancel">Cancel</button>
+    <button class="btn primary" type="button" id="appPromptAccept">Save</button>
   </div>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1097,7 +1136,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   };
 
   // js/constants.js
-  var APP_VERSION = "2.2.0";
+  var APP_VERSION = "2.3.0";
   var DATA_VERSION = 2;
   var STORAGE_KEYS = {
     invoice: "invoiceStudioPro.v2",
@@ -2299,12 +2338,26 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var onInvoiceWritten = (fn) => {
     writeListeners.add(fn);
   };
+  var saveStateListeners = /* @__PURE__ */ new Set();
+  var currentSaveState = { status: "saved", at: null };
+  var onSaveState = (fn) => {
+    saveStateListeners.add(fn);
+    fn(currentSaveState);
+  };
+  function setSaveState(status) {
+    currentSaveState = { status, at: status === "saved" ? /* @__PURE__ */ new Date() : currentSaveState.at };
+    saveStateListeners.forEach((fn) => fn(currentSaveState));
+  }
   function writeNow({ record = true } = {}) {
     if (pendingWrite !== null) {
       clearTimeout(pendingWrite);
       pendingWrite = null;
     }
-    if (writesStopped || writesHeld) return true;
+    if (writesStopped) return true;
+    if (writesHeld) {
+      setSaveState("held");
+      return true;
+    }
     const snapshot = serialize();
     const text2 = JSON.stringify(snapshot);
     let stored = writeRaw(STORAGE_KEYS.invoice, text2);
@@ -2322,6 +2375,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       toast("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
     }
     lastSaveOk = stored;
+    setSaveState(stored ? "saved" : "failed");
     if (stored) writeListeners.forEach((fn) => fn(text2, recordText));
     return stored;
   }
@@ -2335,7 +2389,10 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     };
   }
   function holdInvoiceWrites(hold) {
+    const wasHeld = writesHeld;
     writesHeld = Boolean(hold);
+    if (writesHeld) setSaveState("held");
+    else if (wasHeld) setSaveState("saved");
   }
   function writeInvoiceNow(options) {
     return writeNow(options);
@@ -2354,6 +2411,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     if (options && options.typing) {
       if (pendingWrite !== null) clearTimeout(pendingWrite);
       pendingWrite = setTimeout(() => writeNow(), AUTOSAVE_TYPING_DELAY_MS);
+      if (!writesHeld) setSaveState("pending");
     } else {
       stored = writeNow();
     }
@@ -2494,15 +2552,111 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     warning.hidden = !backwards;
   }
 
+  // js/ui/confirm-dialog.js
+  function confirmAction({ title, message, list: list2 = [], confirmLabel = "Confirm", cancelLabel = "Cancel", danger = false }) {
+    const dialog = $("appConfirmDialog");
+    if (!dialog || typeof dialog.showModal !== "function") {
+      const points = list2.length ? "\n\n- " + list2.join("\n- ") : "";
+      return Promise.resolve(window.confirm(`${title}
+
+${message}${points}`));
+    }
+    $("appConfirmTitle").textContent = title;
+    $("appConfirmMessage").textContent = message;
+    const listEl = $("appConfirmList");
+    if (listEl) {
+      listEl.textContent = "";
+      for (const point of list2) {
+        const li = document.createElement("li");
+        li.textContent = point;
+        listEl.appendChild(li);
+      }
+      listEl.hidden = !list2.length;
+    }
+    const cancel = $("appConfirmCancel");
+    const accept = $("appConfirmAccept");
+    cancel.textContent = cancelLabel;
+    accept.textContent = confirmLabel;
+    accept.classList.toggle("danger", danger);
+    accept.classList.toggle("primary", !danger);
+    dialog.returnValue = "";
+    return new Promise((resolve) => {
+      cancel.onclick = () => dialog.close("cancel");
+      accept.onclick = () => dialog.close("confirm");
+      dialog.onclose = () => {
+        dialog.onclose = null;
+        cancel.onclick = null;
+        accept.onclick = null;
+        resolve(dialog.returnValue === "confirm");
+      };
+      dialog.showModal();
+      cancel.focus();
+    });
+  }
+  function promptText({ title, message = "", label, value = "", placeholder = "", confirmLabel = "Save", validate }) {
+    const dialog = $("appPromptDialog");
+    const check = (text2) => validate ? validate(text2) : text2 ? "" : "Enter a name.";
+    if (!dialog || typeof dialog.showModal !== "function") {
+      const entered = window.prompt(`${title}${message ? "\n\n" + message : ""}`, value);
+      if (entered === null) return Promise.resolve(null);
+      return Promise.resolve(check(entered.trim()) ? null : entered.trim());
+    }
+    const input = $("appPromptInput");
+    const error = $("appPromptError");
+    const accept = $("appPromptAccept");
+    const cancel = $("appPromptCancel");
+    $("appPromptTitle").textContent = title;
+    $("appPromptMessage").textContent = message;
+    $("appPromptMessage").hidden = !message;
+    $("appPromptLabel").textContent = label;
+    input.value = value;
+    input.placeholder = placeholder;
+    error.hidden = true;
+    accept.textContent = confirmLabel;
+    dialog.returnValue = "";
+    return new Promise((resolve) => {
+      const submit = () => {
+        const problem = check(input.value.trim());
+        if (problem) {
+          error.textContent = problem;
+          error.hidden = false;
+          input.focus();
+          return;
+        }
+        dialog.close("confirm");
+      };
+      accept.onclick = submit;
+      cancel.onclick = () => dialog.close("cancel");
+      input.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        }
+      };
+      input.oninput = () => {
+        error.hidden = true;
+      };
+      dialog.onclose = () => {
+        dialog.onclose = null;
+        accept.onclick = cancel.onclick = input.onkeydown = input.oninput = null;
+        resolve(dialog.returnValue === "confirm" ? input.value.trim() : null);
+      };
+      dialog.showModal();
+      input.focus();
+      input.select();
+    });
+  }
+
   // js/editor/items.js
   var isNumericType = (type) => NUMERIC_COLUMN_TYPES.includes(type);
   var isDescriptionField = (col) => col.type === "text" && col.key === "description";
   var inputTypeFor = (col) => isNumericType(col.type) ? "number" : col.type === "date" ? "date" : "text";
-  var itemFieldMarkup = (col, item) => {
+  var itemFieldMarkup = (col, item, itemIndex, colIndex) => {
     const value = esc(item[col.key] ?? "");
     const key = esc(col.key);
-    const control = isDescriptionField(col) ? `<textarea data-key="${key}">${value}</textarea>` : `<input data-key="${key}" type="${inputTypeFor(col)}" step="0.01" value="${value}">`;
-    return `<div class="field ${isDescriptionField(col) ? "full" : ""}"><label>${esc(col.label)}</label>${control}</div>`;
+    const id = `item-${itemIndex}-field-${colIndex}`;
+    const control = isDescriptionField(col) ? `<textarea id="${id}" data-key="${key}">${value}</textarea>` : `<input id="${id}" data-key="${key}" type="${inputTypeFor(col)}" step="0.01" value="${value}">`;
+    return `<div class="field ${isDescriptionField(col) ? "full" : ""}"><label for="${id}">${esc(col.label)}</label>${control}</div>`;
   };
   function renderItems() {
     const root = $("itemsEditor");
@@ -2511,7 +2665,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       const card = document.createElement("div");
       card.className = "itemcard";
       const editable = editableColumns();
-      card.innerHTML = `<div class="itemtop"><strong>Item ${idx + 1}</strong><button class="btn small danger">Remove</button></div><div class="itemgrid">${editable.map((c) => itemFieldMarkup(c, item)).join("")}</div>`;
+      card.innerHTML = `<div class="itemtop"><strong>Item ${idx + 1}</strong><button class="btn small danger" type="button" aria-label="Remove item ${idx + 1}">Remove</button></div><div class="itemgrid">${editable.map((c, ci) => itemFieldMarkup(c, item, idx, ci)).join("")}</div>`;
       card.querySelector("button").onclick = () => {
         removeItemAt(idx);
         renderItems();
@@ -2537,8 +2691,15 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       renderPreview();
       saveInvoice();
     };
-    $("clearItemsBtn").onclick = () => {
-      if (!confirm("Remove all line items?")) return;
+    $("clearItemsBtn").onclick = async () => {
+      if (!state.items.length) return;
+      const ok = await confirmAction({
+        title: "Remove all line items?",
+        message: `All ${state.items.length} line item${state.items.length === 1 ? "" : "s"} will be removed from this invoice. You can bring them back with Undo.`,
+        confirmLabel: "Remove all",
+        danger: true
+      });
+      if (!ok) return;
       clearItems();
       renderItems();
       renderPreview();
@@ -2551,7 +2712,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   function normalizeKey(value) {
     return String(value || "column").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "column";
   }
-  var columnRowMarkup = (col, idx) => `<div class="columnhead"><span class="drag">\u2630</span><strong>Column ${idx + 1}</strong><label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label><button class="btn icon danger">\xD7</button></div><div class="colgrid"><div class="field"><label>Heading</label><input class="labelinput" value="${esc(col.label)}"></div><div class="field"><label>Type</label><select class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div><div class="field"><label>Width %</label><input class="width" type="number" min="5" max="80" value="${num(col.width)}"></div><div class="field"><label>Alignment</label><select class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div><div class="field"><label>Calculation role</label><select class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div></div>`;
+  var columnRowMarkup = (col, idx) => `<div class="columnhead"><span class="drag" aria-hidden="true" title="Drag to reorder">\u2630</span><strong>Column ${idx + 1}</strong><label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label><button class="btn icon danger" type="button" aria-label="Remove column ${idx + 1}" title="Remove column">\xD7</button></div><div class="colgrid"><div class="field"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div><div class="field"><label for="col-${idx}-type">Type</label><select id="col-${idx}-type" class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div><div class="field"><label for="col-${idx}-width">Width %</label><input id="col-${idx}-width" class="width" type="number" min="5" max="80" value="${num(col.width)}"></div><div class="field"><label for="col-${idx}-align">Alignment</label><select id="col-${idx}-align" class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div><div class="field"><label for="col-${idx}-role">Calculation role</label><select id="col-${idx}-role" class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div></div>`;
   function renderColumns() {
     const root = $("columnEditor");
     root.innerHTML = "";
@@ -2629,8 +2790,13 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       renderPreview();
       saveInvoice();
     };
-    $("restoreColumnsBtn").onclick = () => {
-      if (!confirm("Restore the default five columns?")) return;
+    $("restoreColumnsBtn").onclick = async () => {
+      const ok = await confirmAction({
+        title: "Restore the default columns?",
+        message: "The columns go back to SKU, Description, Qty, Rate and Amount. Values in the line items are kept. You can go back with Undo.",
+        confirmLabel: "Restore columns"
+      });
+      if (!ok) return;
       setColumns(defaultColumns());
       renderColumns();
       renderItems();
@@ -2879,11 +3045,71 @@ ${collectStyleMarkup()}
     return frame;
   }
 
+  // js/print/export-check.js
+  var EXAMPLE_COMPANY_NAME = "Your Company Ltd.";
+  var COMPANY_DETAIL_FIELDS = ["companyReg", "companyVat", "companyAddress", "companyPhone", "companyEmail", "companyWebsite"];
+  var CLIENT_DETAIL_FIELDS = ["clientContact", "clientTax", "clientAddress", "clientEmail"];
+  function findExportIssues() {
+    const issues = [];
+    const add = (text2, tab, field) => issues.push({ text: text2, tab, field });
+    const shown = (key) => state.sections[key] !== false;
+    const number = trimmedField("invoiceNumber");
+    if (!number) add('There is no invoice number. It will print as "Untitled".', "details", "invoiceNumber");
+    else if (invoicesWithNumber(number, state.invoiceId).length) {
+      add(`Another saved invoice already uses number ${number}.`, "details", "invoiceNumber");
+    }
+    if (shown("invoiceDate") && !fieldValue("invoiceDate")) add("There is no invoice date.", "details", "invoiceDate");
+    const issued = fieldValue("invoiceDate");
+    const due = fieldValue("dueDate");
+    if (shown("dueDate") && isIsoDate(issued) && isIsoDate(due) && due < issued) {
+      add("The due date is before the invoice date.", "details", "dueDate");
+    }
+    if (shown("company")) {
+      const name = trimmedField("companyName");
+      if (!name) add('Your company name is empty. It will print as "Your Company".', "details", "companyName");
+      else if (name === EXAMPLE_COMPANY_NAME) add(`Your company name is still the example "${EXAMPLE_COMPANY_NAME}".`, "details", "companyName");
+      if (!COMPANY_DETAIL_FIELDS.some((id) => trimmedField(id))) {
+        add('Your company details are empty. "Add your company details" will print instead.', "details", "companyAddress");
+      }
+    }
+    if (shown("client")) {
+      if (!trimmedField("clientName")) add('The client is empty. "Client company" will print instead.', "details", "clientName");
+      if (!CLIENT_DETAIL_FIELDS.some((id) => trimmedField(id))) {
+        add('The client details are empty. "Add client details" will print instead.', "details", "clientAddress");
+      }
+    }
+    if (!state.items.length) add("There are no line items.", "items", "addItemBtn");
+    else if (getTotals().total === 0) add(`The invoice total is ${money(0)}.`, "items", "addItemBtn");
+    return issues;
+  }
+  function goToIssue(issue) {
+    qs(`.tab[data-tab="${issue.tab}"]`)?.click();
+    const el = $(issue.field);
+    if (!el) return;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.focus({ preventScroll: true });
+  }
+
   // js/print/pdf.js
-  function printInvoice() {
+  async function readyToPrint(action) {
+    const issues = findExportIssues();
+    if (!issues.length) return true;
+    const go = await confirmAction({
+      title: "Check before you " + action,
+      message: issues.length === 1 ? "This invoice may not be ready:" : `This invoice may not be ready (${issues.length} things to check):`,
+      list: issues.map((i) => i.text),
+      confirmLabel: action === "print" ? "Print anyway" : "Export anyway",
+      cancelLabel: "Go back and fix"
+    });
+    if (!go) goToIssue(issues[0]);
+    return go;
+  }
+  async function printInvoice() {
+    if (!await readyToPrint("print")) return null;
     return buildInvoicePrintDocument(true);
   }
-  function exportInvoicePDF() {
+  async function exportInvoicePDF() {
+    if (!await readyToPrint("export")) return null;
     toast("Choose \u201CSave as PDF\u201D in the print dialog.");
     return buildInvoicePrintDocument(true);
   }
@@ -3130,7 +3356,7 @@ ${collectStyleMarkup()}
   // js/editor/sections.js
   function renderToggles() {
     const root = $("sectionToggles");
-    root.innerHTML = SECTION_DEFS.map(([key, label]) => `<div class="toggleline"><span>${label}</span><label class="switch"><input type="checkbox" data-section-toggle="${key}" ${state.sections[key] ? "checked" : ""}><span class="slider"></span></label></div>`).join("");
+    root.innerHTML = SECTION_DEFS.map(([key, label]) => `<div class="toggleline"><span>${label}</span><label class="switch"><input type="checkbox" aria-label="Show ${label}" data-section-toggle="${key}" ${state.sections[key] ? "checked" : ""}><span class="slider"></span></label></div>`).join("");
     root.querySelectorAll("[data-section-toggle]").forEach((el) => {
       el.onchange = () => {
         setSection(el.dataset.sectionToggle, el.checked);
@@ -3305,36 +3531,6 @@ ${collectStyleMarkup()}
     setAccent(currentAccent());
     renderPreview();
     saveInvoice();
-  }
-
-  // js/ui/confirm-dialog.js
-  function confirmAction({ title, message, confirmLabel = "Confirm", cancelLabel = "Cancel", danger = false }) {
-    const dialog = $("appConfirmDialog");
-    if (!dialog || typeof dialog.showModal !== "function") {
-      return Promise.resolve(window.confirm(`${title}
-
-${message}`));
-    }
-    $("appConfirmTitle").textContent = title;
-    $("appConfirmMessage").textContent = message;
-    const cancel = $("appConfirmCancel");
-    const accept = $("appConfirmAccept");
-    cancel.textContent = cancelLabel;
-    accept.textContent = confirmLabel;
-    accept.classList.toggle("danger", danger);
-    accept.classList.toggle("primary", !danger);
-    dialog.returnValue = "";
-    return new Promise((resolve) => {
-      cancel.onclick = () => dialog.close("cancel");
-      accept.onclick = () => dialog.close("confirm");
-      dialog.onclose = () => {
-        dialog.onclose = null;
-        cancel.onclick = null;
-        accept.onclick = null;
-        resolve(dialog.returnValue === "confirm");
-      };
-      dialog.showModal();
-    });
   }
 
   // js/invoice/reset-text.js
@@ -3705,14 +3901,20 @@ ${message}`));
       toast(`Template "${entry.name}" could not be loaded. The current invoice was not changed.`);
     }
   }
-  function deleteTemplate(index) {
-    const list2 = listTemplates();
-    const entry = list2[index];
+  async function deleteTemplate(index) {
+    const entry = listTemplates()[index];
     if (!entry) return;
-    if (!confirm(`Delete template "${entry.name}"?
-
-This cannot be undone.`)) return;
-    list2.splice(index, 1);
+    const ok = await confirmAction({
+      title: "Delete template?",
+      message: `The template "${entry.name}" will be deleted. Invoices made from it are not changed. This cannot be undone.`,
+      confirmLabel: "Delete template",
+      danger: true
+    });
+    if (!ok) return;
+    const list2 = listTemplates();
+    const at = list2.findIndex((t) => t.name === entry.name);
+    if (at === -1) return refreshLibraries();
+    list2.splice(at, 1);
     if (!writeTemplates(list2)) return toast("Could not update the template library.");
     refreshLibraries();
     toast("Template deleted: " + entry.name);
@@ -3738,11 +3940,16 @@ Overwrite it?`)) onOverwrite();
     };
     dialog.showModal();
   }
-  function saveTemplate() {
-    const entered = prompt("Template name (example: One Education Royalty)");
-    if (entered === null) return;
-    const name = entered.trim();
-    if (!name) return toast("Template name cannot be empty.");
+  async function saveTemplate() {
+    const name = await promptText({
+      title: "Save as template",
+      message: "A template keeps this whole invoice (details, items, columns and design) so you can load it again later.",
+      label: "Template name",
+      placeholder: "For example: Monthly royalty invoice",
+      confirmLabel: "Save template",
+      validate: (text2) => text2 ? "" : "Enter a name for the template."
+    });
+    if (name === null) return;
     const list2 = listTemplates();
     const existing = findTemplateIndexByName(list2, name);
     const record = { name, data: serialize() };
@@ -3766,23 +3973,34 @@ Overwrite it?`)) onOverwrite();
     applyBrand(() => applyBrandRecord(entry.data));
     toast("Brand loaded: " + entry.name);
   }
-  function deleteBrand(index) {
-    const list2 = listBrands();
-    const entry = list2[index];
+  async function deleteBrand(index) {
+    const entry = listBrands()[index];
     if (!entry) return;
-    if (!confirm(`Remove brand "${entry.name}"?
-
-This removes it from the saved Brand Library only. The current invoice will not be changed.`)) return;
-    list2.splice(index, 1);
+    const ok = await confirmAction({
+      title: "Remove brand?",
+      message: `The brand "${entry.name}" will be removed from your saved brands. The current invoice is not changed.`,
+      confirmLabel: "Remove brand",
+      danger: true
+    });
+    if (!ok) return;
+    const list2 = listBrands();
+    const at = list2.findIndex((b) => b.name === entry.name && JSON.stringify(b.data) === JSON.stringify(entry.data));
+    if (at === -1) return refreshLibraries();
+    list2.splice(at, 1);
     if (!writeBrands(list2)) return toast("Could not update the brand library.");
     refreshLibraries();
     toast("Brand removed: " + entry.name);
   }
-  function saveBrand() {
-    const entered = prompt("Brand name");
-    if (entered === null) return;
-    const name = entered.trim();
-    if (!name) return toast("Brand name cannot be empty.");
+  async function saveBrand() {
+    const name = await promptText({
+      title: "Save brand",
+      message: "A brand keeps your company details, logo, design, payment details and terms, without any client or invoice details.",
+      label: "Brand name",
+      placeholder: "For example: SA Learning",
+      confirmLabel: "Save brand",
+      validate: (text2) => text2 ? "" : "Enter a name for the brand."
+    });
+    if (name === null) return;
     const list2 = listBrands();
     list2.push({ name, data: serializeBrand() });
     if (!writeBrands(list2)) return toast("Could not save the brand.");
@@ -4527,6 +4745,102 @@ This removes it from the saved Brand Library only. The current invoice will not 
     updateBackupHints();
   }
 
+  // js/editor/save-state.js
+  var REFRESH_MS = 3e4;
+  function ago(date) {
+    if (!date) return "";
+    const minutes = Math.floor((Date.now() - date.getTime()) / 6e4);
+    if (minutes < 1) return "just now";
+    if (minutes < 60) return `${minutes} min ago`;
+    return "at " + date.toLocaleTimeString(void 0, { hour: "2-digit", minute: "2-digit" });
+  }
+  function initSaveState() {
+    const box = $("saveState");
+    const text2 = $("saveStateText");
+    if (!box || !text2) return;
+    let last = { status: "saved", at: null };
+    const render2 = () => {
+      const { status, at } = last;
+      box.className = "save-state " + status;
+      if (status === "pending") {
+        text2.textContent = "Saving\u2026";
+        box.title = "Your changes are saved a moment after you stop typing.";
+      } else if (status === "failed") {
+        text2.textContent = "Not saved";
+        box.title = "Browser storage is full or unavailable. Use Back up everything or Export JSON to keep a copy.";
+      } else if (status === "held") {
+        text2.textContent = "Saving paused";
+        box.title = "This invoice was changed in another tab. Choose which version to keep.";
+      } else {
+        text2.textContent = at ? "Saved \xB7 " + ago(at) : "Saved";
+        box.title = "Saved in this browser on this device.";
+      }
+    };
+    onSaveState((state2) => {
+      last = state2;
+      render2();
+    });
+    setInterval(() => {
+      if (last.status === "saved") render2();
+    }, REFRESH_MS);
+  }
+
+  // js/editor/menu.js
+  function initMoreMenu() {
+    const button2 = $("moreBtn");
+    const menu = $("moreMenu");
+    if (!button2 || !menu) return;
+    const items = () => [...menu.querySelectorAll(".menu-item")];
+    const open = (focusFirst = false) => {
+      menu.hidden = false;
+      menu.classList.remove("align-right");
+      const bounds = (button2.closest(".sidebar") || document.body).getBoundingClientRect();
+      if (menu.getBoundingClientRect().right > bounds.right - 8) menu.classList.add("align-right");
+      button2.setAttribute("aria-expanded", "true");
+      if (focusFirst) items()[0]?.focus();
+    };
+    const close = (returnFocus = false) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      button2.setAttribute("aria-expanded", "false");
+      if (returnFocus) button2.focus();
+    };
+    button2.addEventListener("click", () => menu.hidden ? open() : close());
+    button2.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        open(true);
+      }
+    });
+    menu.addEventListener("keydown", (e) => {
+      const list2 = items();
+      const index = list2.indexOf(document.activeElement);
+      const move = (i) => list2[(i + list2.length) % list2.length].focus();
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        move(index + 1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        move(index - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        move(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        move(list2.length - 1);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        close(true);
+      } else if (e.key === "Tab") close();
+    });
+    menu.addEventListener("click", (e) => {
+      if (e.target.closest(".menu-item")) close();
+    });
+    document.addEventListener("pointerdown", (e) => {
+      if (!menu.hidden && !menu.contains(e.target) && !button2.contains(e.target)) close();
+    });
+  }
+
   // js/compat.js
   function installCompatibilityGlobals() {
     window.loadInvoiceTemplate = loadTemplate;
@@ -4663,6 +4977,7 @@ This removes it from the saved Brand Library only. The current invoice will not 
     step("zoom", initZoomControls);
     step("sidebar", initSidebarResizer);
     step("toolbar", initToolbar);
+    step("more menu", initMoreMenu);
     step("library controls", initLibraryControls);
     step("bundle tools", initBundleTools);
     step("defaults", seedDefaults);
@@ -4677,6 +4992,7 @@ This removes it from the saved Brand Library only. The current invoice will not 
     step("libraries", refreshLibraries);
     step("saved invoices", initInvoiceList);
     step("client book", initClientBook);
+    step("save indicator", initSaveState);
     step("tab sync", initTabSync);
     step("version check", checkVersion);
     step("compatibility globals", installCompatibilityGlobals);

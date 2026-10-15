@@ -7,6 +7,7 @@ import {
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { renderItems } from "./items.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
+import { confirmAction } from "../ui/confirm-dialog.js";
 
 /** Private drag type, so drops from outside the column list are ignored. */
 const COLUMN_DRAG_TYPE = "application/x-sa-invoice-column";
@@ -17,17 +18,17 @@ export function normalizeKey(value) {
 }
 
 const columnRowMarkup = (col, idx) =>
-  `<div class="columnhead"><span class="drag">\u2630</span><strong>Column ${idx + 1}</strong>` +
+  `<div class="columnhead"><span class="drag" aria-hidden="true" title="Drag to reorder">\u2630</span><strong>Column ${idx + 1}</strong>` +
   `<label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label>` +
-  `<button class="btn icon danger">\u00d7</button></div>` +
+  `<button class="btn icon danger" type="button" aria-label="Remove column ${idx + 1}" title="Remove column">\u00d7</button></div>` +
   `<div class="colgrid">` +
-  `<div class="field"><label>Heading</label><input class="labelinput" value="${esc(col.label)}"></div>` +
-  `<div class="field"><label>Type</label><select class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div>` +
+  `<div class="field"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div>` +
+  `<div class="field"><label for="col-${idx}-type">Type</label><select id="col-${idx}-type" class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div>` +
   // num() keeps the width numeric: it is interpolated into markup, so a crafted
   // imported file could otherwise inject HTML through this attribute.
-  `<div class="field"><label>Width %</label><input class="width" type="number" min="5" max="80" value="${num(col.width)}"></div>` +
-  `<div class="field"><label>Alignment</label><select class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div>` +
-  `<div class="field"><label>Calculation role</label><select class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div>` +
+  `<div class="field"><label for="col-${idx}-width">Width %</label><input id="col-${idx}-width" class="width" type="number" min="5" max="80" value="${num(col.width)}"></div>` +
+  `<div class="field"><label for="col-${idx}-align">Alignment</label><select id="col-${idx}-align" class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div>` +
+  `<div class="field"><label for="col-${idx}-role">Calculation role</label><select id="col-${idx}-role" class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div>` +
   `</div>`;
 
 export function renderColumns() {
@@ -117,8 +118,13 @@ export function initColumnControls() {
     renderPreview();
     saveInvoice();
   };
-  $("restoreColumnsBtn").onclick = () => {
-    if (!confirm("Restore the default five columns?")) return;
+  $("restoreColumnsBtn").onclick = async () => {
+    const ok = await confirmAction({
+      title: "Restore the default columns?",
+      message: "The columns go back to SKU, Description, Qty, Rate and Amount. Values in the line items are kept. You can go back with Undo.",
+      confirmLabel: "Restore columns"
+    });
+    if (!ok) return;
     setColumns(defaultColumns());
     renderColumns();
     renderItems();

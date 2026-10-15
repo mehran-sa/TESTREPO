@@ -140,7 +140,9 @@ try:
         ctx.on("request", on_request)
 
         prompt_answers = []
+        native_popups = []
         def on_dialog(d):
+            native_popups.append(d.type)
             if d.type == "prompt":
                 d.accept(prompt_answers.pop(0) if prompt_answers else "")
             else:
@@ -150,6 +152,17 @@ try:
         S = "window.SAInvoiceGenerator"
         total = lambda: page.text_content("#pTotal")
         snapshot = lambda: page.evaluate(f"() => JSON.parse(JSON.stringify({S}.serialize()))")
+        def menu(item_id):
+            """Runs an action from the toolbar's More menu."""
+            page.click("#moreBtn")
+            page.click("#" + item_id)
+
+        def name_dialog(text):
+            page.wait_for_selector("#appPromptDialog[open]")
+            page.fill("#appPromptInput", text)
+            page.click("#appPromptAccept")
+            page.wait_for_timeout(150)
+
         def confirm_dialog():
             page.wait_for_selector("#appConfirmDialog[open]")
             page.click("#appConfirmAccept")
@@ -188,6 +201,11 @@ try:
         page.wait_for_timeout(100)
         # 59.97 + 0.13 + 0.13 = 60.23; disc 6.02; taxable 54.21; tax 10.84; +4.99 = 70.04
         figures = [page.text_content(s) for s in ["#pSubtotal", "#pDiscount", "#pTax", "#pShipping", "#pTotal"]]
+        page.fill("#reference", "PO-78")
+        check("save indicator shows Saving while typing", page.text_content("#saveStateText") == "Saving\u2026")
+        page.wait_for_timeout(500)
+        check("save indicator shows Saved afterwards", page.text_content("#saveStateText").startswith("Saved"))
+        page.fill("#reference", "PO-77"); page.wait_for_timeout(400)
         check("line items, discount, tax and shipping total correctly",
               figures == ["£60.23", "\u2212£6.02", "£10.84", "£4.99", "£70.04"], str(figures))
         check("balance due equals total", page.text_content("#pBalance") == "£70.04")
@@ -244,7 +262,7 @@ try:
               page.eval_on_selector_all(".columnrow .labelinput", "els => els.map(e => e.value)") == order)
         page.locator(".columnrow").last.locator("button").click()
         check("remove column", page.locator(".columnrow").count() == 5)
-        page.click("#restoreColumnsBtn"); page.wait_for_timeout(100)
+        page.click("#restoreColumnsBtn"); confirm_dialog()
         heads = page.eval_on_selector_all("#pHeaders th", "els => els.map(e => e.textContent)")
         check("restore default columns", heads == ["SKU", "Description", "Qty", "Rate", "Amount"], str(heads))
         check("totals survive column changes", page.text_content("#pSubtotal") == "£80.09")
@@ -274,17 +292,18 @@ try:
         toggle.click()
 
         # ---- template and brand library
-        prompt_answers.append("Monthly")
-        page.click("#saveTemplateBtn"); page.wait_for_timeout(150)
-        check("save template", "Monthly" in page.text_content("#savedTemplates"))
-        prompt_answers.append("monthly")
         page.click("#saveTemplateBtn")
+        page.wait_for_selector("#appPromptDialog[open]")
+        page.click("#appPromptAccept")  # empty name
+        check("template name is required, shown in the dialog", page.is_visible("#appPromptError"))
+        page.fill("#appPromptInput", "Monthly"); page.click("#appPromptAccept"); page.wait_for_timeout(150)
+        check("save template", "Monthly" in page.text_content("#savedTemplates"))
+        page.click("#saveTemplateBtn"); name_dialog("monthly")
         page.wait_for_selector("#templateOverwriteDialog[open]")
         page.click("#templateOverwriteConfirm"); page.wait_for_timeout(100)
         check("overwrite template keeps a single entry",
               page.locator("#savedTemplates .library-item").count() == 1)
-        prompt_answers.append("SA Brand")
-        page.click("#saveBrandBtn"); page.wait_for_timeout(100)
+        page.click("#saveBrandBtn"); name_dialog("SA Brand")
         check("save brand", "SA Brand" in page.text_content("#savedBrands"))
         page.click("[data-tab=details]")
         page.fill("#companyName", "Changed Co")
@@ -300,7 +319,7 @@ try:
         # ---- export JSON, then import into a clean browser profile
         exported = snapshot()
         with page.expect_download() as dl:
-            page.click("#exportBtn")
+            menu("exportBtn")
         json_path = os.path.join(FIX, dl.value.suggested_filename)
         dl.value.save_as(json_path)
         check("export JSON filename uses invoice number", dl.value.suggested_filename == "INV-2001.json")
@@ -363,7 +382,12 @@ try:
         # ---- print / PDF
         page.click("[data-tab=details]")
         page.fill("#invoiceNumber", "INV-PDF")
-        page.click("#printBtn")
+        menu("printBtn")
+        page.wait_for_selector("#appConfirmDialog[open]")
+        listed = page.text_content("#appConfirmList")
+        check("export check lists placeholder text that would print",
+              "company details are empty" in listed and "Check before you print" in page.text_content("#appConfirmTitle"), listed)
+        page.click("#appConfirmAccept")  # Print anyway
         frame_html = None
         for _ in range(40):
             frame_html = page.evaluate("""() => { const f = document.getElementById('invoicePrintFrame');
@@ -408,7 +432,7 @@ try:
         page.locator("#sidebarResizer").dblclick()
 
         # ---- reset text, then full reset
-        page.click("#resetTextBtn"); confirm_dialog()
+        menu("resetTextBtn"); confirm_dialog()
         s = snapshot()
         check("reset text clears text but keeps amounts and invoice number",
               s["fields"]["companyName"] == "" and s["fields"]["invoiceNumber"] == "INV-PDF"
@@ -423,6 +447,18 @@ try:
         check("New invoice: next number, no client or items, design kept",
               s["fields"]["invoiceNumber"] == "INV-PDF-1" and s["items"] == [] and s["fields"]["clientName"] == ""
               and s["fields"]["template"] == tpl_before and s["fields"]["accentHex"] == "#ff0000", str(s["fields"]["invoiceNumber"]))
+        page.click("#pdfBtn")
+        page.wait_for_selector("#appConfirmDialog[open]")
+        page.click("#appConfirmCancel"); page.wait_for_timeout(300)
+        check("export check: Go back and fix opens the first problem field",
+              page.evaluate("() => document.activeElement.id") == "companyName"
+              and "active" in page.get_attribute('[data-tab="details"]', "class"))
+        page.focus("#moreBtn"); page.keyboard.press("ArrowDown")
+        check("More menu opens from the keyboard with the first item focused",
+              page.evaluate("() => document.activeElement.id") == "printBtn")
+        page.keyboard.press("Escape")
+        check("Escape closes the menu and returns to More",
+              page.is_hidden("#moreMenu") and page.evaluate("() => document.activeElement.id") == "moreBtn")
         page.click("[data-tab=invoices]")
         rows = page.locator("#invoiceList .invoice-row")
         check("both invoices are in the saved list", rows.count() == 2, str(rows.count()))
@@ -501,8 +537,8 @@ try:
 
         # ---- library deletion
         page.click("[data-tab=design]")
-        page.locator("#savedTemplates .library-item button", has_text="Delete").click(); page.wait_for_timeout(100)
-        page.locator("#savedBrands .library-item button", has_text="Remove").click(); page.wait_for_timeout(100)
+        page.locator("#savedTemplates .library-item button", has_text="Delete").click(); confirm_dialog()
+        page.locator("#savedBrands .library-item button", has_text="Remove").click(); confirm_dialog()
         check("delete template and brand",
               page.locator("#savedTemplates .library-item").count() == 0
               and page.locator("#savedBrands .library-item").count() == 0)
@@ -568,6 +604,7 @@ try:
         check("failed autosave is reported to the user", "Autosave failed" in p3.text_content("#toast"))
         ctx3.close()
 
+        check("no browser popups (all questions use the app's dialogs)", not native_popups, str(native_popups))
         check("no console or page errors", not errors, "; ".join(errors[:5]))
         check("no requests left 127.0.0.1", not external, ", ".join(external[:5]))
         browser.close()

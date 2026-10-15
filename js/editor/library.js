@@ -6,6 +6,7 @@
  */
 
 import { $, toast } from "../utils.js";
+import { confirmAction, promptText } from "../ui/confirm-dialog.js";
 import { serialize, serializeBrand } from "../invoice/invoice-data.js";
 import { listTemplates, writeTemplates, getTemplate, findTemplateIndexByName } from "../storage/template-library.js";
 import { listBrands, writeBrands, getBrand, applyBrandRecord } from "../storage/brand-library.js";
@@ -90,14 +91,21 @@ export function loadTemplate(index) {
   }
 }
 
-export function deleteTemplate(index) {
-  const list = listTemplates();
-  const entry = list[index];
+export async function deleteTemplate(index) {
+  const entry = listTemplates()[index];
   if (!entry) return;
-  if (!confirm(`Delete template "${entry.name}"?
-
-This cannot be undone.`)) return;
-  list.splice(index, 1);
+  const ok = await confirmAction({
+    title: "Delete template?",
+    message: `The template "${entry.name}" will be deleted. Invoices made from it are not changed. This cannot be undone.`,
+    confirmLabel: "Delete template",
+    danger: true
+  });
+  if (!ok) return;
+  // Re-read: another tab may have changed the list while the dialog was open.
+  const list = listTemplates();
+  const at = list.findIndex(t => t.name === entry.name);
+  if (at === -1) return refreshLibraries();
+  list.splice(at, 1);
   if (!writeTemplates(list)) return toast("Could not update the template library.");
   refreshLibraries();
   toast("Template deleted: " + entry.name);
@@ -126,11 +134,16 @@ Overwrite it?`)) onOverwrite();
   dialog.showModal();
 }
 
-function saveTemplate() {
-  const entered = prompt("Template name (example: One Education Royalty)");
-  if (entered === null) return;
-  const name = entered.trim();
-  if (!name) return toast("Template name cannot be empty.");
+async function saveTemplate() {
+  const name = await promptText({
+    title: "Save as template",
+    message: "A template keeps this whole invoice (details, items, columns and design) so you can load it again later.",
+    label: "Template name",
+    placeholder: "For example: Monthly royalty invoice",
+    confirmLabel: "Save template",
+    validate: text => (text ? "" : "Enter a name for the template.")
+  });
+  if (name === null) return;
 
   const list = listTemplates();
   const existing = findTemplateIndexByName(list, name);
@@ -160,24 +173,35 @@ export function loadBrand(index) {
   toast("Brand loaded: " + entry.name);
 }
 
-export function deleteBrand(index) {
-  const list = listBrands();
-  const entry = list[index];
+export async function deleteBrand(index) {
+  const entry = listBrands()[index];
   if (!entry) return;
-  if (!confirm(`Remove brand "${entry.name}"?
-
-This removes it from the saved Brand Library only. The current invoice will not be changed.`)) return;
-  list.splice(index, 1);
+  const ok = await confirmAction({
+    title: "Remove brand?",
+    message: `The brand "${entry.name}" will be removed from your saved brands. The current invoice is not changed.`,
+    confirmLabel: "Remove brand",
+    danger: true
+  });
+  if (!ok) return;
+  const list = listBrands();
+  const at = list.findIndex(b => b.name === entry.name && JSON.stringify(b.data) === JSON.stringify(entry.data));
+  if (at === -1) return refreshLibraries();
+  list.splice(at, 1);
   if (!writeBrands(list)) return toast("Could not update the brand library.");
   refreshLibraries();
   toast("Brand removed: " + entry.name);
 }
 
-function saveBrand() {
-  const entered = prompt("Brand name");
-  if (entered === null) return;
-  const name = entered.trim();
-  if (!name) return toast("Brand name cannot be empty.");
+async function saveBrand() {
+  const name = await promptText({
+    title: "Save brand",
+    message: "A brand keeps your company details, logo, design, payment details and terms, without any client or invoice details.",
+    label: "Brand name",
+    placeholder: "For example: SA Learning",
+    confirmLabel: "Save brand",
+    validate: text => (text ? "" : "Enter a name for the brand.")
+  });
+  if (name === null) return;
   const list = listBrands();
   list.push({ name, data: serializeBrand() });
   if (!writeBrands(list)) return toast("Could not save the brand.");

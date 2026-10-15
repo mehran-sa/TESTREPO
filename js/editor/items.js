@@ -5,6 +5,7 @@ import { NUMERIC_COLUMN_TYPES, FIXED_AMOUNT_KEY } from "../constants.js";
 import { state, editableColumns, addItem, removeItemAt, clearItems, createBlankItem } from "../state.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
+import { confirmAction } from "../ui/confirm-dialog.js";
 
 const isNumericType = type => NUMERIC_COLUMN_TYPES.includes(type);
 
@@ -12,13 +13,15 @@ const isNumericType = type => NUMERIC_COLUMN_TYPES.includes(type);
 const isDescriptionField = col => col.type === "text" && col.key === "description";
 const inputTypeFor = col => (isNumericType(col.type) ? "number" : col.type === "date" ? "date" : "text");
 
-const itemFieldMarkup = (col, item) => {
+/** The field id is built from positions, never from user text, so it is always valid. */
+const itemFieldMarkup = (col, item, itemIndex, colIndex) => {
   const value = esc(item[col.key] ?? "");
   const key = esc(col.key);
+  const id = `item-${itemIndex}-field-${colIndex}`;
   const control = isDescriptionField(col)
-    ? `<textarea data-key="${key}">${value}</textarea>`
-    : `<input data-key="${key}" type="${inputTypeFor(col)}" step="0.01" value="${value}">`;
-  return `<div class="field ${isDescriptionField(col) ? "full" : ""}"><label>${esc(col.label)}</label>${control}</div>`;
+    ? `<textarea id="${id}" data-key="${key}">${value}</textarea>`
+    : `<input id="${id}" data-key="${key}" type="${inputTypeFor(col)}" step="0.01" value="${value}">`;
+  return `<div class="field ${isDescriptionField(col) ? "full" : ""}"><label for="${id}">${esc(col.label)}</label>${control}</div>`;
 };
 
 export function renderItems() {
@@ -29,8 +32,8 @@ export function renderItems() {
     card.className = "itemcard";
     const editable = editableColumns();
     card.innerHTML =
-      `<div class="itemtop"><strong>Item ${idx + 1}</strong><button class="btn small danger">Remove</button></div>` +
-      `<div class="itemgrid">${editable.map(c => itemFieldMarkup(c, item)).join("")}</div>`;
+      `<div class="itemtop"><strong>Item ${idx + 1}</strong><button class="btn small danger" type="button" aria-label="Remove item ${idx + 1}">Remove</button></div>` +
+      `<div class="itemgrid">${editable.map((c, ci) => itemFieldMarkup(c, item, idx, ci)).join("")}</div>`;
 
     card.querySelector("button").onclick = () => {
       removeItemAt(idx);
@@ -60,8 +63,15 @@ export function initItemControls() {
     renderPreview();
     saveInvoice();
   };
-  $("clearItemsBtn").onclick = () => {
-    if (!confirm("Remove all line items?")) return;
+  $("clearItemsBtn").onclick = async () => {
+    if (!state.items.length) return;
+    const ok = await confirmAction({
+      title: "Remove all line items?",
+      message: `All ${state.items.length} line item${state.items.length === 1 ? "" : "s"} will be removed from this invoice. You can bring them back with Undo.`,
+      confirmLabel: "Remove all",
+      danger: true
+    });
+    if (!ok) return;
     clearItems();
     renderItems();
     renderPreview();

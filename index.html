@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.2.0">
+<meta name="sa-app-version" content="2.3.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
@@ -43,16 +43,23 @@
 <aside class="sidebar" id="sidebar">
   <div class="topbar">
     <div class="brand"><div class="mark" aria-hidden="true">SA</div><div><h1>SA Invoice Generator</h1><p>Templates, columns and royalty imports<span class="resize-hint"> · drag right edge to resize</span></p></div></div>
+    <div class="save-state" id="saveState" aria-live="off"><span class="save-dot" aria-hidden="true"></span><span id="saveStateText">Saved</span></div>
   </div>
   <div class="actions">
     <button class="btn" id="undoBtn" disabled title="Undo the last invoice change (Ctrl/Cmd + Z)" aria-keyshortcuts="Control+Z Meta+Z">Undo</button>
     <button class="btn" id="redoBtn" disabled title="Redo (Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z)" aria-keyshortcuts="Control+Y Meta+Y Control+Shift+Z Meta+Shift+Z">Redo</button>
     <button class="btn primary" id="pdfBtn" title="Opens the browser print dialog for an A4 invoice. Choose Save as PDF.">Export PDF</button>
-    <button class="btn" id="printBtn" title="Prints only the invoice, never the editor/sidebar.">Print</button>
-    <button class="btn" id="exportBtn">Export JSON</button>
-    <button class="btn" id="importBtn">Import JSON</button>
-    <button class="btn" id="resetTextBtn" title="Clears text entered in the current invoice. Saved templates and brands are kept.">Reset Text</button>
-    <button class="btn" id="resetBtn" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
+    <button class="btn" id="resetBtn" type="button" title="Start the next invoice: keeps your company details and design, clears the client and items, and uses the next unused number. The current invoice stays in Saved invoices.">New invoice</button>
+    <div class="menu-wrap">
+      <button class="btn" id="moreBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="moreMenu">More <span aria-hidden="true">&#9662;</span></button>
+      <div class="menu" id="moreMenu" role="menu" aria-labelledby="moreBtn" hidden>
+        <button class="menu-item" id="printBtn" type="button" role="menuitem" title="Prints only the invoice, never the editor.">Print</button>
+        <button class="menu-item" id="exportBtn" type="button" role="menuitem" title="Saves this invoice as a file you can import later or on another device.">Export JSON (this invoice)</button>
+        <button class="menu-item" id="importBtn" type="button" role="menuitem" title="Opens an exported invoice file as a new saved invoice.">Import JSON as new invoice</button>
+        <div class="menu-sep" role="separator"></div>
+        <button class="menu-item" id="resetTextBtn" type="button" role="menuitem" title="Clears the text in this invoice. Amounts, saved templates and brands are kept.">Reset text</button>
+      </div>
+    </div>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
   <div class="notice">Your invoices are saved only in this browser on this device. Nothing is uploaded. Use Back up everything on the Invoices tab to keep a copy.</div>
@@ -94,23 +101,23 @@
       <div class="panelhead"><h2>Invoice</h2><span class="hint">General details</span></div>
       <div class="grid2">
         <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
-        <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
-        <div class="field"><label>Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
-        <div class="field"><label>Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
-        <div class="field"><label>Reference / PO</label><input id="reference"></div>
+        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
+        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
+        <div class="field"><label for="currency">Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
+        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
       </div>
     </section>
     <section class="panel">
       <div class="panelhead"><h2>Your company</h2><span class="hint">Seller</span></div>
       <div class="grid2">
-        <div class="field full"><label>Company name</label><input id="companyName" value="Your Company Ltd."></div>
-        <div class="field"><label>Registration number</label><input id="companyReg"></div>
-        <div class="field"><label>VAT / tax number</label><input id="companyVat"></div>
-        <div class="field full"><label>Address</label><textarea id="companyAddress"></textarea></div>
-        <div class="field"><label>Phone</label><input id="companyPhone"></div>
-        <div class="field"><label>Email</label><input id="companyEmail"></div>
-        <div class="field"><label>Website</label><input id="companyWebsite"></div>
-        <div class="field full"><label>Logo</label>
+        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
+        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
+        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
+        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
+        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
+        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
+        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
+        <div class="field full"><label for="logoFile">Logo</label>
 <div class="logo-actions"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><button class="btn small danger" id="removeLogoBtn" type="button">Remove</button></div>
 <div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
       </div>
@@ -119,22 +126,22 @@
       <div class="panelhead"><h2>Bill to</h2><span class="hint">Customer</span></div>
       <div class="grid2">
         <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
-        <div class="field full"><label>Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
-        <div class="field"><label>Contact</label><input id="clientContact"></div>
-        <div class="field"><label>VAT / tax</label><input id="clientTax"></div>
-        <div class="field full"><label>Address</label><textarea id="clientAddress"></textarea></div>
-        <div class="field full"><label>Email</label><input id="clientEmail"></div>
+        <div class="field full"><label for="clientName">Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
+        <div class="field"><label for="clientContact">Contact</label><input id="clientContact"></div>
+        <div class="field"><label for="clientTax">VAT / tax</label><input id="clientTax"></div>
+        <div class="field full"><label for="clientAddress">Address</label><textarea id="clientAddress"></textarea></div>
+        <div class="field full"><label for="clientEmail">Email</label><input id="clientEmail"></div>
       </div>
     </section>
     <section class="panel">
       <div class="panelhead"><h2>Totals and footer</h2></div>
       <div class="grid3">
-        <div class="field"><label>Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label>Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
-        <div class="field"><label>Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
-        <div class="field full"><label>Notes</label><textarea id="notes" placeholder="Optional"></textarea></div>
-        <div class="field full"><label>Payment details</label><textarea id="paymentDetails"></textarea></div>
-        <div class="field full"><label>Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
+        <div class="field"><label for="discount">Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="tax">Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
+        <div class="field"><label for="shipping">Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
+        <div class="field full"><label for="notes">Notes</label><textarea id="notes" placeholder="Optional"></textarea></div>
+        <div class="field full"><label for="paymentDetails">Payment details</label><textarea id="paymentDetails"></textarea></div>
+        <div class="field full"><label for="terms">Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
       </div>
     </section>
   </div>
@@ -165,7 +172,7 @@
   <div class="tabpane" id="tab-design">
     <section class="panel">
       <div class="panelhead"><h2>Invoice template</h2><span class="hint">Live switching</span></div>
-      <div class="field"><label>Design</label>
+      <div class="field"><label for="template">Design</label>
         <select id="template">
           <option value="modern">Modern Professional</option>
           <option value="minimal">Janets PDF - Exact Layout</option>
@@ -175,12 +182,12 @@
         <div class="hint" id="fontHint" style="margin-top:6px">Font: Inter / Segoe UI</div><div class="hint" style="margin-top:3px">Measured PDF sizes: 27.75 pt invoice title, 12 pt invoice number, 11.25 pt balance, and 9.75 pt body/table text. Nimbus Sans is used when installed; Helvetica/Arial is the fallback.</div>
       </div>
       <div class="grid2" style="margin-top:10px">
-        <div class="field"><label>Accent colour</label><input id="accent" type="color" value="#2563eb"></div>
-        <div class="field"><label>Accent HEX</label><input id="accentHex" value="#2563eb"></div>
-        <div class="field"><label>Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
-        <div class="field"><label>Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
-        <div class="field"><label>Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
-        <div class="field"><label>Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
+        <div class="field"><label for="accent">Accent colour</label><input id="accent" type="color" value="#2563eb"></div>
+        <div class="field"><label for="accentHex">Accent HEX</label><input id="accentHex" value="#2563eb"></div>
+        <div class="field"><label for="logoWidth">Logo width (px)</label><input id="logoWidth" type="range" min="40" max="240" value="120"><div class="hint"><span id="logoWidthValue">120</span> px</div></div>
+        <div class="field"><label for="logoHeight">Logo height (px)</label><input id="logoHeight" type="range" min="30" max="140" value="54"><div class="hint"><span id="logoHeightValue">54</span> px</div></div>
+        <div class="field"><label for="logoFit">Logo fit</label><select id="logoFit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="fill">Stretch</option></select></div>
+        <div class="field"><label for="logoAlign">Logo alignment</label><select id="logoAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
       </div>
     </section>
     <section class="panel">
@@ -286,10 +293,23 @@
   <div class="dialog-body">
     <h3 id="appConfirmTitle"></h3>
     <p id="appConfirmMessage"></p>
+    <ul class="dialog-list" id="appConfirmList" hidden></ul>
   </div>
   <div class="dialog-actions">
     <button class="btn" type="button" id="appConfirmCancel">Cancel</button>
     <button class="btn primary" type="button" id="appConfirmAccept">Confirm</button>
+  </div>
+</dialog>
+<dialog class="confirm-dialog" id="appPromptDialog" aria-labelledby="appPromptTitle">
+  <div class="dialog-body">
+    <h3 id="appPromptTitle"></h3>
+    <p id="appPromptMessage"></p>
+    <div class="field"><label for="appPromptInput" id="appPromptLabel"></label><input id="appPromptInput" autocomplete="off" aria-describedby="appPromptError"></div>
+    <div class="hint field-warning" id="appPromptError" role="alert" hidden></div>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn" type="button" id="appPromptCancel">Cancel</button>
+    <button class="btn primary" type="button" id="appPromptAccept">Save</button>
   </div>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -35,6 +35,8 @@ import { state } from "./state.js";
 import { restoreAtStartup, captureBlankDefaults } from "./documents.js";
 import { initInvoiceList } from "./editor/invoices.js";
 import { initClientBook } from "./editor/clients.js";
+import { initSaveState } from "./editor/save-state.js";
+import { initMoreMenu } from "./editor/menu.js";
 import { DEFAULT_ACCENT } from "./constants.js";
 import { installCompatibilityGlobals } from "./compat.js";
 import { initTabSync } from "./storage/tab-sync.js";
@@ -92,6 +94,7 @@ export function init() {
   step("zoom", initZoomControls);
   step("sidebar", initSidebarResizer);
   step("toolbar", initToolbar);
+  step("more menu", initMoreMenu);
   step("library controls", initLibraryControls);
   // Guarded like every other step: a failure in the bundle tool must not stop
   // the invoice editor loading.
@@ -114,6 +117,7 @@ export function init() {
   step("libraries", refreshLibraries);
   step("saved invoices", initInvoiceList);
   step("client book", initClientBook);
+  step("save indicator", initSaveState);
   // After the autosave is restored, so the starting point is this tab's view.
   step("tab sync", initTabSync);
   step("version check", checkVersion);

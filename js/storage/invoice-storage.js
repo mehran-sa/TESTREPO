@@ -26,12 +26,29 @@ const writeListeners = new Set();
 
 export const onInvoiceWritten = fn => { writeListeners.add(fn); };
 
+/**
+ * Save status for the indicator next to the app name:
+ * "pending" (typing not written yet), "saved", "failed" or "held" (another
+ * tab changed this invoice and the user has not chosen a version yet).
+ */
+const saveStateListeners = new Set();
+let currentSaveState = { status: "saved", at: null };
+export const onSaveState = fn => { saveStateListeners.add(fn); fn(currentSaveState); };
+function setSaveState(status) {
+  currentSaveState = { status, at: status === "saved" ? new Date() : currentSaveState.at };
+  saveStateListeners.forEach(fn => fn(currentSaveState));
+}
+
 function writeNow({ record = true } = {}) {
   if (pendingWrite !== null) {
     clearTimeout(pendingWrite);
     pendingWrite = null;
   }
-  if (writesStopped || writesHeld) return true;
+  if (writesStopped) return true;
+  if (writesHeld) {
+    setSaveState("held");
+    return true;
+  }
   const snapshot = serialize();
   const text = JSON.stringify(snapshot);
   let stored = writeRaw(STORAGE_KEYS.invoice, text);
@@ -51,6 +68,7 @@ function writeNow({ record = true } = {}) {
     toast("Autosave failed: browser storage is full or unavailable. Use Export JSON to keep a copy.");
   }
   lastSaveOk = stored;
+  setSaveState(stored ? "saved" : "failed");
   if (stored) writeListeners.forEach(fn => fn(text, recordText));
   return stored;
 }
@@ -68,7 +86,11 @@ export function invoiceSummary() {
 
 /** Holds or releases autosave writes; see js/storage/tab-sync.js. */
 export function holdInvoiceWrites(hold) {
+  const wasHeld = writesHeld;
   writesHeld = Boolean(hold);
+  if (writesHeld) setSaveState("held");
+  // Released: whichever version was chosen is now what is stored.
+  else if (wasHeld) setSaveState("saved");
 }
 
 /**
@@ -119,6 +141,7 @@ export function saveInvoice(options) {
     // the invoice (logo included) per keystroke made typing lag.
     if (pendingWrite !== null) clearTimeout(pendingWrite);
     pendingWrite = setTimeout(() => writeNow(), AUTOSAVE_TYPING_DELAY_MS);
+    if (!writesHeld) setSaveState("pending");
   } else {
     stored = writeNow();
   }

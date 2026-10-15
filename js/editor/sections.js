@@ -9,7 +9,7 @@ import { saveInvoice } from "../storage/invoice-storage.js";
 export function renderToggles() {
   const root = $("sectionToggles");
   root.innerHTML = SECTION_DEFS
-    .map(([key, label]) => `<div class="toggleline"><span>${label}</span><label class="switch"><input type="checkbox" data-section-toggle="${key}" ${state.sections[key] ? "checked" : ""}><span class="slider"></span></label></div>`)
+    .map(([key, label]) => `<div class="toggleline"><span>${label}</span><label class="switch"><input type="checkbox" aria-label="Show ${label}" data-section-toggle="${key}" ${state.sections[key] ? "checked" : ""}><span class="slider"></span></label></div>`)
     .join("");
   root.querySelectorAll("[data-section-toggle]").forEach(el => {
     el.onchange = () => {
