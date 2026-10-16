@@ -18,7 +18,7 @@
  *    and the bank table; Calibri for everything else; Times New Roman for
  *    the closing line
  *
- * The original is US Letter; this template prints on A4 like the others.
+ * Prints on US Letter, like the original (capabilities.paper).
  */
 
 import { fieldValue, trimmedField, isIsoDate } from "../utils.js";
@@ -77,6 +77,8 @@ export default {
     date: "Date:", due: "Due date:", ref: "Reference:"
   },
   capabilities: {
+    /** US Letter, as the original. */
+    paper: "letter",
     invoiceNoPrefix: "INVOICE #",
     formatDate: ukhfDate,
     companyMeta: ukhfCompanyMeta,

@@ -11,6 +11,19 @@ import { toast } from "../utils.js";
 import { buildInvoicePrintDocument } from "./print.js";
 import { findExportIssues, goToIssue } from "./export-check.js";
 import { confirmAction } from "../ui/confirm-dialog.js";
+import { paperFor } from "../constants.js";
+import { fieldValue } from "../utils.js";
+import * as TemplateRegistry from "../templates/template-registry.js";
+
+/**
+ * With "Save as PDF" the paper size is set automatically. A printer driver
+ * (including "Microsoft Print to PDF") uses its own paper and shrinks the page
+ * to fit when it differs, so the paper to choose is spelled out.
+ */
+const paperAdvice = () => {
+  const paper = paperFor(TemplateRegistry.get(fieldValue("template")));
+  return `Paper: ${paper.label}, scale 100% (Save as PDF sets this automatically).`;
+};
 
 /** @returns {Promise<boolean>} true when printing should go ahead */
 async function readyToPrint(action) {
@@ -29,11 +42,12 @@ async function readyToPrint(action) {
 
 export async function printInvoice() {
   if (!(await readyToPrint("print"))) return null;
+  toast(paperAdvice());
   return buildInvoicePrintDocument(true);
 }
 
 export async function exportInvoicePDF() {
   if (!(await readyToPrint("export"))) return null;
-  toast("Choose \u201cSave as PDF\u201d in the print dialog.");
+  toast("Choose \u201cSave as PDF\u201d in the print dialog. " + paperAdvice());
   return buildInvoicePrintDocument(true);
 }

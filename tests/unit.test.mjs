@@ -365,6 +365,11 @@ test("watermark page centres follow the print layout (297mm first page, 285mm af
   assert.deepEqual(pageCentres(297 + 285 + 1), [148.5, 439.5, 724.5]);
 });
 
+test("watermark page centres on US Letter (279.4mm first page, 267.4mm after)", () => {
+  assert.deepEqual(pageCentres(279.4, 279.4), [139.7]);
+  assert.deepEqual(pageCentres(400, 279.4).map(v => Math.round(v * 10) / 10), [139.7, 413.1]);
+});
+
 test("regression: a remote watermark address is removed like a remote logo", () => {
   const { snapshot, warnings } = normalizeSnapshot({ fields: {}, watermark: "https://example.com/w.png" });
   assert.equal(snapshot.watermark, "");

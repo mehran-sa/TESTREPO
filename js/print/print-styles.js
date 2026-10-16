@@ -6,11 +6,15 @@
  * truth and pin the invoice to A4 regardless of preview zoom.
  */
 
-export const PRINT_OVERRIDE_CSS = `
+/**
+ * The print CSS for a paper size ({width, height} in mm). A4 unless the
+ * template says otherwise (UKHF Fanatical prints on US Letter, as its original).
+ */
+export const printOverrideCss = ({ width = 210, height = 297 } = {}) => `
     /* Use the PDF page box as the source of truth. This prevents the document
        from growing wider than A4 and removes the extra strip on the right. */
     @page {
-      size: 210mm 297mm;
+      size: ${width}mm ${height}mm;
       margin: 12mm 0 0 0;
     }
     @page :first {
@@ -20,7 +24,7 @@ export const PRINT_OVERRIDE_CSS = `
       margin: 0 !important;
       padding: 0 !important;
       width: 100% !important;
-      max-width: 210mm !important;
+      max-width: ${width}mm !important;
       background: #fff !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
@@ -31,8 +35,8 @@ export const PRINT_OVERRIDE_CSS = `
     }
     .invoice {
       width: 100% !important;
-      max-width: 210mm !important;
-      min-height: 297mm !important;
+      max-width: ${width}mm !important;
+      min-height: ${height}mm !important;
       height: auto !important;
       margin: 0 !important;
       box-shadow: none !important;
@@ -97,7 +101,10 @@ export const PRINT_OVERRIDE_CSS = `
     }
 
     @media print {
-      html, body { width: 100% !important; max-width: 210mm !important; }
-      .invoice { width: 100% !important; max-width: 210mm !important; }
+      html, body { width: 100% !important; max-width: ${width}mm !important; }
+      .invoice { width: 100% !important; max-width: ${width}mm !important; }
     }
   `;
+
+/** A4 print CSS (kept for anything that imported the constant). */
+export const PRINT_OVERRIDE_CSS = printOverrideCss();

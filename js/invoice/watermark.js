@@ -9,9 +9,10 @@
  * Kinds: text (for example "PAID", "DRAFT" or a brand name), the brand's
  * logo, or a separately uploaded image. Settings: opacity (2-100%), size (as a share of
  * the page width), angle, colour (text only) and layout:
- *   centred  one watermark in the middle of each printed A4 page. Page 1 is
- *            297mm tall; later pages are 285mm, because the print layout
- *            (js/print/print-styles.js) gives them a 12mm top margin.
+ *   centred  one watermark in the middle of each printed page. Page 1 is the
+ *            full paper height (A4 297mm, US Letter 279.4mm); later pages are
+ *            12mm shorter, because the print layout (js/print/print-styles.js)
+ *            gives them a 12mm top margin.
  *   tiled    repeated across the whole invoice.
  *
  * Everything is drawn in millimetres, so the preview and the printout match.
@@ -19,10 +20,8 @@
 
 import { $, fieldValue, esc, num, clamp } from "../utils.js";
 import { state } from "../state.js";
+import { paperFor, NEXT_PAGE_TOP_MARGIN_MM } from "../constants.js";
 
-const PAGE_WIDTH_MM = 210;
-const FIRST_PAGE_MM = 297;
-const NEXT_PAGE_MM = 285;
 const PX_PER_MM = 96 / 25.4;
 
 export const WATERMARK_DEFAULTS = { opacity: 8, size: 70, angle: -30 };
@@ -59,11 +58,11 @@ function textColour(choice) {
 }
 
 /** Centres of the printed pages for an invoice of the given height. */
-export function pageCentres(heightMm) {
-  const extra = Math.max(0, heightMm - FIRST_PAGE_MM);
-  const pages = 1 + Math.ceil(extra / NEXT_PAGE_MM - 0.001);
+export function pageCentres(heightMm, firstPage = 297, nextPage = firstPage - NEXT_PAGE_TOP_MARGIN_MM) {
+  const extra = Math.max(0, heightMm - firstPage);
+  const pages = 1 + Math.ceil(extra / nextPage - 0.001);
   return Array.from({ length: pages }, (_, i) =>
-    i === 0 ? FIRST_PAGE_MM / 2 : FIRST_PAGE_MM + (i - 1) * NEXT_PAGE_MM + NEXT_PAGE_MM / 2);
+    i === 0 ? firstPage / 2 : firstPage + (i - 1) * nextPage + nextPage / 2);
 }
 
 /**
@@ -100,7 +99,9 @@ export function renderWatermark(template) {
     return;
   }
 
-  const heightMm = Math.max(FIRST_PAGE_MM, invoice.offsetHeight / PX_PER_MM);
+  const paper = paperFor(template);
+  const PAGE_WIDTH_MM = paper.width;
+  const heightMm = Math.max(paper.height, invoice.offsetHeight / PX_PER_MM);
   const width = PAGE_WIDTH_MM * s.size / 100;
   const mark = { text, image, width, colour: textColour(s.color) };
   let body;
@@ -114,7 +115,7 @@ export function renderWatermark(template) {
       markMarkup(mark, tileW / 2, tileH / 2, 0) +
       `</pattern></defs><rect x="0" y="0" width="${PAGE_WIDTH_MM}" height="${round(heightMm)}" fill="url(#saWatermarkTiles)"/>`;
   } else {
-    body = pageCentres(heightMm).map(cy => markMarkup(mark, PAGE_WIDTH_MM / 2, cy, s.angle)).join("");
+    body = pageCentres(heightMm, paper.height).map(cy => markMarkup(mark, PAGE_WIDTH_MM / 2, cy, s.angle)).join("");
   }
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PAGE_WIDTH_MM} ${round(heightMm)}" preserveAspectRatio="xMidYMin meet" focusable="false">` +

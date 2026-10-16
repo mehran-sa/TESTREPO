@@ -12,7 +12,7 @@
 
 import { $, qs, qsa, setText, toggleSection, fieldValue, fieldOr, trimmedField, num, esc, clamp } from "../utils.js";
 import {
-  LIMITS, FIXED_WIDTH_COLUMN_COUNT, CLIENT_META_FALLBACK
+  LIMITS, FIXED_WIDTH_COLUMN_COUNT, CLIENT_META_FALLBACK, paperFor
 } from "../constants.js";
 import { state } from "../state.js";
 import { renderWatermark } from "./watermark.js";
@@ -30,6 +30,31 @@ const applyTemplateChrome = (templateId, template) => {
   // so an unknown id behaves exactly as it did before.
   $("invoice").className = "invoice template-" + templateId;
   setText("fontHint", template.description || "");
+  applyPaper(paperFor(template));
+};
+
+/**
+ * Sizes the preview page for the template's paper (A4 or US Letter) and keeps
+ * a matching @page rule for printing the editor page itself (Ctrl+P). The
+ * app's own Print and Export PDF set the page size in the print document.
+ */
+let appliedPaper = null;
+const applyPaper = paper => {
+  if (appliedPaper === paper.id) return;
+  appliedPaper = paper.id;
+  const root = document.documentElement.style;
+  root.setProperty("--paper-w", paper.width + "mm");
+  root.setProperty("--paper-h", paper.height + "mm");
+  $("invoice").style.setProperty("--paper-w", paper.width + "mm");
+  $("invoice").style.setProperty("--paper-h", paper.height + "mm");
+  setText("previewMeta", paper.label + " portrait preview");
+  let rule = document.getElementById("paperPageRule");
+  if (!rule) {
+    rule = document.createElement("style");
+    rule.id = "paperPageRule";
+    document.head.appendChild(rule);
+  }
+  rule.textContent = `@media print{@page{size:${paper.width}mm ${paper.height}mm;margin:0}}`;
 };
 
 const renderLabels = ({ labels }) => {
@@ -79,10 +104,16 @@ const renderHeaderDetails = (caps, invoiceNo) => {
  * form, then "Bank Details:" and the remaining "Label: value" lines as a boxed
  * table. A line reading just "Bank Details" is taken as the heading itself.
  */
+const UKHF_KNOWN_LABELS = new RegExp("^((?:pay\\s*pal(?:\\s+details)?|account\\s+name|account\\s+(?:number|no\\.?)|a\\s*/\\s*c\\s*(?:no\\.?|number)|bank\\s+name|bank\\s+branch|branch|sort\\s+code|swift(?:\\s*/\\s*bic)?|wwift\\s*/\\s*bic|bic|iban)\\s*:?)\\s+(.+)$", "i");
+
 const ukhfPaymentMarkup = text => {
   // One row per line. "Label: value" keeps the colon as typed ("Sort Code:");
   // a tab, two or more spaces, or " | " separate without one ("IBAN").
   const rows = String(text || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(line => {
+    // Common bank labels are recognised even without a separator
+    // ("Account Name Edukators London Ltd", "Sort Code 309897").
+    const known = line.match(UKHF_KNOWN_LABELS);
+    if (known && known[2]) return { label: known[1].trim(), value: known[2].trim() };
     const plain = line.match(/^(.*?\S)(?:\t+| {2,}| \| )(.+)$/);
     if (plain) return { label: plain[1].trim(), value: plain[2].trim() };
     const colon = line.indexOf(":");
@@ -94,7 +125,7 @@ const ukhfPaymentMarkup = text => {
   const lines = rows.filter(r => isPaypal(r) || (!r.label && !isBankHeading(r)));
   const bank = rows.filter(r => r.label && !isPaypal(r) && !isBankHeading(r));
   const lineHtml = lines.map(r => r.label
-    ? `<div class="ukhf-pay-line"><strong>${esc(r.label.endsWith(":") ? r.label : r.label + ":")}</strong> ${esc(r.value)}</div>`
+    ? `<div class="ukhf-pay-line"><strong>PayPal Details:</strong> ${esc(r.value)}</div>`
     : `<div class="ukhf-pay-line">${esc(r.value)}</div>`).join("");
   const bankHtml = bank.length
     ? `<div class="ukhf-bank-title">Bank Details:</div><table class="ukhf-bank">${bank.map(r =>

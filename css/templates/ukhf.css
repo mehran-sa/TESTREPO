@@ -1,15 +1,15 @@
 /*
  * UKHF Fanatical template (js/templates/ukhf.js).
  * Measured from "FNT 2026 - INVOICE - September" (Microsoft Word, US Letter):
- * Academy for Health & Fitness to Fanatical, invoice #2026-3080. Positions
- * are kept in millimetres from the top-left corner, on A4.
+ * Academy for Health & Fitness to Fanatical, invoice #2026-3080. Printed on
+ * US Letter like the original; positions in millimetres from the top left.
  *
  *   logo           x 17.7  y 17.4   44.5 x 33.3mm
  *   INVOICE        x 154.7 y 31.3   Verdana 18pt
  *   Date / number  x 155.6 y 38.6 / 43.2   Verdana 9.5pt
  *   Invoice for    x 19.0  y 68.8   Verdana 12pt
  *   parties        y 74.6, lines every 4.5mm   Calibri 11pt, names bold
- *                  company x 19.3, client x 153.3 (151.5 on A4, see below)
+ *                  company x 19.3, client x 153.3
  *   bundle table   x 19.9 to 204.5  y 122.4   columns 60.0 / 21.5 / 18.4%
  *                  rows 4.8mm, 0.2mm black rules; names 11pt, numbers 10pt
  *   PayPal line    x 13.7  y 163.8  Calibri 11pt, label bold
@@ -26,7 +26,7 @@
   --ukhf-ink:#000;
   --ukhf-verdana:Verdana,"DejaVu Sans",Geneva,sans-serif;
   --ukhf-calibri:var(--font-royalty);
-  padding:17.4mm 5.5mm 14mm 19.3mm;
+  padding:17.4mm 11.4mm 14mm 19.3mm;   /* table right edge at x 204.5 */
   font-family:var(--ukhf-calibri);
   font-size:14.67px;            /* 11pt */
   line-height:4.5mm;
@@ -40,9 +40,10 @@
      your company   | client                                            */
 .template-ukhf .topdetails{
   display:grid;
-  /* Client column at x 151.5mm: 1.8mm left of the original, because A4 is
-     5.9mm narrower than Letter and the longest address line must still fit. */
-  grid-template-columns:132.2mm minmax(0,1fr);
+  grid-template-columns:134mm minmax(0,1fr);    /* client column at x 153.3 */
+  /* The logo row is the original's 33.3mm whatever the logo's size, so a
+     different logo never moves the rest of the page. */
+  grid-template-rows:33.3mm auto auto;
   grid-template-areas:"logo title" "period period" "seller client";
 }
 .template-ukhf .inv-header,
@@ -57,7 +58,7 @@
 
 .template-ukhf .invtitle{
   grid-area:title;display:flex;flex-direction:column;align-items:flex-start;
-  text-align:left;margin:13.4mm -5.5mm 0 3mm;
+  text-align:left;margin:13.4mm -8mm 0 1.2mm;
 }
 .template-ukhf .invtitle h2{
   order:0;margin:0;font-family:var(--ukhf-verdana);font-size:24px;font-weight:400;
@@ -79,7 +80,7 @@
 
 /* Parties */
 .template-ukhf .companywrap>div:not(.logobox){grid-area:seller;min-width:0}
-.template-ukhf .billrow [data-section="client"]{grid-area:client;margin-right:-5.5mm}
+.template-ukhf .billrow [data-section="client"]{grid-area:client;margin-right:-8mm}
 .template-ukhf .companyname,
 .template-ukhf .clientname{font-family:var(--ukhf-calibri);font-size:14.67px;font-weight:700;line-height:4.5mm;color:var(--ukhf-ink)}
 .template-ukhf .companywrap .metaText,
@@ -102,9 +103,11 @@
 /* No totals box, notes heading or other labels on the original */
 .template-ukhf .bottomgrid{display:block;margin:0}
 .template-ukhf .summary{display:none}
-.template-ukhf .notebox{margin-top:6mm}
+/* Notes, when filled in: plain text below the table (not the Modern
+   template's shaded box). */
+.template-ukhf .notebox{margin:6mm 0 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;min-height:0}
 .template-ukhf .notebox .label{display:none}
-.template-ukhf .notebox .metaText{white-space:pre-line;font-size:14.67px;color:var(--ukhf-ink)}
+.template-ukhf .notebox .metaText{white-space:pre-line;font-family:var(--ukhf-calibri);font-size:14.67px;line-height:4.5mm;color:var(--ukhf-ink)}
 
 /* ---------------------------------------------------- payment block */
 .template-ukhf .paymentgrid{display:block;border:0;margin:22mm 0 0 -5.6mm;padding:0}
@@ -115,12 +118,14 @@
 .template-ukhf .ukhf-bank-title{font-weight:700;letter-spacing:-.01em}
 .template-ukhf .ukhf-bank-title{margin-top:6.2mm}
 .template-ukhf .ukhf-bank{
-  margin:3.9mm 0 0 2.5mm;width:92.6mm;border-collapse:collapse;table-layout:fixed;
+  margin:3.9mm 0 0 2.5mm;width:92.6mm;border-collapse:collapse;table-layout:auto;
   font-family:var(--ukhf-verdana);font-size:12.67px;
 }
 .template-ukhf .ukhf-bank tr{height:7.3mm}   /* measured row pitch */
 .template-ukhf .ukhf-bank td{height:7.3mm;box-sizing:border-box;padding:0 0 0 3.8mm;border:.55mm solid #000;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-.template-ukhf .ukhf-bank td:first-child{width:32.6mm}
+/* Label column: the original's 32.6mm, wider when a label needs it
+   ("Account Number"), so labels are never cut off. */
+.template-ukhf .ukhf-bank td:first-child{width:32.6mm;min-width:32.6mm;padding-right:3mm;overflow:visible}
 
 /* --------------------------------------------------------- footer */
 .template-ukhf .footer{

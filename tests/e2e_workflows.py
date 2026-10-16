@@ -514,6 +514,8 @@ try:
         try:
             text = subprocess.run(["pdftotext", pdf_path, "-"], capture_output=True, text=True).stdout
             check("PDF contains invoice number and total", "INV-PDF" in text and "25.00" in text, text[:200])
+            check("other templates still print on A4 (595 x 842 pt)",
+                  "(A4)" in subprocess.run(["pdfinfo", pdf_path], capture_output=True, text=True).stdout)
         except FileNotFoundError:
             check("PDF generated (pdftotext unavailable for content check)", os.path.getsize(pdf_path) > 1000)
 
@@ -864,6 +866,36 @@ try:
         pu.click("#tabbtn-design"); pu.select_option("#template", "modern"); pu.select_option("#watermarkType", "text"); pu.fill("#watermarkText", "MINE")
         pu.select_option("#template", "ukhf"); pu.wait_for_timeout(200)
         check("re-choosing the template keeps a watermark you set yourself", pu.input_value("#watermarkType") == "text")
+        check("UKHF Fanatical previews on US Letter, like the original",
+              pu.text_content("#previewMeta") == "US Letter portrait preview"
+              and abs(pu.evaluate("() => document.getElementById('invoice').offsetWidth") - 816) <= 1)
+        pu.click("#tabbtn-invoice")
+        pu.fill("#notes", "You can use the following bank details for payment.")
+        pu.fill("#paymentDetails", "Account Name Edukators London Ltd\nAccount Number 60992068\nSort Code 309897\nIBAN GB62LOYD30989760992068\nPaypal info@oneeducation.org.uk")
+        pu.wait_for_timeout(150)
+        check("bank labels are recognised without colons (Account Name, Sort Code, IBAN, Paypal)",
+              pu.eval_on_selector_all("#pPayment .ukhf-bank td:first-child", "t => t.map(x => x.textContent)") == ["Account Name", "Account Number", "Sort Code", "IBAN"]
+              and pu.text_content("#pPayment .ukhf-pay-line") == "PayPal Details: info@oneeducation.org.uk")
+        check("long bank labels are not cut off",
+              pu.evaluate("() => { const c=document.querySelectorAll('#pPayment .ukhf-bank td')[2]; return c.scrollWidth <= c.clientWidth + 1; }"))
+        check("notes print as plain text, not in a shaded box",
+              pu.evaluate("() => { const n=document.querySelector('#invoice .notebox'); const s=getComputedStyle(n); return s.backgroundColor === 'rgba(0, 0, 0, 0)' && s.borderTopWidth === '0px'; }"))
+        pu.click("#moreBtn"); pu.click("#printBtn")
+        uhtml = None
+        for _ in range(80):
+            if pu.evaluate("() => document.getElementById('appConfirmDialog').open"):
+                pu.click("#appConfirmAccept")
+            uhtml = pu.evaluate("() => { const f=document.getElementById('invoicePrintFrame'); const d=f&&f.contentDocument; return d&&d.querySelector('.invoice') ? d.documentElement.outerHTML : null }")
+            if uhtml: break
+            pu.wait_for_timeout(25)
+        check("print message says which paper to choose", "US Letter" in pu.text_content("#toast"))
+        upage = cu.new_page(); upage.set_content(uhtml, wait_until="load"); upage.wait_for_timeout(300)
+        upath = os.path.join(OUT, OUT_PREFIX + "ukhf.pdf"); upage.pdf(path=upath, prefer_css_page_size=True)
+        try:
+            size = subprocess.run(["pdfinfo", upath], capture_output=True, text=True).stdout
+            check("UKHF Fanatical prints on US Letter (612 x 792 pt)", "612 x 792" in size, size[-120:])
+        except FileNotFoundError:
+            pass
         cu.close()
 
         # ---- storage failure handling (separate profile)

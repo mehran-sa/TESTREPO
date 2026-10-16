@@ -16,7 +16,9 @@
 
 import { $, qsa, fieldValue, toast } from "../utils.js";
 import { PRINT_SETTLE_MS, PRINT_FONT_SETTLE_MS } from "../constants.js";
-import { PRINT_OVERRIDE_CSS } from "./print-styles.js";
+import { printOverrideCss } from "./print-styles.js";
+import { paperFor } from "../constants.js";
+import * as TemplateRegistry from "../templates/template-registry.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 
 const FRAME_ID = "invoicePrintFrame";
@@ -104,7 +106,7 @@ export function buildInvoicePrintDocument(autoPrint = true) {
 <base href="${document.baseURI}">
 <title>${title}</title>
 ${collectStyleMarkup()}
-<style>${PRINT_OVERRIDE_CSS}</style>
+<style>${printOverrideCss(paperFor(TemplateRegistry.get(fieldValue("template"))))}</style>
 </head>
 <body>
 

@@ -7,7 +7,18 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.9.0";
+export const APP_VERSION = "2.9.1";
+
+/**
+ * Paper sizes a template can print on (capabilities.paper, default "a4").
+ * Later printed pages have a 12mm top margin (js/print/print-styles.js).
+ */
+export const PAPER_SIZES = {
+  a4: { id: "a4", label: "A4", width: 210, height: 297 },
+  letter: { id: "letter", label: "US Letter", width: 215.9, height: 279.4 }
+};
+export const NEXT_PAGE_TOP_MARGIN_MM = 12;
+export const paperFor = template => PAPER_SIZES[template?.capabilities?.paper] || PAPER_SIZES.a4;
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
