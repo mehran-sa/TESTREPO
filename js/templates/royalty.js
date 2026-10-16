@@ -1,5 +1,5 @@
 /**
- * Alpha / Fanatical Royalty statement.
+ * Alpha Academy Fanatical (id "royalty"; shown as "Royalty statement" before 2.10.0).
  * Styling: css/templates/royalty.css
  *
  * Template-specific behaviour:
@@ -13,8 +13,8 @@ import { metaCompany } from "../invoice/invoice-data.js";
 
 export default {
   id: "royalty",
-  name: "Royalty statement",
-  description: "Layout for royalty invoices: Name, Net Qty and Royalty columns (formerly “Alpha / Fanatical Royalty”).",
+  name: "Alpha Academy Fanatical",
+  description: "Alpha Academy royalty invoice to Fanatical: SKU, Name, Net Qty and Royalty columns.",
   cssClass: "template-royalty",
   fontStack: "Calibri Regular + Bold",
   labels: {

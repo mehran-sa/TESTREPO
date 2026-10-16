@@ -33,6 +33,8 @@ export default {
     showTableTotalRow: false,
     separatePaymentPage: false,
     /** Background watermark (js/invoice/watermark.js). */
-    watermark: true
+    watermark: true,
+    /** 12mm bottom margin on every printed page (long invoices). */
+    printMargins: { bottom: 12 }
   }
 };

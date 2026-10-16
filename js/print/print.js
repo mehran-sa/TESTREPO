@@ -106,7 +106,7 @@ export function buildInvoicePrintDocument(autoPrint = true) {
 <base href="${document.baseURI}">
 <title>${title}</title>
 ${collectStyleMarkup()}
-<style>${printOverrideCss(paperFor(TemplateRegistry.get(fieldValue("template"))))}</style>
+<style>${printOverrideCss(paperFor(TemplateRegistry.get(fieldValue("template"))), TemplateRegistry.get(fieldValue("template"))?.capabilities?.printMargins)}</style>
 </head>
 <body>
 

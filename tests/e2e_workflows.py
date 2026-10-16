@@ -205,7 +205,7 @@ try:
               not pf.evaluate("() => document.getElementById('panel-company').open")
               and not pf.evaluate("() => document.getElementById('panel-footer').open")
               and pf.text_content("#sumCompany") == "SA Learning Ltd")
-        pf.click("#tabbtn-design"); pf.click("#panel-columns > summary"); pf.reload(); pf.wait_for_timeout(500)
+        pf.click("#tabbtn-invoice"); pf.click("#panel-columns > summary"); pf.reload(); pf.wait_for_timeout(500)
         check("a panel stays open after reload once opened", pf.evaluate("() => document.getElementById('panel-columns').open"))
         pf.focus("#tabbtn-invoice"); pf.keyboard.press("ArrowRight")
         check("arrow keys move between tabs",
@@ -221,8 +221,9 @@ try:
         pf.click("#tabbtn-invoice")
         pf.evaluate("() => document.querySelectorAll('details.panel').forEach(d => d.open = true)")
         order = pf.evaluate("() => [...document.querySelectorAll('#tab-invoice > details')].map(d => d.id)")
-        check("Invoice tab is ordered for speed: client, items, then numbers and dates",
-              order[:2] == ["panel-client", "panel-items"] and order.index("panel-invoice") > order.index("panel-items"), str(order))
+        check("Invoice tab order: Invoice, Your company, Bill to, Columns, Line items, Bundle splitter, Totals, Notes",
+              order == ["panel-invoice", "panel-company", "panel-client", "panel-columns", "panel-items",
+                        "panel-bundles", "panel-totals", "panel-footer"], str(order))
         n_before = pf.locator(".itemrow").count()
         last = pf.locator(".itemrow").last
         last.locator('[data-key="rate"]').fill("50"); last.locator('[data-key="rate"]').press("Enter")
@@ -331,8 +332,8 @@ try:
         page.keyboard.press("Control+y"); page.wait_for_timeout(100)
         check("redo (Ctrl+Y) removes it again", page.locator(".itemrow").count() == 2)
 
-        # ---- columns
-        page.click("[data-tab=design]")
+        # ---- columns (on the Invoice tab since 2.10.1)
+        page.click("[data-tab=invoice]")
         page.click("#addColumnBtn")
         check("add column", page.locator(".columnrow").count() == 6)
         last = page.locator(".columnrow").last
@@ -698,8 +699,8 @@ try:
         page.click("[data-tab=design]")
         page.select_option("#template", "minimal")
         check("template menu uses plain names with a description",
-              page.locator("#template option:checked").text_content() == "Minimal"
-              and "formerly" in page.text_content("#fontHint"))
+              page.locator("#template option:checked").text_content() == "Janets Fanatical"
+              and "Janets" in page.text_content("#fontHint"))
         page.select_option("#template", "modern")
         page.select_option("#logoFallback", "none"); page.wait_for_timeout(100)
         check("no-logo option hides the logo box when there is no logo",
@@ -842,6 +843,9 @@ try:
         pu.set_input_files("#logoFile", LOGO); pu.wait_for_timeout(300)
         pu.click("#tabbtn-design"); pu.select_option("#template", "ukhf"); pu.wait_for_timeout(300)
         check("UKHF Fanatical is in the template list", pu.locator('#template option[value="ukhf"]').text_content() == "UKHF Fanatical")
+        check("template names: Alpha Academy, One Education and Janets Fanatical, plus Multipurpose",
+              pu.eval_on_selector_all("#template option", "o => o.map(x => x.textContent)")
+              == ["Modern", "Janets Fanatical", "One Education Fanatical", "Alpha Academy Fanatical", "UKHF Fanatical", "Multipurpose"])
         check("UKHF header: INVOICE, Date: 13-Oct-2026, INVOICE #2026-3080",
               pu.text_content("#pInvoiceTitle") == "INVOICE" and pu.text_content("#pDate") == "13-Oct-2026"
               and pu.text_content("#pInvoiceNo") == "INVOICE #2026-3080" and pu.is_hidden('#invoice tr[data-section="dueDate"]'))
@@ -897,6 +901,41 @@ try:
         except FileNotFoundError:
             pass
         cu.close()
+
+        # ---- Modern fixes and the Multipurpose template
+        cm = browser.new_context(viewport={"width": 1400, "height": 900})
+        cm.on("request", on_request)
+        pmo = cm.new_page(); pmo.on("pageerror", lambda e: errors.append("pageerror(modern): " + str(e)))
+        pmo.goto(URL); pmo.wait_for_timeout(400)
+        pmo.evaluate("() => document.querySelectorAll('details.panel').forEach(d => d.open = true)")
+        pmo.fill("#companyName", "Staff Asia Ltd"); pmo.fill("#companyEmail", "accounts@staffasia.org"); pmo.fill("#notes", "Short note.")
+        pmo.click("#addItemBtn"); r0 = pmo.locator(".itemrow").last
+        r0.locator('[data-key="quantity"]').fill("354"); r0.locator('[data-key="rate"]').fill("0.2331"); pmo.wait_for_timeout(150)
+        cells = pmo.eval_on_selector_all("#pItems tr td", "t => t.map(x => x.textContent)")
+        check("rates print with the precision they need (0.2331, not 0.23)", "£0.2331" in cells and "£82.52" in cells, str(cells))
+        check("placeholder logo is a square",
+              pmo.evaluate("() => { const b=document.querySelector('#invoice .logobox'); return b.offsetWidth === b.offsetHeight; }"))
+        check("Modern notes box fits its text (no fixed 88px block)",
+              pmo.evaluate("() => getComputedStyle(document.querySelector('#invoice .notebox')).minHeight") == "0px")
+        def print_css(page):
+            page.click("#moreBtn"); page.click("#printBtn")
+            for _ in range(80):
+                if page.evaluate("() => document.getElementById('appConfirmDialog').open"):
+                    page.click("#appConfirmAccept")
+                css = page.evaluate("() => { const f=document.getElementById('invoicePrintFrame'); const d=f&&f.contentDocument; return d&&d.querySelector('.invoice') ? [...d.querySelectorAll('style')].map(x=>x.textContent).join('') : null }")
+                if css: return css
+                page.wait_for_timeout(25)
+            return ""
+        check("Modern prints with a 12mm bottom margin on every page", "margin: 12mm 0 12mm 0" in print_css(pmo))
+        pmo.click("#tabbtn-design"); pmo.select_option("#template", "multipurpose"); pmo.wait_for_timeout(200)
+        check("Multipurpose renders with the accent header row and its footer line",
+              pmo.evaluate("() => getComputedStyle(document.querySelector('#pHeaders th')).backgroundColor") == "rgb(70, 183, 81)"
+              and "Staff Asia Ltd" in pmo.text_content("#pFooterCompany") and "accounts@staffasia.org" in pmo.text_content("#pFooterCompany")
+              and pmo.text_content("#pBalanceLabel") == "Amount due")
+        pmo.select_option("#watermarkType", "text"); pmo.fill("#watermarkText", "DRAFT"); pmo.wait_for_timeout(150)
+        check("Multipurpose shows watermarks", pmo.is_visible("#pWatermark") and pmo.text_content("#pWatermark text") == "DRAFT")
+        check("Multipurpose prints on A4 with the bottom margin", "size: 210mm 297mm" in print_css(pmo))
+        cm.close()
 
         # ---- storage failure handling (separate profile)
         ctx3 = browser.new_context(timezone_id="Asia/Dhaka")

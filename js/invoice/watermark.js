@@ -115,7 +115,9 @@ export function renderWatermark(template) {
       markMarkup(mark, tileW / 2, tileH / 2, 0) +
       `</pattern></defs><rect x="0" y="0" width="${PAGE_WIDTH_MM}" height="${round(heightMm)}" fill="url(#saWatermarkTiles)"/>`;
   } else {
-    body = pageCentres(heightMm, paper.height).map(cy => markMarkup(mark, PAGE_WIDTH_MM / 2, cy, s.angle)).join("");
+    const bottom = template?.capabilities?.printMargins?.bottom || 0;
+    const first = paper.height - bottom;
+    body = pageCentres(heightMm, first, first - NEXT_PAGE_TOP_MARGIN_MM).map(cy => markMarkup(mark, PAGE_WIDTH_MM / 2, cy, s.angle)).join("");
   }
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PAGE_WIDTH_MM} ${round(heightMm)}" preserveAspectRatio="xMidYMin meet" focusable="false">` +

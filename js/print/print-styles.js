@@ -9,13 +9,16 @@
 /**
  * The print CSS for a paper size ({width, height} in mm). A4 unless the
  * template says otherwise (UKHF Fanatical prints on US Letter, as its original).
+ * Pages after the first have a 12mm top margin. A template can also ask for a
+ * bottom margin on every page (capabilities.printMargins.bottom, mm); Modern
+ * and Multipurpose use 12mm so long tables never run to the paper's edge.
  */
-export const printOverrideCss = ({ width = 210, height = 297 } = {}) => `
+export const printOverrideCss = ({ width = 210, height = 297 } = {}, { bottom = 0 } = {}) => `
     /* Use the PDF page box as the source of truth. This prevents the document
        from growing wider than A4 and removes the extra strip on the right. */
     @page {
       size: ${width}mm ${height}mm;
-      margin: 12mm 0 0 0;
+      margin: 12mm 0 ${bottom}mm 0;
     }
     @page :first {
       margin-top: 0;
@@ -36,7 +39,7 @@ export const printOverrideCss = ({ width = 210, height = 297 } = {}) => `
     .invoice {
       width: 100% !important;
       max-width: ${width}mm !important;
-      min-height: ${height}mm !important;
+      min-height: ${height - bottom}mm !important;
       height: auto !important;
       margin: 0 !important;
       box-shadow: none !important;

@@ -1,5 +1,6 @@
 /**
  * Janets PDF - Exact Layout. Matched to the supplied Invoice JF2026-04 PDF.
+ * Shown as "Janets Fanatical" (id "minimal").
  * Styling: css/templates/minimal.css (which also embeds the Nimbus Sans faces).
  *
  * Template-specific behaviour:
@@ -15,8 +16,8 @@ import { metaCompany } from "../invoice/invoice-data.js";
 
 export default {
   id: "minimal",
-  name: "Minimal",
-  description: "Compact black-and-white layout with plain lines (formerly “Janets PDF”).",
+  name: "Janets Fanatical",
+  description: "Janets invoice to Fanatical: compact black-and-white layout with plain lines.",
   cssClass: "template-minimal",
   fontStack: "Nimbus Sans Regular + Bold",
   labels: {

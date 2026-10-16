@@ -18,3 +18,15 @@
 .invoice-watermark{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .invoice-watermark svg{display:block;width:100%;height:100%}
 .invoice-watermark text{font-family:inherit}
+
+/* ------------------------------------------------ Modern fixes (2.10.0) */
+/* Notes box grows with its text; the old 88px minimum left an empty block. */
+.invoice.template-modern .notebox{min-height:0}
+/* Room for the footer, so it never touches the payment details. */
+.invoice.template-modern{padding-bottom:22mm}
+/* Long invoices: rows and the totals block are never split across pages. */
+.invoice.template-modern .invtable tr{break-inside:avoid}
+.invoice.template-modern .bottomgrid,
+.invoice.template-modern .paymentgrid{break-inside:avoid}
+/* Placeholder logo: the initial centred in its square. */
+.invoice .logobox:not(.has-logo){justify-content:center!important}

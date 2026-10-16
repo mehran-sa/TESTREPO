@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.9.1">
+<meta name="sa-app-version" content="2.10.1">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="css/templates/classic.css">
 <link rel="stylesheet" href="css/templates/royalty.css">
 <link rel="stylesheet" href="css/templates/ukhf.css">
+<link rel="stylesheet" href="css/templates/multipurpose.css">
 <link rel="stylesheet" href="css/print.css">
 </head>
 <body>
@@ -80,6 +81,35 @@
 
 
   <div class="tabpane active" id="tab-invoice" role="tabpanel" aria-labelledby="tabbtn-invoice">
+    <details class="panel" id="panel-invoice" data-default="open" open>
+      <summary class="panelhead"><h2>Invoice</h2><span class="hint when-closed" id="sumInvoice"></span></summary>
+      <div class="panel-body">
+      <div class="grid2">
+        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
+        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
+        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
+        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
+        <div class="field full due-presets" role="group" aria-label="Set the due date"><span class="due-presets-label">Due</span><button class="chip" type="button" data-due-days="0">On receipt</button><button class="chip" type="button" data-due-days="7">7 days</button><button class="chip" type="button" data-due-days="14">14 days</button><button class="chip" type="button" data-due-days="30">30 days</button></div>
+      </div>
+    </div>
+    </details>
+    <details class="panel" id="panel-company" data-default="auto" open>
+      <summary class="panelhead"><h2>Your company</h2><span class="hint when-closed" id="sumCompany"></span></summary>
+      <div class="panel-body">
+      <div class="grid2">
+        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
+        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
+        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
+        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
+        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
+        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
+        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
+        <div class="field full"><label for="logoFile">Logo</label>
+<div class="logo-actions"><input id="logoFile" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><label class="btn small upload-btn" for="logoFile">Upload logo</label><button class="btn small danger" id="removeLogoBtn" type="button" hidden>Remove</button></div>
+<div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
+      </div>
+    </div>
+    </details>
     <details class="panel" id="panel-client" data-default="open" open>
       <summary class="panelhead"><h2>Bill to</h2><span class="hint when-closed" id="sumClient"></span></summary>
       <div class="panel-body">
@@ -91,6 +121,15 @@
         <div class="field"><label for="clientEmail">Email</label><input id="clientEmail" type="email" autocomplete="off"></div>
         <div class="field"><label for="clientTax">VAT / tax</label><input id="clientTax"></div>
       </div>
+    </div>
+    </details>
+    <details class="panel" id="panel-columns" data-default="closed" open>
+      <summary class="panelhead"><h2>Columns</h2><span class="hint" id="sumColumns"></span></summary>
+      <div class="panel-body">
+      <div class="importbox panel-actions"><button class="btn small" id="addColumnBtn">+ Add column</button></div>
+      <p class="hint">Add, remove, rename, reorder, resize, align, or hide columns. One column can be assigned as Quantity, Rate and Amount.</p>
+      <div id="columnEditor"></div>
+      <button class="btn small" id="restoreColumnsBtn">Restore default columns</button>
     </div>
     </details>
     <details class="panel" id="panel-items" data-default="open" open>
@@ -136,18 +175,6 @@
       </div>
     </div>
     </details>
-    <details class="panel" id="panel-invoice" data-default="open" open>
-      <summary class="panelhead"><h2>Invoice</h2><span class="hint when-closed" id="sumInvoice"></span></summary>
-      <div class="panel-body">
-      <div class="grid2">
-        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
-        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
-        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
-        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
-        <div class="field full due-presets" role="group" aria-label="Set the due date"><span class="due-presets-label">Due</span><button class="chip" type="button" data-due-days="0">On receipt</button><button class="chip" type="button" data-due-days="7">7 days</button><button class="chip" type="button" data-due-days="14">14 days</button><button class="chip" type="button" data-due-days="30">30 days</button></div>
-      </div>
-    </div>
-    </details>
     <details class="panel" id="panel-totals" data-default="open" open>
       <summary class="panelhead"><h2>Totals</h2><span class="hint" id="sumTotals"></span></summary>
       <div class="panel-body">
@@ -166,23 +193,6 @@
         <div class="field full"><label for="notes">Notes</label><textarea id="notes" placeholder="Optional, shown on this invoice"></textarea></div>
         <div class="field full"><label for="paymentDetails">Payment details</label><textarea id="paymentDetails" placeholder="Bank details or how to pay"></textarea></div>
         <div class="field full"><label for="terms">Terms</label><textarea id="terms" placeholder="Optional"></textarea></div>
-      </div>
-    </div>
-    </details>
-    <details class="panel" id="panel-company" data-default="auto" open>
-      <summary class="panelhead"><h2>Your company</h2><span class="hint when-closed" id="sumCompany"></span></summary>
-      <div class="panel-body">
-      <div class="grid2">
-        <div class="field full"><label for="companyName">Company name</label><input id="companyName" value="Your Company Ltd."></div>
-        <div class="field"><label for="companyReg">Registration number</label><input id="companyReg"></div>
-        <div class="field"><label for="companyVat">VAT / tax number</label><input id="companyVat"></div>
-        <div class="field full"><label for="companyAddress">Address</label><textarea id="companyAddress"></textarea></div>
-        <div class="field"><label for="companyPhone">Phone</label><input id="companyPhone"></div>
-        <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
-        <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
-        <div class="field full"><label for="logoFile">Logo</label>
-<div class="logo-actions"><input id="logoFile" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><label class="btn small upload-btn" for="logoFile">Upload logo</label><button class="btn small danger" id="removeLogoBtn" type="button" hidden>Remove</button></div>
-<div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
       </div>
     </div>
     </details>
@@ -222,9 +232,9 @@
       <div class="field"><label for="template">Design</label>
         <select id="template">
           <option value="modern">Modern</option>
-          <option value="minimal">Minimal</option>
-          <option value="classic">Classic, bordered table</option>
-          <option value="royalty">Royalty statement</option><option value="ukhf">UKHF Fanatical</option>
+          <option value="minimal">Janets Fanatical</option>
+          <option value="classic">One Education Fanatical</option>
+          <option value="royalty">Alpha Academy Fanatical</option><option value="ukhf">UKHF Fanatical</option><option value="multipurpose">Multipurpose</option>
         </select>
         <div class="hint" id="fontHint" style="margin-top:6px"></div>
       </div>
@@ -242,7 +252,7 @@
     <details class="panel" id="panel-watermark" data-default="closed" open>
       <summary class="panelhead"><h2>Watermark</h2><span class="hint" id="sumWatermark"></span></summary>
       <div class="panel-body">
-      <p class="hint" id="watermarkTemplateHint" hidden>Watermarks show on the Modern and UKHF Fanatical templates. Choose one under Invoice template to see it.</p>
+      <p class="hint" id="watermarkTemplateHint" hidden>Watermarks show on the Modern, Multipurpose and UKHF Fanatical templates. Choose one under Invoice template to see it.</p>
       <div class="grid2">
         <div class="field full"><label for="watermarkType">Watermark</label><select id="watermarkType"><option value="none" selected>Off</option><option value="text">Text</option><option value="logo">Logo</option><option value="image">Image</option></select></div>
         <div class="field full" data-wm="text"><label for="watermarkText">Text</label><input id="watermarkText" maxlength="40" autocomplete="off" placeholder="For example: PAID, DRAFT or a brand name"></div>
@@ -256,15 +266,6 @@
       </div>
       <p class="hint" style="margin-top:10px">Saved with each invoice and in each brand, so every brand can have its own watermark.</p>
       </div>
-    </details>
-    <details class="panel" id="panel-columns" data-default="closed" open>
-      <summary class="panelhead"><h2>Columns</h2><span class="hint" id="sumColumns"></span></summary>
-      <div class="panel-body">
-      <div class="importbox panel-actions"><button class="btn small" id="addColumnBtn">+ Add column</button></div>
-      <p class="hint">Add, remove, rename, reorder, resize, align, or hide columns. One column can be assigned as Quantity, Rate and Amount.</p>
-      <div id="columnEditor"></div>
-      <button class="btn small" id="restoreColumnsBtn">Restore default columns</button>
-    </div>
     </details>
     <details class="panel" id="panel-sections" data-default="closed" open>
       <summary class="panelhead"><h2>Show or hide sections</h2><span class="hint" id="sumSections"></span></summary>

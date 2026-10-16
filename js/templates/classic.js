@@ -1,5 +1,6 @@
 /**
  * One Education Classic. Matched to the supplied
+ * Shown as "One Education Fanatical" (id "classic").
  * "One Education - Fanatical Invoice 2026-0228" PDF.
  * Styling: css/templates/classic.css
  *
@@ -16,8 +17,8 @@ import { oneEducationCompanyMeta } from "../invoice/invoice-data.js";
 
 export default {
   id: "classic",
-  name: "Classic, bordered table",
-  description: "Traditional layout with a fully bordered table and a quantity total row (formerly “One Education Classic”).",
+  name: "One Education Fanatical",
+  description: "One Education invoice to Fanatical: fully bordered table with a quantity total row.",
   cssClass: "template-classic",
   fontStack: "Arial / Liberation Sans",
   labels: {

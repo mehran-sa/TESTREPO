@@ -202,7 +202,7 @@ const visibleColumns = caps => {
 
 const renderColgroup = (caps, visible) => {
   // Fixed widths apply when the template lists one width per visible column
-  // (Royalty statement: 4, UKHF Fanatical: 3).
+  // (Alpha Academy Fanatical: 4, UKHF Fanatical: 3).
   const useFixed = Array.isArray(caps.fixedColumnWidths) && caps.fixedColumnWidths.length === visible.length;
   $("pCols").innerHTML = useFixed
     ? caps.fixedColumnWidths.map(width => `<col style="width:${width}">`).join("")
@@ -297,6 +297,9 @@ const renderLogo = () => {
 
   box.style.width = width + "px";
   box.style.height = height + "px";
+  // Without a logo the placeholder (the company's initial) is a square box,
+  // not a wide empty frame with the letter squeezed into one side.
+  if (!state.logo) box.style.width = Math.min(width, height) + "px";
   img.style.objectFit = fieldValue("logoFit");
   img.style.objectPosition = align + " center";
   box.style.justifyContent = align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center";

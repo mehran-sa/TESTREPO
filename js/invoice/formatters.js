@@ -56,7 +56,21 @@ export const alignClass = col => (col.align === "right" ? "right" : "");
  * @param {{type: string}} col
  * @returns {string} HTML
  */
+/**
+ * A unit price: 2 decimals, or up to 4 when the rate has them. A royalty rate
+ * of 0.2331 printed as "£0.23" did not multiply out to the line amount.
+ */
+export function unitMoney(value, currency = currentCurrency()) {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 4 })
+      .format(num(value));
+  } catch {
+    return currency + " " + String(Math.round(num(value) * 1e4) / 1e4);
+  }
+}
+
 export function fmtCell(value, col) {
+  if (col.type === "currency" && col.role === "rate") return unitMoney(value);
   if (col.type === "currency") return money(value);
   if (col.type === "number") return decimalText(value);
   if (col.type === "percentage") return ratePercentText(num(value)) + "%";
