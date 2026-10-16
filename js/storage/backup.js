@@ -5,7 +5,7 @@
  * File shape (format "sa-invoice-generator-backup", version 1):
  *   {
  *     format, version, app, exportedAt,
- *     invoices:  [{ id, updatedAt, logoRef, summary, data }],
+ *     invoices:  [{ id, updatedAt, logoRef, watermarkRef?, summary, data }],
  *     logos:     { logoRef: data URL },
  *     clients:   [...], templates: [...], brands: [...]
  *   }
@@ -42,9 +42,14 @@ export function buildBackup(now = new Date()) {
   for (const entry of entries) {
     const record = readRecord(entry.id);
     if (!record) continue;
-    if (record.logoRef && allLogos[record.logoRef]) logos[record.logoRef] = allLogos[record.logoRef];
+    for (const ref of [record.logoRef, record.watermarkRef]) {
+      if (ref && allLogos[ref]) logos[ref] = allLogos[ref];
+    }
     const { id, ...summary } = entry;
-    invoices.push({ id: record.id || entry.id, updatedAt: record.updatedAt || entry.updatedAt, logoRef: record.logoRef || "", summary, data: record.data });
+    invoices.push({
+      id: record.id || entry.id, updatedAt: record.updatedAt || entry.updatedAt,
+      logoRef: record.logoRef || "", watermarkRef: record.watermarkRef || "", summary, data: record.data
+    });
   }
   return {
     format: BACKUP_FORMAT,
@@ -126,6 +131,7 @@ export function restoreBackup(data) {
     if (existing && existing.updatedAt >= updatedAt) { result.unchanged++; continue; }
 
     const logo = isSafeLogo(logos[item.logoRef]) ? logos[item.logoRef] : "";
+    const watermark = isSafeLogo(logos[item.watermarkRef]) ? logos[item.watermarkRef] : "";
     const s = isObject(item.summary) ? item.summary : {};
     const fields = snapshot.fields || {};
     const summary = {
@@ -135,7 +141,7 @@ export function restoreBackup(data) {
       total: Number(s.total) || 0,
       currency: s.currency ?? fields.currency ?? ""
     };
-    if (!saveInvoiceRecord(item.id, { ...snapshot, logo }, summary, updatedAt).ok) {
+    if (!saveInvoiceRecord(item.id, { ...snapshot, logo, watermark }, summary, updatedAt).ok) {
       result.failed = true;
       return result;
     }
@@ -161,6 +167,7 @@ export function restoreBackup(data) {
       const copy = JSON.parse(JSON.stringify({ name: String(entry.name).trim(), data: entry.data }));
       // Saved templates and brands carry their own logo copy: same rule.
       if (copy.data.logo && !isSafeLogo(copy.data.logo)) copy.data.logo = "";
+      if (copy.data.watermark && !isSafeLogo(copy.data.watermark)) copy.data.watermark = "";
       list.push(copy);
       names.add(nameKey(entry.name));
       result[counter]++;

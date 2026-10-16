@@ -11,3 +11,10 @@
 /* Zoom stage: holds the scaled page (see applyZoom). */
 .invoice-stage{margin:0 auto;position:relative}
 .invoice-stage>.invoice{margin:0;position:absolute;top:0;left:0}
+
+/* Watermark layer (js/invoice/watermark.js): behind all content, inside the
+   page. isolation keeps z-index:-1 above the page's own white background. */
+.invoice{isolation:isolate}
+.invoice-watermark{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.invoice-watermark svg{display:block;width:100%;height:100%}
+.invoice-watermark text{font-family:inherit}

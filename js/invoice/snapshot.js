@@ -181,6 +181,10 @@ export function normalizeSnapshot(data) {
   let logo = "";
   if (isSafeLogo(data.logo)) logo = data.logo;
   else if (data.logo) warnings.push("The logo was not an embedded image and was removed.");
+  // Same rule for the watermark image.
+  let watermark = "";
+  if (isSafeLogo(data.watermark)) watermark = data.watermark;
+  else if (data.watermark) warnings.push("The watermark image was not an embedded image and was removed.");
 
   const zoom = Number(data.zoom);
   const columns = cleanColumns(data.columns, warnings);
@@ -191,6 +195,7 @@ export function normalizeSnapshot(data) {
   const snapshot = {
     ...(data.version !== undefined ? { version: data.version } : {}),
     logo,
+    watermark,
     zoom: Number.isFinite(zoom) && zoom > 0 ? zoom : 1,
     columns,
     items,

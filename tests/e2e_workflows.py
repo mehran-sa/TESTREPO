@@ -217,6 +217,32 @@ try:
         pf.click("#pdfBtn"); pf.wait_for_selector("#appConfirmDialog[open]"); pf.click("#appConfirmCancel"); pf.wait_for_timeout(300)
         check("Go back and fix opens a closed panel at the problem field",
               pf.evaluate("() => document.getElementById('panel-company').open && document.activeElement.id === 'companyName'"))
+        # ---- speed features (same fresh profile)
+        pf.click("#tabbtn-invoice")
+        pf.evaluate("() => document.querySelectorAll('details.panel').forEach(d => d.open = true)")
+        order = pf.evaluate("() => [...document.querySelectorAll('#tab-invoice > details')].map(d => d.id)")
+        check("Invoice tab is ordered for speed: client, items, then numbers and dates",
+              order[:2] == ["panel-client", "panel-items"] and order.index("panel-invoice") > order.index("panel-items"), str(order))
+        n_before = pf.locator(".itemrow").count()
+        last = pf.locator(".itemrow").last
+        last.locator('[data-key="rate"]').fill("50"); last.locator('[data-key="rate"]').press("Enter")
+        check("Enter in the last line's Rate adds a line and moves to it",
+              pf.locator(".itemrow").count() == n_before + 1
+              and pf.evaluate("() => document.activeElement.closest('.itemrow') === document.querySelector('.itemrow:last-child')"))
+        pf.locator(".itemrow").first.locator('[data-key="quantity"]').press("Enter")
+        check("Enter in an earlier line moves to the next line",
+              pf.evaluate("() => document.activeElement.closest('.itemrow') === document.querySelectorAll('.itemrow')[1]"))
+        pf.fill("#invoiceDate", "2026-03-01"); pf.click('[data-due-days="30"]'); pf.wait_for_timeout(100)
+        check("Due in 30 days sets the due date", pf.input_value("#dueDate") == "2026-03-31")
+        pf.click('[data-due-days="0"]')
+        check("Due on receipt uses the invoice date", pf.input_value("#dueDate") == "2026-03-01")
+        check("Remove buttons only show when there is something to remove",
+              pf.is_hidden("#removeClientBtn") and pf.is_hidden("#removeLogoBtn"))
+        pf.click("#tabbtn-invoices")
+        pf.evaluate("() => document.getElementById('sidebar').scrollTop = 0")
+        pf.click("#tabbtn-invoice"); pf.evaluate("() => document.getElementById('sidebar').scrollTop = 1500"); pf.wait_for_timeout(150)
+        check("toolbar and tabs stay pinned while the editor scrolls",
+              0 <= pf.evaluate("() => document.getElementById('pdfBtn').getBoundingClientRect().top") < 40)
         cfresh.close()
 
         # ---- start-up and branding
@@ -718,6 +744,127 @@ try:
         check("phone: Preview button scrolls to the invoice, then offers Edit", "Edit" in pm.text_content("#jumpBtn"))
         pm.screenshot(path=os.path.join(OUT, OUT_PREFIX + "phone-preview.png"))
         mob.close()
+
+        # ---- watermark (Modern template, per brand)
+        cw = browser.new_context(viewport={"width": 1400, "height": 900}, accept_downloads=True)
+        cw.on("request", on_request)
+        pw = cw.new_page(); pw.on("pageerror", lambda e: errors.append("pageerror(watermark): " + str(e)))
+        pw.on("dialog", lambda d: (native_popups.append(d.type), d.accept()))
+        pw.goto(URL); pw.wait_for_timeout(400)
+        pw.evaluate("() => document.querySelectorAll('details.panel').forEach(d => d.open = true)")
+        pw.fill("#companyName", "Brand A Ltd"); pw.fill("#companyAddress", "London"); pw.fill("#clientName", "Acme"); pw.fill("#clientAddress", "Leeds")
+        pw.click("#addItemBtn"); pw.locator(".itemrow").last.locator('[data-key="rate"]').fill("100")
+        pw.click("#tabbtn-design")
+        check("watermark is off by default and its settings are hidden",
+              pw.is_hidden("#pWatermark") and pw.is_hidden("#watermarkText") and pw.text_content("#sumWatermark") == "Off")
+        pw.select_option("#watermarkType", "text"); pw.fill("#watermarkText", "PAID"); pw.wait_for_timeout(200)
+        check("text watermark renders behind the Modern invoice",
+              pw.is_visible("#pWatermark") and pw.text_content("#pWatermark text") == "PAID"
+              and pw.evaluate("() => getComputedStyle(document.getElementById('pWatermark')).zIndex") == "-1")
+        pw.locator("#watermarkOpacity").fill("20"); pw.wait_for_timeout(150)
+        check("opacity slider applies and is labelled",
+              pw.get_attribute("#pWatermark g", "opacity") == "0.2" and pw.text_content("#watermarkOpacityValue") == "20%")
+        for i in range(25):
+            pw.click("#tabbtn-invoice"); pw.click("#addItemBtn")
+        pw.wait_for_timeout(400); pw.click("#tabbtn-design")
+        check("centred layout puts one watermark on each printed page",
+              pw.locator("#pWatermark text").count() >= 2)
+        pw.select_option("#watermarkLayout", "tiled"); pw.wait_for_timeout(150)
+        check("tiled layout repeats the watermark", pw.locator("#pWatermark pattern").count() == 1)
+        pw.select_option("#watermarkLayout", "centred")
+        pw.select_option("#template", "minimal"); pw.wait_for_timeout(150)
+        check("other templates do not show it, and the panel says why",
+              pw.is_hidden("#pWatermark") and pw.is_visible("#watermarkTemplateHint") and "(not on this template)" in pw.text_content("#sumWatermark"))
+        pw.select_option("#template", "modern")
+        pw.select_option("#watermarkType", "image")
+        pw.set_input_files("#watermarkFile", LOGO); pw.wait_for_timeout(500)
+        check("uploaded watermark image renders, with a Remove button",
+              (pw.get_attribute("#pWatermark image", "href") or "").startswith("data:image/png") and pw.is_visible("#removeWatermarkBtn"))
+        pw.select_option("#watermarkType", "text"); pw.fill("#watermarkText", "BRAND A")
+        pw.fill("#accentHex", "#c2185b"); pw.wait_for_timeout(200)
+        pw.click("#saveBrandBtn"); pw.wait_for_selector("#appPromptDialog[open]"); pw.fill("#appPromptInput", "Brand A"); pw.click("#appPromptAccept"); pw.wait_for_timeout(150)
+        pw.fill("#watermarkText", "BRAND B"); pw.fill("#accentHex", "#1565c0"); pw.wait_for_timeout(150)
+        pw.click("#saveBrandBtn"); pw.wait_for_selector("#appPromptDialog[open]"); pw.fill("#appPromptInput", "Brand B"); pw.click("#appPromptAccept"); pw.wait_for_timeout(150)
+        pw.locator("#savedBrands .library-item", has_text="Brand A").locator("button", has_text="Load").click(); pw.wait_for_timeout(200)
+        check("each brand keeps its own watermark (multi-brand)",
+              pw.text_content("#pWatermark text") == "BRAND A" and pw.get_attribute("#pWatermark text", "fill") == "#c2185b")
+        pw.reload(); pw.wait_for_timeout(500)
+        check("watermark survives a reload", pw.text_content("#pWatermark text") == "BRAND A")
+        pw.click("#moreBtn"); pw.click("#printBtn")
+        doc_html, frame_info = None, None
+        for _ in range(80):
+            if pw.evaluate("() => document.getElementById('appConfirmDialog').open"):
+                pw.click("#appConfirmAccept")
+            frame_info = pw.evaluate("""() => { const f = document.getElementById('invoicePrintFrame'); const d = f && f.contentDocument;
+                if (!d || !d.querySelector('.invoice')) return null;
+                return { html: d.documentElement.outerHTML, accent: getComputedStyle(d.documentElement).getPropertyValue('--accent').trim() }; }""")
+            if frame_info: break
+            pw.wait_for_timeout(25)
+        check("printout keeps the invoice accent colour (was always the default blue)",
+              frame_info and frame_info["accent"] == "#c2185b", str(frame_info and frame_info["accent"]))
+        wpdf = cw.new_page(); wpdf.goto(URL)
+        wpdf.evaluate("h => { document.open(); document.write(h); document.close(); }", frame_info["html"]); wpdf.wait_for_timeout(500)
+        wpdf_path = os.path.join(OUT, OUT_PREFIX + "watermark.pdf")
+        wpdf.pdf(path=wpdf_path, prefer_css_page_size=True, print_background=False)
+        # Text stretched to an exact width is not extractable as text, so the
+        # PDF is rendered to an image and checked for watermark-coloured pixels
+        # (#c2185b at 20% over white is about (243, 209, 222)).
+        try:
+            from PIL import Image
+            subprocess.run(["pdftoppm", "-png", "-r", "40", "-f", "1", "-l", "1", wpdf_path, os.path.join(FIX, "wm")], check=True)
+            img = Image.open(os.path.join(FIX, "wm-1.png")).convert("RGB")
+            hits = sum(1 for px in img.getdata() if abs(px[0] - 243) < 14 and abs(px[1] - 209) < 14 and abs(px[2] - 222) < 14)
+            check("watermark prints in the PDF even with background graphics off", hits > 300, f"{hits} pixels")
+        except (FileNotFoundError, ImportError):
+            pass
+        pw.click("#tabbtn-design"); pw.fill("#watermarkText", ""); pw.click("#pdfBtn")
+        pw.wait_for_selector("#appConfirmDialog[open]")
+        check("export check flags a watermark with no text", "watermark is on but has no text" in pw.text_content("#appConfirmList"))
+        pw.click("#appConfirmCancel")
+        cw.close()
+
+        # ---- UKHF Fanatical template (matches the supplied FNT 2026 invoice)
+        cu = browser.new_context(viewport={"width": 1400, "height": 900})
+        cu.on("request", on_request)
+        pu = cu.new_page(); pu.on("pageerror", lambda e: errors.append("pageerror(ukhf): " + str(e)))
+        pu.goto(URL); pu.wait_for_timeout(400)
+        pu.evaluate("() => document.querySelectorAll('details.panel').forEach(d => d.open = true)")
+        for sel, val in [("#invoiceNumber", "2026-3080"), ("#invoiceDate", "2026-10-13"), ("#companyName", "Mayfair College Ltd"),
+                         ("#companyReg", "12389626"), ("#companyAddress", "163 City Road, London, England, EC1V 1NR"),
+                         ("#clientName", "Fanatical\nFocus Multimedia Ltd"), ("#clientAddress", "The Studios, Lea Hall Enterprise Park\nWheelhouse Road, Rugeley"),
+                         ("#paymentDetails", "PayPal Details: info@hfonline.org\nNatWest A/C | MAYFAIR COLLEGE LTD\nSort Code: 600537\nIBAN | GB29NWBK60053724214205")]:
+            pu.fill(sel, val)
+        for d, q, r in [("New Skills New You Build Your Own eLearning Bundle", "354", "0.2331"), ("Total Tech & Cybersecurity Masterclass Bundle", "300", "0.206")]:
+            pu.click("#addItemBtn"); row = pu.locator(".itemrow").last
+            row.locator('[data-key="description"]').fill(d); row.locator('[data-key="quantity"]').fill(q); row.locator('[data-key="rate"]').fill(r)
+        pu.set_input_files("#logoFile", LOGO); pu.wait_for_timeout(300)
+        pu.click("#tabbtn-design"); pu.select_option("#template", "ukhf"); pu.wait_for_timeout(300)
+        check("UKHF Fanatical is in the template list", pu.locator('#template option[value="ukhf"]').text_content() == "UKHF Fanatical")
+        check("UKHF header: INVOICE, Date: 13-Oct-2026, INVOICE #2026-3080",
+              pu.text_content("#pInvoiceTitle") == "INVOICE" and pu.text_content("#pDate") == "13-Oct-2026"
+              and pu.text_content("#pInvoiceNo") == "INVOICE #2026-3080" and pu.is_hidden('#invoice tr[data-section="dueDate"]'))
+        check("'Invoice for' line defaults to the month before the invoice date", pu.text_content("#pPeriodTitle") == "Invoice for September 2026")
+        check("company block: bold name, Reg.no and one-line Address",
+              pu.text_content("#pCompanyMeta") == "Reg.no: 12389626\nAddress: 163 City Road, London, England, EC1V 1NR")
+        check("client: only the first line is bold, the rest prints with the address",
+              pu.text_content("#pClientName") == "Fanatical" and pu.text_content("#pClientMeta").startswith("Focus Multimedia Ltd\nThe Studios"))
+        heads = pu.eval_on_selector_all("#pHeaders th", "t => t.map(x => x.textContent)")
+        check("bundle table columns: Bundle Name, Net Qty, Royalty", heads == ["Bundle Name", "Net Qty", "Royalty"], str(heads))
+        total_row = pu.eval_on_selector_all("#pClassicTotals td", "t => t.map(x => x.textContent)")
+        check("table ends with 'Total =', the quantity total and the royalty total", total_row == ["Total =", "654", "£144.32"], str(total_row))
+        check("PayPal line, then Bank Details as a boxed table (colons as typed)",
+              "PayPal Details:" in pu.text_content("#pPayment .ukhf-pay-line strong")
+              and pu.eval_on_selector_all("#pPayment .ukhf-bank td:first-child", "t => t.map(x => x.textContent)") == ["NatWest A/C", "Sort Code:", "IBAN"])
+        check("closing line: Thank you for your Partnership!", pu.text_content("#pFooterCompany") == "Thank you for your Partnership!")
+        check("choosing the template switches on the logo watermark and logo size (untouched settings only)",
+              pu.input_value("#watermarkType") == "logo" and pu.input_value("#logoWidth") == "168" and pu.is_visible("#pWatermark"))
+        pu.click("#tabbtn-invoice"); pu.fill("#reference", "Q3 2026"); pu.fill("#terms", "With thanks"); pu.wait_for_timeout(150)
+        check("Reference and Terms override the 'Invoice for' line and the closing line",
+              pu.text_content("#pPeriodTitle") == "Invoice for Q3 2026" and pu.text_content("#pFooterCompany") == "With thanks")
+        pu.click("#tabbtn-design"); pu.select_option("#template", "modern"); pu.select_option("#watermarkType", "text"); pu.fill("#watermarkText", "MINE")
+        pu.select_option("#template", "ukhf"); pu.wait_for_timeout(200)
+        check("re-choosing the template keeps a watermark you set yourself", pu.input_value("#watermarkType") == "text")
+        cu.close()
 
         # ---- storage failure handling (separate profile)
         ctx3 = browser.new_context(timezone_id="Asia/Dhaka")

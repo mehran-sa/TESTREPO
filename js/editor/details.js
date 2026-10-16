@@ -6,12 +6,13 @@
  * their own modules.
  */
 
-import { $, fieldValue, isIsoDate } from "../utils.js";
+import { $, qsa, fieldValue, isIsoDate, today, plusDays, toast } from "../utils.js";
 import { FIELD_IDS } from "../constants.js";
 import { renderPreview } from "../invoice/invoice-renderer.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
 import { setAccent } from "./design.js";
 import { nextInvoiceNumber } from "../invoice/invoice-data.js";
+import * as TemplateRegistry from "../templates/template-registry.js";
 
 export function initFieldBindings() {
   FIELD_IDS.forEach(id => {
@@ -28,6 +29,43 @@ export function initFieldBindings() {
       renderPreview();
       // Keystrokes: coalesced into a single history entry.
       saveInvoice({ typing: true });
+    });
+  });
+
+  // A template can bring suggested settings (UKHF Fanatical: logo size and a
+  // logo watermark). They are applied only to settings still at the app's
+  // defaults, so nothing chosen by hand is overwritten.
+  $("template")?.addEventListener("change", () => {
+    const template = TemplateRegistry.get(fieldValue("template"));
+    const groups = template?.capabilities?.defaultsOnSelect;
+    if (!groups) return;
+    const atDefault = id => {
+      const el = $(id);
+      if (!el) return false;
+      if (el.tagName === "SELECT") return [...el.options].some(o => o.defaultSelected && o.selected) || (el.selectedIndex === 0 && ![...el.options].some(o => o.defaultSelected));
+      return el.value === el.defaultValue;
+    };
+    const applied = [];
+    for (const [name, values] of Object.entries(groups)) {
+      // A group is applied only when every setting in it is untouched.
+      if (!Object.keys(values).every(atDefault)) continue;
+      for (const [id, value] of Object.entries(values)) $(id).value = value;
+      applied.push(name);
+    }
+    if (!applied.length) return;
+    renderPreview();
+    saveInvoice();
+    toast(`${template.name}: ${applied.map(n => n === "watermark" ? "logo watermark switched on" : "logo size set").join(" and ")}, as on the original. You can change ${applied.length > 1 ? "these" : "this"} in Design.`);
+  });
+
+  // "Due in" shortcuts: set the due date from the invoice date in one click.
+  qsa("[data-due-days]").forEach(button => {
+    button.addEventListener("click", () => {
+      const from = isIsoDate(fieldValue("invoiceDate")) ? fieldValue("invoiceDate") : today();
+      $("dueDate").value = plusDays(from, Number(button.dataset.dueDays));
+      updateDateWarning();
+      renderPreview();
+      saveInvoice();
     });
   });
 

@@ -31,6 +31,8 @@ export default {
     fixedColumnWidths: null,
     headerLabels: null,
     showTableTotalRow: false,
-    separatePaymentPage: false
+    separatePaymentPage: false,
+    /** Background watermark (js/invoice/watermark.js). */
+    watermark: true
   }
 };

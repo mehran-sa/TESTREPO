@@ -75,6 +75,7 @@ export function serialize() {
   return {
     version: DATA_VERSION,
     logo: state.logo,
+    watermark: state.watermark,
     zoom: state.zoom,
     columns: state.columns,
     items: state.items,
@@ -90,7 +91,8 @@ export function serialize() {
 export function serializeBrand() {
   const fields = {};
   BRAND_FIELD_IDS.forEach(id => { fields[id] = fieldValue(id); });
-  return { version: DATA_VERSION, logo: state.logo, fields };
+  // Brands carry their own watermark too: agencies invoice under several brands.
+  return { version: DATA_VERSION, logo: state.logo, watermark: state.watermark, fields };
 }
 
 /** Invoice note, with the known Alpha statement typo repaired for that template. */

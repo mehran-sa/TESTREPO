@@ -15,6 +15,23 @@ const isNumericType = type => NUMERIC_COLUMN_TYPES.includes(type);
 const isDescriptionField = col => col.type === "text" && col.key === "description";
 const inputTypeFor = col => (isNumericType(col.type) ? "number" : col.type === "date" ? "date" : "text");
 
+/**
+ * Fields in the order people type them: description, quantity, rate, then the
+ * rest in column order. (The printed column order is unchanged.)
+ */
+const fieldRank = col => (isDescriptionField(col) ? 0 : col.role === "quantity" ? 1 : col.role === "rate" ? 2 : 3);
+const orderedFields = cols => cols.map((c, i) => [c, i]).sort((a, b) => fieldRank(a[0]) - fieldRank(b[0]) || a[1] - b[1]).map(([c]) => c);
+
+/** Adds a blank line and puts the cursor in its first field. */
+function addLineAndFocus() {
+  addItem(createBlankItem());
+  renderItems();
+  renderPreview();
+  saveInvoice();
+  const rows = $("itemsEditor").children;
+  rows[rows.length - 1]?.querySelector("[data-key]")?.focus();
+}
+
 /** Private drag type, so drops from outside the item list are ignored. */
 const ITEM_DRAG_TYPE = "application/x-sa-invoice-item";
 
@@ -57,7 +74,7 @@ export function renderItems() {
   const root = $("itemsEditor");
   root.innerHTML = "";
   // Description first (full width), then the short fields share one line.
-  const editable = editableColumns().slice().sort((a, b) => Number(isDescriptionField(b)) - Number(isDescriptionField(a)));
+  const editable = orderedFields(editableColumns());
   const count = state.items.length;
   state.items.forEach((item, idx) => {
     const row = document.createElement("div");
@@ -108,6 +125,18 @@ export function renderItems() {
     const total = row.querySelector(".itemrow-total");
     row.querySelectorAll("[data-key]").forEach(input => {
       if (input.tagName === "TEXTAREA") requestAnimationFrame(() => fitTextarea(input));
+      // Enter in a single-line field: go to the next line's first field, or
+      // add a new line after the last one. (Enter in the description adds a
+      // new text line, as usual.)
+      if (input.tagName === "INPUT") {
+        input.onkeydown = e => {
+          if (e.key !== "Enter" || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
+          e.preventDefault();
+          const next = root.children[idx + 1];
+          if (next) next.querySelector("[data-key]")?.focus();
+          else addLineAndFocus();
+        };
+      }
       input.oninput = () => {
         const col = state.columns.find(c => c.key === input.dataset.key);
         item[input.dataset.key] = isNumericType(col?.type) ? num(input.value) : input.value;
@@ -125,15 +154,9 @@ export function renderItems() {
 }
 
 export function initItemControls() {
-  $("addItemBtn").onclick = () => {
-    addItem(createBlankItem());
-    renderItems();
-    renderPreview();
-    saveInvoice();
-    // Ready to type straight into the new line.
-    const rows = $("itemsEditor").children;
-    rows[rows.length - 1]?.querySelector("[data-key]")?.focus();
-  };
+  // Both add buttons put the cursor straight into the new line.
+  $("addItemBtn").onclick = addLineAndFocus;
+  if ($("addItemBottomBtn")) $("addItemBottomBtn").onclick = addLineAndFocus;
   $("clearItemsBtn").onclick = async () => {
     if (!state.items.length) return;
     const ok = await confirmAction({

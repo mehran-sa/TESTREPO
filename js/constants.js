@@ -7,7 +7,7 @@
  * App release. index.html carries the same value in <meta name="sa-app-version">;
  * a mismatch means the browser mixed cached files from two releases.
  */
-export const APP_VERSION = "2.6.1";
+export const APP_VERSION = "2.9.0";
 
 /** Schema version written into exported/saved snapshots. */
 export const DATA_VERSION = 2;
@@ -113,7 +113,9 @@ export const SECTION_DEFS = [
  * files is ignored.
  */
 export const FIELD_IDS = [
-  "logoWidth", "logoHeight", "logoFit", "logoAlign", "logoFallback", "invoiceNumber", "invoiceDate", "dueDate",
+  "logoWidth", "logoHeight", "logoFit", "logoAlign", "logoFallback",
+  "watermarkType", "watermarkText", "watermarkOpacity", "watermarkSize", "watermarkAngle", "watermarkLayout", "watermarkColor",
+  "invoiceNumber", "invoiceDate", "dueDate",
   "currency", "reference", "companyName", "companyReg", "companyVat", "companyAddress", "companyPhone",
   "companyEmail", "companyWebsite", "clientName", "clientContact", "clientTax", "clientAddress", "clientEmail",
   "discount", "tax", "shipping", "notes", "paymentDetails", "terms", "template", "accent", "accentHex"
@@ -123,6 +125,7 @@ export const FIELD_IDS = [
 export const BRAND_FIELD_IDS = [
   "companyName", "companyReg", "companyVat", "companyAddress", "companyPhone", "companyEmail", "companyWebsite",
   "currency", "template", "accent", "accentHex", "logoWidth", "logoHeight", "logoFit", "logoAlign", "logoFallback",
+  "watermarkType", "watermarkText", "watermarkOpacity", "watermarkSize", "watermarkAngle", "watermarkLayout", "watermarkColor",
   "paymentDetails", "terms"
 ];
 

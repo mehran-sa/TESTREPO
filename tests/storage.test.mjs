@@ -157,3 +157,27 @@ test("a line item named 'Total ...' is never taken as the statement total", () =
   assert.equal(items.length, 2);
   assert.deepEqual(statementTotal, { label: "Total royalty", value: 20 });
 });
+
+/* ------------------------------------------------------------ watermark */
+
+test("watermark images are stored once (shared with logos), kept while used, and removed when unused", () => {
+  const WM = "data:image/png;base64,WWWW";
+  lib.saveInvoiceRecord("a1", { ...snap("INV-1"), watermark: WM }, summary("INV-1"));
+  lib.saveInvoiceRecord("b2", { ...snap("INV-2"), watermark: WM }, summary("INV-2"));
+  assert.equal(Object.keys(lib.readLogos()).length, 2); // one logo + one watermark
+  assert.equal(lib.loadSavedInvoice("a1").watermark, WM);
+  assert.ok(!store.get(STORAGE_KEYS.invoiceRecordPrefix + "a1").includes("WWWW"));
+  lib.deleteInvoiceRecord("a1");
+  assert.equal(lib.loadSavedInvoice("b2").watermark, WM);
+  lib.deleteInvoiceRecord("b2");
+  assert.equal(Object.keys(lib.readLogos()).length, 0);
+});
+
+test("a backup carries watermark images", () => {
+  const WM = "data:image/png;base64,WWWW";
+  lib.saveInvoiceRecord("a1", { ...snap("INV-1"), watermark: WM }, summary("INV-1"));
+  const file = JSON.parse(JSON.stringify(backup.buildBackup()));
+  store.clear();
+  backup.restoreBackup(file);
+  assert.equal(lib.loadSavedInvoice("a1").watermark, WM);
+});

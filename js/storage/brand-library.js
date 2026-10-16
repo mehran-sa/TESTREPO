@@ -27,7 +27,8 @@ export function getBrand(index) {
  * stored a nested company object plus top-level currency/template. Older saved
  * brands therefore keep working without a migration pass.
  *
- * @returns {string|undefined} the logo data URL, when the record carries one
+ * @returns {{logo?: string, watermark?: string}} the images the record carries
+ *          (a brand saved before 2.8.0 has no watermark: the current one stays)
  */
 export function applyBrandRecord(record) {
   const data = JSON.parse(JSON.stringify(record || {}));
@@ -43,5 +44,8 @@ export function applyBrandRecord(record) {
   if (typeof data.currency === "string") setFieldValue("currency", data.currency);
   if (typeof data.template === "string") setFieldValue("template", data.template);
 
-  return typeof data.logo === "string" ? data.logo : undefined;
+  return {
+    logo: typeof data.logo === "string" ? data.logo : undefined,
+    watermark: typeof data.watermark === "string" ? data.watermark : undefined
+  };
 }

@@ -1,9 +1,11 @@
 /** Design tab: accent colour, logo upload and sizing, zoom. */
 
-import { $, setText, safeColor, toast, num, toastError } from "../utils.js";
+import { $, setText, safeColor, toast, num, toastError, fieldValue } from "../utils.js";
 import { LIMITS, LOGO_HINT_DEFAULT } from "../constants.js";
 import { state, setLogo, setZoom } from "../state.js";
 import { renderPreview, applyZoom } from "../invoice/invoice-renderer.js";
+import { renderWatermark } from "../invoice/watermark.js";
+import * as TemplateRegistry from "../templates/template-registry.js";
 import { saveInvoice } from "../storage/invoice-storage.js";
 
 /** Applies an accent colour to the CSS custom properties and both inputs. */
@@ -27,7 +29,7 @@ export function setAccent(value) {
  *
  * @returns {string|null} the smaller data URL, or null to keep the original
  */
-function shrinkLogo(image, type, originalDataUrl) {
+export function shrinkLogo(image, type, originalDataUrl) {
   if (!/^image\/(png|jpeg|webp|gif)$/.test(type)) return null;
   const { naturalWidth: w, naturalHeight: h } = image;
   const longest = Math.max(w, h);
@@ -124,7 +126,12 @@ export function initZoomControls() {
 
   // Keep the stage the right size when the page grows or shrinks (a logo
   // loading, items added), and keep fitting while the window changes size.
-  if ("ResizeObserver" in window) new ResizeObserver(() => applyZoom()).observe($("invoice"));
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(() => {
+      applyZoom();
+      renderWatermark(TemplateRegistry.get(fieldValue("template")));
+    }).observe($("invoice"));
+  }
   let timer = null;
   window.addEventListener("resize", () => {
     clearTimeout(timer);

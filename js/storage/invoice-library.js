@@ -62,14 +62,18 @@ function writeLogos(logos) {
  * It is trusted only while its key is still listed in the small logo index:
  * another tab may have removed the logo, or storage may have been restored.
  */
-let lastStored = { dataUrl: null, ref: "" };
+const lastStored = { logo: { dataUrl: null, ref: "" }, watermark: { dataUrl: null, ref: "" } };
 
-/** Stores a logo once and returns its key, or null when it could not be stored. */
-function storeLogo(dataUrl) {
+/**
+ * Stores an image (a logo, or since 2.8.0 a watermark image) once and returns
+ * its key, or null when it could not be stored. Both kinds share one store.
+ */
+function storeLogo(dataUrl, slot = "logo") {
   if (!dataUrl) return "";
-  if (dataUrl === lastStored.dataUrl && readLogoIndex().includes(lastStored.ref)) return lastStored.ref;
+  const last = lastStored[slot];
+  if (dataUrl === last.dataUrl && readLogoIndex().includes(last.ref)) return last.ref;
   const ref = storeLogoIn(dataUrl, readLogos());
-  lastStored = ref ? { dataUrl, ref } : { dataUrl: null, ref: "" };
+  lastStored[slot] = ref ? { dataUrl, ref } : { dataUrl: null, ref: "" };
   return ref;
 }
 
@@ -89,8 +93,12 @@ function storeLogoIn(dataUrl, logos) {
 
 /** Removes logos that no saved invoice uses any more. */
 export function removeUnusedLogos() {
-  lastStored = { dataUrl: null, ref: "" };
-  const used = new Set(listInvoices().map(entry => readRecord(entry.id)?.logoRef).filter(Boolean));
+  lastStored.logo = { dataUrl: null, ref: "" };
+  lastStored.watermark = { dataUrl: null, ref: "" };
+  const used = new Set(listInvoices().flatMap(entry => {
+    const record = readRecord(entry.id);
+    return [record?.logoRef, record?.watermarkRef];
+  }).filter(Boolean));
   const logos = readLogos();
   let changed = false;
   for (const ref of Object.keys(logos)) {
@@ -139,8 +147,10 @@ export function readRecord(id) {
 export function loadSavedInvoice(id) {
   const record = readRecord(id);
   if (!record) return null;
-  const logo = record.logoRef ? readLogos()[record.logoRef] || "" : "";
-  return { ...record.data, logo, invoiceId: id };
+  const images = record.logoRef || record.watermarkRef ? readLogos() : {};
+  const logo = record.logoRef ? images[record.logoRef] || "" : "";
+  const watermark = record.watermarkRef ? images[record.watermarkRef] || "" : "";
+  return { ...record.data, logo, watermark, invoiceId: id };
 }
 
 /**
@@ -155,8 +165,12 @@ export function saveInvoiceRecord(id, snapshot, summary, updatedAt = new Date().
   if (!isInvoiceId(id)) return { ok: false };
   const logoRef = storeLogo(snapshot.logo || "");
   if (logoRef === null) return { ok: false };
-  const { logo, invoiceId, ...data } = snapshot;
-  const text = JSON.stringify({ id, updatedAt, logoRef, data });
+  const watermarkRef = storeLogo(snapshot.watermark || "", "watermark");
+  if (watermarkRef === null) return { ok: false };
+  const { logo, watermark, invoiceId, ...data } = snapshot;
+  const record = { id, updatedAt, logoRef, data };
+  if (watermarkRef) record.watermarkRef = watermarkRef;
+  const text = JSON.stringify(record);
   if (!writeRaw(recordKey(id), text)) return { ok: false };
 
   const list = listInvoices().filter(e => e.id !== id);

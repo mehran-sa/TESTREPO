@@ -8,7 +8,7 @@
 
 import { fieldValue, setFieldValue } from "./utils.js";
 import { FIELD_IDS } from "./constants.js";
-import { setLogo, setZoom, setColumns, setItems, setSections } from "./state.js";
+import { setLogo, setWatermark, setZoom, setColumns, setItems, setSections } from "./state.js";
 import { setAccent } from "./editor/design.js";
 import { renderColumns } from "./editor/columns.js";
 import { renderItems } from "./editor/items.js";
@@ -60,6 +60,7 @@ export function applySnapshot(raw, { persist = true } = {}) {
   });
 
   setLogo(data.logo);
+  setWatermark(data.watermark);
   setZoom(data.zoom || 1);
   setColumns(data.columns);
   setItems(data.items);
@@ -77,10 +78,14 @@ export function applySnapshot(raw, { persist = true } = {}) {
  * @param {() => (string|undefined)} apply returns a logo data URL when present
  */
 export function applyBrand(apply) {
-  const logo = apply();
+  const result = apply();
+  // Older callers return the logo string; brands now return {logo, watermark}.
+  const { logo, watermark } = typeof result === "string" ? { logo: result } : (result || {});
   // Same rule as invoice snapshots: an embedded image or nothing, never a
   // remote address that would make the browser contact another server.
-  if (typeof logo === "string") setLogo(logo === "" || isSafeLogo(logo) ? logo : "");
+  const safe = v => (v === "" || isSafeLogo(v) ? v : "");
+  if (typeof logo === "string") setLogo(safe(logo));
+  if (typeof watermark === "string") setWatermark(safe(watermark));
   setAccent(currentAccent());
   renderPreview();
   saveInvoice();

@@ -89,8 +89,16 @@ export function buildInvoicePrintDocument(autoPrint = true) {
   const title = (fieldValue("invoiceNumber") || "Invoice").replace(/[<>]/g, "");
 
   doc.open();
+  // The invoice accent lives on the editor page's root element. Before 2.8.0
+  // it was not passed on, so every printout used the default blue instead of
+  // the chosen colour. It is carried over here.
+  const rootStyle = getComputedStyle(document.documentElement);
+  const accentVars = ["--accent", "--accent-rgb"]
+    .map(name => [name, rootStyle.getPropertyValue(name).trim()])
+    .filter(([, value]) => /^[#0-9a-fA-F, ]+$/.test(value))
+    .map(([name, value]) => `${name}:${value}`).join(";");
   doc.write(`<!doctype html>
-<html>
+<html${accentVars ? ` style="${accentVars}"` : ""}>
 <head>
 <meta charset="utf-8">
 <base href="${document.baseURI}">

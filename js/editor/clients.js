@@ -21,7 +21,7 @@ export function refreshClientPicker() {
     option.selected = clientKey(c.name) === current;
     select.add(option);
   }
-  $("removeClientBtn").disabled = !select.value;
+  $("removeClientBtn").hidden = !select.value;
 }
 
 function applyClient(id) {
@@ -37,7 +37,7 @@ export function initClientBook() {
   const select = $("savedClients");
   if (!select) return;
   select.addEventListener("change", () => {
-    $("removeClientBtn").disabled = !select.value;
+    $("removeClientBtn").hidden = !select.value;
     if (select.value) applyClient(select.value);
   });
 

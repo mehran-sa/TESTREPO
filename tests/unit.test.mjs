@@ -16,6 +16,8 @@ import {
 } from "../js/utils.js";
 import { nextInvoiceNumber } from "../js/invoice/invoice-data.js";
 import { FIXED_AMOUNT_KEY } from "../js/constants.js";
+import { pageCentres } from "../js/invoice/watermark.js";
+import { ukhfDate } from "../js/templates/ukhf.js";
 import {
   calculateTotals, calculateSubtotal, calculateItemValue, amountColumn
 } from "../js/invoice/calculations.js";
@@ -253,7 +255,7 @@ test("null fields keep the current value instead of blanking it", () => {
 
 test("a real serialized snapshot passes through unchanged", () => {
   const original = {
-    version: 2, logo: "data:image/png;base64,AAAA", zoom: 0.9,
+    version: 2, logo: "data:image/png;base64,AAAA", watermark: "", zoom: 0.9,
     columns: defaultColumns(),
     items: [{ sku: "A", description: "Line", quantity: 2, rate: 10, amount: "" }],
     sections: { logo: true, notes: false },
@@ -352,4 +354,28 @@ test("nextInvoiceNumber increments the trailing number and keeps padding", () =>
   assert.equal(nextInvoiceNumber("Draft"), "Draft-1");
   assert.equal(nextInvoiceNumber(""), "1");
   assert.equal(nextInvoiceNumber("X-99999999999999999999"), "X-100000000000000000000");
+});
+
+/* ------------------------------------------------------------ watermark */
+
+test("watermark page centres follow the print layout (297mm first page, 285mm after)", () => {
+  assert.deepEqual(pageCentres(297), [148.5]);
+  assert.deepEqual(pageCentres(250), [148.5]);
+  assert.deepEqual(pageCentres(500), [148.5, 439.5]);
+  assert.deepEqual(pageCentres(297 + 285 + 1), [148.5, 439.5, 724.5]);
+});
+
+test("regression: a remote watermark address is removed like a remote logo", () => {
+  const { snapshot, warnings } = normalizeSnapshot({ fields: {}, watermark: "https://example.com/w.png" });
+  assert.equal(snapshot.watermark, "");
+  assert.equal(warnings.length, 1);
+  assert.equal(normalizeSnapshot({ fields: {}, watermark: "data:image/png;base64,AA" }).snapshot.watermark, "data:image/png;base64,AA");
+});
+
+/* ------------------------------------------------------ UKHF Fanatical */
+
+test("UKHF Fanatical prints dates as on the original (13-Oct-2026)", () => {
+  assert.equal(ukhfDate("2026-10-13"), "13-Oct-2026");
+  assert.equal(ukhfDate("2026-01-05"), "05-Jan-2026");
+  assert.equal(ukhfDate(""), "\u2014");
 });

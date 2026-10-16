@@ -22,7 +22,7 @@ const columnRowMarkup = (col, idx) =>
   `<label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label>` +
   `<button class="btn icon danger" type="button" aria-label="Remove column ${idx + 1}" title="Remove column">\u00d7</button></div>` +
   `<div class="colgrid">` +
-  `<div class="field"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div>` +
+  `<div class="field full"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div>` +
   `<div class="field"><label for="col-${idx}-type">Type</label><select id="col-${idx}-type" class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div>` +
   // num() keeps the width numeric: it is interpolated into markup, so a crafted
   // imported file could otherwise inject HTML through this attribute.

@@ -52,9 +52,10 @@ let timer = null;
  */
 const clone = value => {
   if (!value || typeof value !== "object") return value;
-  const { logo, ...rest } = value;
+  const { logo, watermark, ...rest } = value;
   const copy = JSON.parse(JSON.stringify(rest));
   if (logo !== undefined) copy.logo = logo;
+  if (watermark !== undefined) copy.watermark = watermark;
   return copy;
 };
 
@@ -68,11 +69,12 @@ const signature = snapshot => {
   const rest = { ...snapshot };
   delete rest.zoom;
   delete rest.logo;
+  delete rest.watermark;
   return JSON.stringify(rest);
 };
 
 const sameEntry = (a, b) =>
-  Boolean(a) && Boolean(b) && a.logo === b.logo && signature(a) === signature(b);
+  Boolean(a) && Boolean(b) && a.logo === b.logo && a.watermark === b.watermark && signature(a) === signature(b);
 
 const notify = () => {
   listener?.({ canUndo: stack.canUndo(), canRedo: stack.canRedo() });

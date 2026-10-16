@@ -14,6 +14,7 @@ import { state } from "../state.js";
 import { getTotals } from "../invoice/calculations.js";
 import { money } from "../invoice/formatters.js";
 import { invoicesWithNumber } from "../storage/invoice-library.js";
+import * as TemplateRegistry from "../templates/template-registry.js";
 
 /** The example company name the app starts with. */
 export const EXAMPLE_COMPANY_NAME = "Your Company Ltd.";
@@ -57,6 +58,15 @@ export function findExportIssues() {
     if (!CLIENT_DETAIL_FIELDS.some(id => trimmedField(id))) {
       add('The client details are empty. "Add client details" will print instead.', "invoice", "clientAddress");
     }
+  }
+
+  // A watermark switched on with nothing to show prints nothing: say so.
+  const wmType = fieldValue("watermarkType");
+  const wmSupported = Boolean(TemplateRegistry.get(fieldValue("template"))?.capabilities?.watermark);
+  if (wmSupported && wmType !== "none" && wmType) {
+    if (wmType === "text" && !trimmedField("watermarkText")) add("The watermark is on but has no text.", "design", "watermarkText");
+    if (wmType === "logo" && !state.logo) add("The watermark uses the logo, but there is no logo.", "design", "watermarkType");
+    if (wmType === "image" && !state.watermark) add("The watermark is set to an image, but none is uploaded.", "design", "watermarkType");
   }
 
   if (!state.items.length) add("There are no line items.", "invoice", "addItemBtn");

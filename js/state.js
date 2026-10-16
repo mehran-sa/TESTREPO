@@ -24,6 +24,7 @@
  *
  * @typedef {Object} AppState
  * @property {string} logo     Data URL, or "" when no logo is set.
+ * @property {string} watermark Uploaded watermark image (data URL), or "".
  * @property {number} zoom
  * @property {Column[]} columns
  * @property {LineItem[]} items
@@ -50,6 +51,7 @@ export const defaultSections = () => Object.fromEntries(SECTION_DEFS.map(([key])
 /** @type {AppState} */
 export const state = {
   logo: "",
+  watermark: "",
   zoom: 1,
   columns: defaultColumns(),
   items: [],
@@ -70,6 +72,7 @@ export const editableColumns = () => state.columns.filter(c => c.role !== "amoun
 /* ----------------------------------------------------------- mutators */
 
 export const setLogo = dataUrl => { state.logo = dataUrl || ""; };
+export const setWatermark = dataUrl => { state.watermark = dataUrl || ""; };
 
 export const setZoom = zoom => {
   state.zoom = clamp(zoom, LIMITS.zoom.min, LIMITS.zoom.max);

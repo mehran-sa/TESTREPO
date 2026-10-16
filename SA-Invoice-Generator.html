@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SA Invoice Generator</title>
 <meta name="application-name" content="SA Invoice Generator">
-<meta name="sa-app-version" content="2.6.1">
+<meta name="sa-app-version" content="2.9.0">
 <meta name="description" content="SA Invoice Generator: create, print and export invoices in your browser. All data stays on this device.">
 <!-- Local-only policy: scripts, styles, fonts and images load from this app or
      from embedded data, and the page cannot send data to any server
      (connect-src 'none'). Excel import uses the bundled js/vendor copy. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-B0s7ppYNvLeiB3Udjzze7hXV/48GX7FPGIQrO5HGwTM='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HsvsSiU86aiMbPs5rh47lflvyVOIAPeJ5lLaH9FjocM=' 'sha256-zCk1HBtlkYO3ZKgWHoDNQwDXckbK2YiUXmloWB/nRnM='; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; worker-src blob:; connect-src 'none'; frame-src 'self' about:; object-src 'none'; base-uri 'self' file:; form-action 'none'">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIGFyaWEtbGFiZWw9IlN0YWZmQXNpYSIgdmlld0JveD0iLTEgLTggNjUgNjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTS0zLjA1MTc2ZS0wNSAyMy4yNDUySDE3LjI4NjFMMjYuNTk4NCAzMy4zNzA2QzI3LjAxMDkgMzMuODQ4IDI3LjczMDggMzMuOTAyMiAyOC4yMDg0IDMzLjQ4MjdMNTguNDYwOSA2LjkwNzAxSDYyLjU0NTRMMjguODQ1MSA0Ny4yMUMyOC4wMzExIDQ4LjE4MjcgMjYuNTY1OSA0OC4yNjk1IDI1LjYzOTcgNDcuNDAxNkwtMy4wNTE3NmUtMDUgMjMuMjQ1MloiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl84N18xMzQ1KSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNy4xNDA5IDE2LjYxM1YyMy4xMjU4TDM1LjM5NzEgMjQuNjU1NUwyOC4yMDQ4IDMwLjk3MzFDMjcuNzMwOCAzMS4zOTI2IDI3LjAwNzMgMzEuMzM4MyAyNi41OTQ4IDMwLjg2MUwyMC40ODA2IDI0LjIxMDdMMTguMjgxIDIxLjgyMDRWMTYuNjEzQzE4LjI4MSAxNC42MDI0IDE5LjU1MDkgMTIuODkxOSAyMS4zMzA4IDEyLjIyNjVDMjEuODM3MyAxMi4wNDIxIDIyLjM4MzYgMTEuOTM3MiAyMi45NTUzIDExLjkzNzJIMjUuMDM5MVYxMC4yNzM3QzIzLjQ0MzcgOS4zNTE2IDIyLjM2OTIgNy42MzAyNyAyMi4zNjkyIDUuNjUyMTlDMjIuMzY5MiAyLjcwMTM0IDI0Ljc2MDYgMC4zMTEwMDUgMjcuNzEyNyAwLjMxMTAwNUMzMC42NjQ5IDAuMzExMDA1IDMzLjA1NjMgMi43MDEzNCAzMy4wNTYzIDUuNjUyMTlDMzMuMDU2MyA3LjYyNjY1IDMxLjk3ODIgOS4zNDc5OCAzMC4zODYzIDEwLjI3MzdWMTEuOTM3MkgzMi40NjY2QzMzLjAzODIgMTEuOTM3MiAzMy41ODgxIDEyLjA0MjEgMzQuMDk0NiAxMi4yMjY1QzM1Ljg3MSAxMi44ODgzIDM3LjE0MDkgMTQuNjAyNCAzNy4xNDA5IDE2LjYxM1oiIGZpbGw9IiMxQTFBMUEiPjwvcGF0aD48cGF0aCBkPSJNMjEuMTc4OSAxMS4zMDhDMjAuODI4IDExLjM2NTggMjAuNDg3OSAxMS40NTYyIDIwLjE2MjMgMTEuNTc1NkMxOC4wNjAzIDEyLjM2MDMgMTYuNTU4OSAxNC4zODU0IDE2LjU1ODkgMTYuNzYxM1YyMC43MzE5SDcuMDU4NDFWMTIuMzM1QzcuMDU4NDEgMTAuMzgyMiA4LjY0MzAzIDguNzk4MyAxMC41OTY3IDguNzk4M0gxMi4xNzA0VjcuNTM5ODVDMTAuOTYyMSA2Ljg0MTkyIDEwLjE0ODEgNS41NDAwOCAxMC4xNDgxIDQuMDQyOTVDMTAuMTQ4MSAxLjgwODEyIDExLjk1NyAwIDE0LjE5MjggMEMxNi40MjUgMCAxOC4yMzc2IDEuODA4MTIgMTguMjM3NiA0LjA0Mjk1QzE4LjIzNzYgNS41NDAwOCAxNy40MTk5IDYuODQxOTIgMTYuMjE1MiA3LjUzOTg1VjguNzk4M0gxNy43OTI2QzE5LjM5MTcgOC43OTgzIDIwLjc0MTEgOS44NTQyNSAyMS4xNzg5IDExLjMwOFoiIGZpbGw9IiMxQTFBMUEiPjwvcGF0aD48cGF0aCBkPSJNNDguMzYzNCAxMi4zMzVWMTMuMjY0NEwzOC44NjMgMjEuNjA3VjE2Ljc2MTNDMzguODYzIDE0LjM4MTggMzcuMzYxNSAxMi4zNjAzIDM1LjI1OTYgMTEuNTc1NkMzNC45Mzc2IDExLjQ1NjIgMzQuNTk3NSAxMS4zNjU4IDM0LjI0MyAxMS4zMDhDMzQuNjgwNyA5Ljg1NDI1IDM2LjAzMDIgOC43OTgzIDM3LjYyOTMgOC43OTgzSDM5LjIwM1Y3LjUzOTg1QzM3Ljk5NDcgNi44NDE5MiAzNy4xODA2IDUuNTQwMDggMzcuMTgwNiA0LjA0Mjk1QzM3LjE4MDYgMS44MDgxMiAzOC45ODk2IDAgNDEuMjI1NCAwQzQzLjQ1NzYgMCA0NS4yNzAyIDEuODA4MTIgNDUuMjcwMiA0LjA0Mjk1QzQ1LjI3MDIgNS41NDAwOCA0NC40NTI1IDYuODQxOTIgNDMuMjQ3OCA3LjUzOTg1VjguNzk4M0g0NC44MjUyQzQ2Ljc3ODggOC43OTgzIDQ4LjM2MzQgMTAuMzgyMiA0OC4zNjM0IDEyLjMzNVoiIGZpbGw9IiMxQTFBMUEiPjwvcGF0aD48cGF0aCBkPSJNNzEuMjcyNyAyNS4zMTI3TDczLjY2MTMgMjIuNTkyN0M3NS4zMTQ3IDI0LjExNjMgNzcuNTM0OCAyNS4xNDE4IDc5LjY4MzIgMjUuMTQxOEM4Mi4yODM0IDI1LjE0MTggODMuNzE0NCAyNCA4My43MTQ0IDIyLjI1ODFDODMuNzE0NCAyMC40MjE4IDgyLjIyMjQgMTkuODMyNyA4MC4xMjQzIDE4Ljk3MDlMNzYuOTY0NiAxNy42NDM2Qzc0LjY4NzEgMTYuNzI3MiA3Mi4yOTEzIDE0Ljk4NTQgNzIuMjkxMyAxMS43MkM3Mi4yOTEzIDguMTU5OTcgNzUuNTQ0MyA1LjQyMTc4IDgwLjA1MjYgNS40MjE3OEM4Mi43NTMzIDUuNDIxNzggODUuMzY3OSA2LjUwMTc4IDg3LjE3OTEgOC4yNjkwNkw4NS4wNzM4IDEwLjc4NTRDODMuNjAzMyA5LjU3NDUxIDgyLjAzMjQgOC44NjU0MiA4MC4wNTI2IDguODY1NDJDNzcuODYxMiA4Ljg2NTQyIDc2LjQzMzggOS44NTQ1MSA3Ni40MzM4IDExLjQ4NzJDNzYuNDMzOCAxMy4yNDM2IDc4LjE5NDggMTMuODkwOSA4MC4xMSAxNC42NTA5TDgzLjIyNjcgMTUuOTE2M0M4NS45Nzc2IDE3LjAyMTggODcuOSAxOC43MDU0IDg3LjkgMjEuOTQxOEM4Ny45IDI1LjU2MzYgODQuNzkwNCAyOC41ODE4IDc5LjYwMDcgMjguNTgxOEM3Ni40NzY4IDI4LjU4NTQgNzMuNDY0MSAyNy40IDcxLjI3MjcgMjUuMzEyN1oiIGZpbGw9IiM0NkI3NTEiPjwvcGF0aD48cGF0aCBkPSJNOTIuMzc2IDIyLjUyVjE0LjUyMzZIODkuOTAxM1YxMS41NzA5TDkyLjU4NzYgMTEuMzkyN0w5My4wNjgyIDYuODE0NTRIOTYuNDQ2N1YxMS4zOTI3SDEwMC44NzNWMTQuNTIzNkg5Ni40NDY3VjIyLjUwOTFDOTYuNDQ2NyAyNC40ODM2IDk3LjIzOTMgMjUuNDU0NSA5OC45MDcxIDI1LjQ1NDVDOTkuNTAyNSAyNS40NTQ1IDEwMC4yMDkgMjUuMjYxOCAxMDAuNzE4IDI1LjA3MjdMMTAxLjQxIDI3Ljk3MDlDMTAwLjQ2NCAyOC4yNzI3IDk5LjI1NSAyOC41ODU1IDk3Ljg1OTggMjguNTg1NUM5My44NjA4IDI4LjU4NTUgOTIuMzc2IDI2LjE0MTggOTIuMzc2IDIyLjUyWiIgZmlsbD0iIzQ2Qjc1MSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMDMuNTk1IDIzLjY2OTFDMTAzLjU5NSAyMC4wNzY0IDEwNi42NzYgMTguMjAzNiAxMTMuODAyIDE3LjQ2NTVDMTEzLjc0NSAxNS42NjE4IDExMi45OTUgMTQuMTYgMTEwLjY0OSAxNC4xNkMxMDguOTI0IDE0LjE2IDEwNy4zIDE0LjkxMjcgMTA1Ljc3MiAxNS44MTQ2TDEwNC4yNzMgMTMuMTg5MUMxMDYuMTgxIDEyLjAyOTEgMTA4LjY0MSAxMC45ODkxIDExMS4zOTkgMTAuOTg5MUMxMTUuNzM5IDEwLjk4OTEgMTE3Ljg3NiAxMy41NzA5IDExNy44NzYgMTguMjQzNlYyOC4xNzgySDExNC41NDFMMTE0LjIyOSAyNi4zMkgxMTQuMTE0QzExMi41NTcgMjcuNjAzNiAxMTAuNzc5IDI4LjU4OTEgMTA4LjcyNyAyOC41ODkxQzEwNS42ODkgMjguNTg1NSAxMDMuNTk1IDI2LjU5MjcgMTAzLjU5NSAyMy42NjkxWk0xMTMuODA2IDIzLjY4VjE5LjkwOTFDMTA5LjA5NiAyMC40ODM3IDEwNy41MjkgMjEuNjcyNyAxMDcuNTI5IDIzLjM2NzNDMTA3LjUyOSAyNC44NTA5IDEwOC41NzYgMjUuNDk4MiAxMTAuMDMzIDI1LjQ5ODJDMTExLjQ0MiAyNS40OTgyIDExMi41MTggMjQuODI5MSAxMTMuODA2IDIzLjY4WiIgZmlsbD0iIzQ2Qjc1MSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMjEuMTI5IDExLjU3NDVMMTIzLjY3NiAxMS4zOTY0SDE0MS41NjJWMTQuNTI3M0gxMjEuMTI5VjExLjU3NDVaTTEyMy40NjEgOS45MzQ1M0MxMjMuNDYxIDYuNDc2MzUgMTI1LjI4MyAzLjk3ODE3IDEyOS40NjggMy45NzgxN0MxMzAuNzg0IDMuOTc4MTcgMTMyLjAyOSA0LjI0MzYzIDEzMi44NjEgNC41OTI3MkwxMzIuMDgzIDcuNTMwOUMxMzEuNDM0IDcuMjQzNjIgMTMwLjgwOSA3LjEwNTQ0IDEyOS45MDYgNy4xMDU0NEMxMjguNDY0IDcuMTA1NDQgMTI3LjUzMSA4LjA2MTgxIDEyNy41MzEgOS45NDkwOFYyOC4xNzgySDEyMy40NjFWOS45MzQ1M1pNMTM0LjA5NSA5LjY2MTgxQzEzNC4wOTUgNi4xODU0NCAxMzUuNzQ4IDMuNjM2MzUgMTM5Ljg0OCAzLjYzNjM1QzE0MS4xMDYgMy42MzYzNSAxNDIuMjUxIDMuOTIzNjIgMTQzLjAyOSA0LjIyNTQ0TDE0Mi4yNTEgNy4xNjM2M0MxNDEuNjI2IDYuOTA1NDQgMTQwLjk2MyA2Ljc2NzI2IDE0MC4zNzEgNi43NjcyNkMxMzguOTI5IDYuNzY3MjYgMTM4LjE2NSA3LjY0NzI2IDEzOC4xNjUgOS41OTYzNVYyOC4xODE4SDEzNC4wOTVWOS42NjE4MVoiIGZpbGw9IiM0NkI3NTEiPjwvcGF0aD48cGF0aCBkPSJNMTQ5LjQ5MiA1LjgzMjdIMTU0LjI5OEwxNjEuODMzIDI4LjE3NDVIMTU3LjQ5M0wxNTMuOTcxIDE2LjI4NzJDMTUzLjIzNiAxMy45MjM2IDE1Mi41NTggMTEuMzc0NSAxNTEuODggOC45MjM2MUgxNTEuNzQxQzE1MS4xMDYgMTEuMzk2MyAxNTAuNDI0IDEzLjkyMzYgMTQ5LjY4OSAxNi4yODcyTDE0Ni4xMzggMjguMTc0NUgxNDEuOTUzTDE0OS40OTIgNS44MzI3Wk0xNDYuNDA3IDE5LjAxNDVIMTU3LjI5NlYyMi4xMjM2SDE0Ni40MDdWMTkuMDE0NVoiIGZpbGw9IiMxQTFBMUEiPjwvcGF0aD48cGF0aCBkPSJNMTYyLjYxMSAyNi4yNTA5TDE2NC41MDUgMjMuNzQ5MUMxNjYuMDQ3IDI0LjkwOTEgMTY3LjUzOSAyNS42MjE4IDE2OS4yOTcgMjUuNjIxOEMxNzEuMTkgMjUuNjIxOCAxNzIuMDgzIDI0Ljc2IDE3Mi4wODMgMjMuNjE0NkMxNzIuMDgzIDIyLjIwNzMgMTcwLjIwNCAyMS41NzgyIDE2OC4zNSAyMC44OTQ2QzE2Ni4wNzIgMjAuMDY5MSAxNjMuNDcyIDE4LjgwMzcgMTYzLjQ3MiAxNi4wMDM3QzE2My40NzIgMTMuMDk0NiAxNjUuOTA0IDEwLjk4OTEgMTY5Ljc5MiAxMC45ODkxQzE3Mi4yMDkgMTAuOTg5MSAxNzQuMTQ2IDExLjkzODIgMTc1LjU1OSAxMi45OTY0TDE3My42OTQgMTUuNDE0NkMxNzIuNDc4IDE0LjU1MjcgMTcxLjI1NSAxMy45NTI3IDE2OS44ODggMTMuOTUyN0MxNjguMTQyIDEzLjk1MjcgMTY3LjMxNyAxNC43NiAxNjcuMzE3IDE1LjgxMDlDMTY3LjMxNyAxNy4xMzgyIDE2OS4wNzEgMTcuNjQzNyAxNzAuOTUgMTguMzEyN0MxNzMuMjk2IDE5LjE2IDE3NS45MjggMjAuMjU0NiAxNzUuOTI4IDIzLjM4MThDMTc1LjkyOCAyNi4yNjU1IDE3My41NjggMjguNTg5MSAxNjkuMTg2IDI4LjU4OTFDMTY2LjgxMSAyOC41ODU1IDE2NC4zMDggMjcuNjAzNyAxNjIuNjExIDI2LjI1MDlaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTE3OS4xMDYgNi4yMjkwOUMxNzkuMTA2IDQuOTAxODEgMTgwLjE4MiA0LjAwMzYzIDE4MS42MjQgNC4wMDM2M0MxODMuMDY1IDQuMDAzNjMgMTg0LjE0MSA0LjkwNTQ1IDE4NC4xNDEgNi4yMjkwOUMxODQuMTQxIDcuNTI3MjcgMTgzLjA2NSA4LjQ1ODE4IDE4MS42MjQgOC40NTgxOEMxODAuMTgyIDguNDU4MTggMTc5LjEwNiA3LjUyNzI3IDE3OS4xMDYgNi4yMjkwOVpNMTc5LjU3MiAxMS4zOTY0SDE4My42NDNWMjguMTc4MkgxNzkuNTcyVjExLjM5NjRaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTE4Ny45IDIzLjY2OTFDMTg3LjkgMjAuMDc2NCAxOTAuOTgxIDE4LjIwMzYgMTk4LjEwNyAxNy40NjU1QzE5OC4wNSAxNS42NjE4IDE5Ny4zIDE0LjE2IDE5NC45NTUgMTQuMTZDMTkzLjIzIDE0LjE2IDE5MS42MDUgMTQuOTEyNyAxOTAuMDc3IDE1LjgxNDZMMTg4LjU3OCAxMy4xODkxQzE5MC40ODYgMTIuMDI5MSAxOTIuOTQ2IDEwLjk4OTEgMTk1LjcwNCAxMC45ODkxQzIwMC4wNDQgMTAuOTg5MSAyMDIuMTgyIDEzLjU3MDkgMjAyLjE4MiAxOC4yNDM2VjI4LjE3ODJIMTk4Ljg0NkwxOTguNTM0IDI2LjMySDE5OC40MTlDMTk2Ljg2MyAyNy42MDM2IDE5NS4wODQgMjguNTg5MSAxOTMuMDMyIDI4LjU4OTFDMTg5Ljk5MSAyOC41ODU1IDE4Ny45IDI2LjU5MjcgMTg3LjkgMjMuNjY5MVpNMTk4LjEwNyAyMy42OFYxOS45MDkxQzE5My4zOTggMjAuNDgzNyAxOTEuODMxIDIxLjY3MjcgMTkxLjgzMSAyMy4zNjczQzE5MS44MzEgMjQuODUwOSAxOTIuODc4IDI1LjQ5ODIgMTk0LjMzNCAyNS40OTgyQzE5NS43NDggMjUuNDk4MiAxOTYuODIgMjQuODI5MSAxOTguMTA3IDIzLjY4WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik03Mi4wNTI3IDQwLjA0VjM3LjYwMzdINzEuMjcyN1YzNi43MDU1TDcyLjExODYgMzYuNjUwOUw3Mi4yNjg4IDM1LjI1NDZINzMuMzM0NFYzNi42NTA5SDc0LjcyOTZWMzcuNjAzN0g3My4zMzQ0VjQwLjA0QzczLjMzNDQgNDAuNjQzNyA3My41ODM0IDQwLjkzODIgNzQuMTEwNyA0MC45MzgyQzc0LjI5NzUgNDAuOTM4MiA3NC41MjA5IDQwLjg4IDc0LjY4MiA0MC44MjE4TDc0LjkwMTcgNDEuNzA1NUM3NC42MDE1IDQxLjc5NjQgNzQuMjIwNiA0MS44OTQ2IDczLjc4MTIgNDEuODk0NkM3Mi41MjE0IDQxLjg4NzMgNzIuMDUyNyA0MS4xNDE5IDcyLjA1MjcgNDAuMDRaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTc5LjQyOCAzOS4yMTA5Qzc5LjQyOCAzNy41MDU1IDgwLjY2NTcgMzYuNTIzNyA4Mi4wMzE3IDM2LjUyMzdDODMuMzk3NiAzNi41MjM3IDg0LjYzNTMgMzcuNTA1NSA4NC42MzUzIDM5LjIxMDlDODQuNjM1MyA0MC45MDU1IDgzLjM5NzYgNDEuODkwOSA4Mi4wMzE3IDQxLjg5MDlDODAuNjY5NCA0MS44ODczIDc5LjQyOCA0MC45MDU1IDc5LjQyOCAzOS4yMTA5Wk04My4zMTcgMzkuMjEwOUM4My4zMTcgMzguMTg1NSA4Mi44MzM2IDM3LjUwMTggODIuMDMxNyAzNy41MDE4QzgxLjIyOTcgMzcuNTAxOCA4MC43NDYzIDM4LjE4NTUgODAuNzQ2MyAzOS4yMTA5QzgwLjc0NjMgNDAuMjM2NCA4MS4yMjYgNDAuOTA5MSA4Mi4wMzE3IDQwLjkwOTFDODIuODM3MyA0MC45MDkxIDgzLjMxNyA0MC4yMzY0IDgzLjMxNyAzOS4yMTA5WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik04OS40Mzk5IDQyLjY5MDlDODkuNDM5OSA0Mi4yNTgyIDg5LjcyNTUgNDEuODgzNiA5MC4yMzA5IDQxLjZWNDEuNTZDODkuOTQ4OSA0MS4zODkxIDg5LjczNjUgNDEuMTIgODkuNzM2NSA0MC43MDU1Qzg5LjczNjUgNDAuMzA5MSA5MC4wMjU4IDM5Ljk2IDkwLjM0NDQgMzkuNzUyN1YzOS43MDkxQzg5Ljk3MDkgMzkuNDUwOSA4OS42MjMgMzguOTYzNyA4OS42MjMgMzguMzZDODkuNjIzIDM3LjE4NTUgOTAuNjQxIDM2LjUyMzcgOTEuNzg3MiAzNi41MjM3QzkyLjA5MTIgMzYuNTIzNyA5Mi4zNzY4IDM2LjU3NDYgOTIuNjAwMiAzNi42NDczSDk0LjU1OTNWMzcuNTM4Mkg5My41NTk2QzkzLjczOTEgMzcuNzMwOSA5My44NzA5IDM4LjA0NzMgOTMuODcwOSAzOC4zOTY0QzkzLjg3MDkgMzkuNTM0NiA5Mi45NDgxIDQwLjE0MTggOTEuNzg3MiA0MC4xNDE4QzkxLjU1NjUgNDAuMTQxOCA5MS4yOTI4IDQwLjA5NDYgOTEuMDQ3NSA0MC4wMDczQzkwLjg4MjcgNDAuMTM4MiA5MC43ODAyIDQwLjI2OTEgOTAuNzgwMiA0MC40OTgyQzkwLjc4MDIgNDAuNzg1NSA5MS4wMDM1IDQwLjk2IDkxLjY2NjQgNDAuOTZIOTIuNjQwNUM5My45NDc4IDQwLjk2IDk0LjY0MzYgNDEuMzM4MiA5NC42NDM2IDQyLjIyMThDOTQuNjQzNiA0My4yMjkxIDkzLjUxMiA0NC4wMjU1IDkxLjcyMTMgNDQuMDI1NUM5MC40MTAzIDQ0LjAyNTUgODkuNDM5OSA0My41ODkxIDg5LjQzOTkgNDIuNjkwOVpNOTMuMzk4NSA0Mi40MTgyQzkzLjM5ODUgNDIuMDIxOCA5My4wNTc5IDQxLjkwNTUgOTIuNDMxNyA0MS45MDU1SDkxLjY4MUM5MS4zODgxIDQxLjkwNTUgOTEuMTUgNDEuODgzNyA5MC45NDEzIDQxLjgzMjdDOTAuNjQ4MyA0Mi4wNCA5MC41MTY1IDQyLjI2OTEgOTAuNTE2NSA0Mi41MDkxQzkwLjUxNjUgNDIuOTc0NiA5MS4wNTEyIDQzLjI0NzMgOTEuOTExNyA0My4yNDczQzkyLjc5NzkgNDMuMjQ3MyA5My4zOTg1IDQyLjg1ODIgOTMuMzk4NSA0Mi40MTgyWk05Mi43MzIgMzguMzZDOTIuNzMyIDM3LjcyIDkyLjMxODIgMzcuMzUyNyA5MS43ODM2IDM3LjM1MjdDOTEuMjQ4OSAzNy4zNTI3IDkwLjgzNTEgMzcuNzE2NCA5MC44MzUxIDM4LjM2QzkwLjgzNTEgMzkuMDEwOSA5MS4yNTk5IDM5LjM4OTEgOTEuNzgzNiAzOS4zODkxQzkyLjMwNzIgMzkuMzg5MSA5Mi43MzIgMzkuMDEwOSA5Mi43MzIgMzguMzZaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTk5LjE1NTIgMzkuMjEwOUM5OS4xNTUyIDM3LjU0OTEgMTAwLjM4OSAzNi41MjM3IDEwMS42NzggMzYuNTIzN0MxMDMuMTU4IDM2LjUyMzcgMTAzLjkzOCAzNy41MjM2IDEwMy45MzggMzguOTUyN0MxMDMuOTM4IDM5LjE4MTggMTAzLjkxMiAzOS40MTA5IDEwMy44ODMgMzkuNTM0NkgxMDAuNDA4QzEwMC41MTQgNDAuNDQzNyAxMDEuMTQgNDAuOTYgMTAyLjAyMiA0MC45NkMxMDIuNDkxIDQwLjk2IDEwMi44OTQgNDAuODIxOCAxMDMuMjkzIDQwLjU4OTFMMTAzLjcyOSA0MS4zMzQ2QzEwMy4yMDkgNDEuNjYxOCAxMDIuNTQ2IDQxLjg4NzMgMTAxLjg1IDQxLjg4NzNDMTAwLjM0MiA0MS44ODczIDk5LjE1NTIgNDAuODk4MiA5OS4xNTUyIDM5LjIxMDlaTTEwMi44MjggMzguNzE2NEMxMDIuODI4IDM3LjkyNzMgMTAyLjQ1NSAzNy40NTA5IDEwMS43MDQgMzcuNDUwOUMxMDEuMDY3IDM3LjQ1MDkgMTAwLjUwMyAzNy44OTgyIDEwMC4zOTMgMzguNzE2NEgxMDIuODI4WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMDkuMjYyIDQwLjA0VjM3LjYwMzdIMTA4LjQ4MlYzNi43MDU1TDEwOS4zMjggMzYuNjUwOUwxMDkuNDc4IDM1LjI1NDZIMTEwLjU0NFYzNi42NTA5SDExMS45MzlWMzcuNjAzN0gxMTAuNTQ0VjQwLjA0QzExMC41NDQgNDAuNjQzNyAxMTAuNzkzIDQwLjkzODIgMTExLjMyIDQwLjkzODJDMTExLjUwNyA0MC45MzgyIDExMS43MyA0MC44OCAxMTEuODkyIDQwLjgyMThMMTEyLjExMSA0MS43MDU1QzExMS44MTEgNDEuNzk2NCAxMTEuNDMgNDEuODk0NiAxMTAuOTkxIDQxLjg5NDZDMTA5LjczMSA0MS44ODczIDEwOS4yNjIgNDEuMTQxOSAxMDkuMjYyIDQwLjA0WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMTcgMzQuNDA3M0gxMTguMjg1VjM2LjMxMjdMMTE4LjIzMSAzNy4yOTgyQzExOC42ODggMzYuODk0NiAxMTkuMjM0IDM2LjUyMzcgMTE5Ljk4NSAzNi41MjM3QzEyMS4xNTYgMzYuNTIzNyAxMjEuNjY5IDM3LjI2NTUgMTIxLjY2OSAzOC41NTY0VjQxLjc2MzdIMTIwLjM4NFYzOC43MDkxQzEyMC4zODQgMzcuODY5MSAxMjAuMTI0IDM3LjU1MjcgMTE5LjUzMSAzNy41NTI3QzExOS4wNDcgMzcuNTUyNyAxMTguNzMyIDM3Ljc3NDYgMTE4LjI4MiAzOC4xODkxVjQxLjc2MzdIMTE2Ljk5NlYzNC40MDczSDExN1oiIGZpbGw9IiMxQTFBMUEiPjwvcGF0aD48cGF0aCBkPSJNMTI2Ljc2MyAzOS4yMTA5QzEyNi43NjMgMzcuNTQ5MSAxMjcuOTk3IDM2LjUyMzcgMTI5LjI4NiAzNi41MjM3QzEzMC43NjYgMzYuNTIzNyAxMzEuNTQ2IDM3LjUyMzYgMTMxLjU0NiAzOC45NTI3QzEzMS41NDYgMzkuMTgxOCAxMzEuNTIgMzkuNDEwOSAxMzEuNDkxIDM5LjUzNDZIMTI4LjAxNUMxMjguMTIyIDQwLjQ0MzcgMTI4Ljc0OCA0MC45NiAxMjkuNjMgNDAuOTZDMTMwLjA5OSA0MC45NiAxMzAuNTAyIDQwLjgyMTggMTMwLjkwMSA0MC41ODkxTDEzMS4zMzcgNDEuMzM0NkMxMzAuODE3IDQxLjY2MTggMTMwLjE1NCA0MS44ODczIDEyOS40NTggNDEuODg3M0MxMjcuOTQ2IDQxLjg4NzMgMTI2Ljc2MyA0MC44OTgyIDEyNi43NjMgMzkuMjEwOVpNMTMwLjQzNiAzOC43MTY0QzEzMC40MzYgMzcuOTI3MyAxMzAuMDYyIDM3LjQ1MDkgMTI5LjMxMiAzNy40NTA5QzEyOC42NzUgMzcuNDUwOSAxMjguMTExIDM3Ljg5ODIgMTI4LjAwMSAzOC43MTY0SDEzMC40MzZaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTEzNi42OCAzNi42NDczSDEzNy43MzFMMTM3LjgzIDM3LjU2SDEzNy44NjZDMTM4LjI1OCAzNi44OTQ2IDEzOC44MzcgMzYuNTIzNyAxMzkuNDIyIDM2LjUyMzdDMTM5LjcwMSAzNi41MjM3IDEzOS44NzcgMzYuNTU2NCAxNDAuMDQxIDM2LjYyOTFMMTM5LjgxOCAzNy42NjkxQzEzOS42MjggMzcuNjE4MiAxMzkuNDg1IDM3LjU4NTUgMTM5LjI1OCAzNy41ODU1QzEzOC44MjIgMzcuNTg1NSAxMzguMjk1IDM3Ljg2NTUgMTM3Ljk2NSAzOC42NDM3VjQxLjc2MzdIMTM2LjY4VjM2LjY0NzNaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTE1MC4zMjQgMzYuNjQ3M0gxNTEuNjEzTDE1Mi4yNzYgMzkuMzAxOUMxNTIuMzgyIDM5Ljc5NjQgMTUyLjQ2MyA0MC4yNzY0IDE1Mi41NjIgNDAuNzc4MkgxNTIuNjA2QzE1Mi43MTIgNDAuMjc2NCAxNTIuODE4IDM5Ljc4NTUgMTUyLjk1NCAzOS4zMDE5TDE1My42NzEgMzYuNjQ3M0gxNTQuODM2TDE1NS41NjggMzkuMzAxOUMxNTUuNzA0IDM5Ljc5NjQgMTU1LjgxIDQwLjI3NjQgMTU1LjkzMSA0MC43NzgySDE1NS45NzVDMTU2LjA4MSA0MC4yNzY0IDE1Ni4xNjEgMzkuOCAxNTYuMjY4IDM5LjMwMTlMMTU2LjkyMyAzNi42NDczSDE1OC4xMjRMMTU2LjczNiA0MS43NjM3SDE1NS4yMTNMMTU0LjU3MiAzOS4zNzgyQzE1NC40NTUgMzguODk4MiAxNTQuMzYgMzguNDI5MSAxNTQuMjQzIDM3Ljg5NDZIMTU0LjE5OUMxNTQuMDkyIDM4LjQyOTEgMTUzLjk5NyAzOC45MDkxIDE1My44NzMgMzkuMzg5MUwxNTMuMjU0IDQxLjc2NzNIMTUxLjc3NEwxNTAuMzI0IDM2LjY0NzNaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTE2Mi43NTMgMzkuMjEwOUMxNjIuNzUzIDM3LjU0OTEgMTYzLjk4NyAzNi41MjM3IDE2NS4yNzYgMzYuNTIzN0MxNjYuNzU2IDM2LjUyMzcgMTY3LjUzNiAzNy41MjM2IDE2Ny41MzYgMzguOTUyN0MxNjcuNTM2IDM5LjE4MTggMTY3LjUxIDM5LjQxMDkgMTY3LjQ4MSAzOS41MzQ2SDE2NC4wMDVDMTY0LjExMiA0MC40NDM3IDE2NC43MzggNDAuOTYgMTY1LjYyIDQwLjk2QzE2Ni4wODkgNDAuOTYgMTY2LjQ5MiA0MC44MjE4IDE2Ni44OTEgNDAuNTg5MUwxNjcuMzI3IDQxLjMzNDZDMTY2LjgwNyA0MS42NjE4IDE2Ni4xNDQgNDEuODg3MyAxNjUuNDQ4IDQxLjg4NzNDMTYzLjk0IDQxLjg4NzMgMTYyLjc1MyA0MC44OTgyIDE2Mi43NTMgMzkuMjEwOVpNMTY2LjQzIDM4LjcxNjRDMTY2LjQzIDM3LjkyNzMgMTY2LjA1NiAzNy40NTA5IDE2NS4zMDUgMzcuNDUwOUMxNjQuNjY4IDM3LjQ1MDkgMTY0LjEwNCAzNy44OTgyIDE2My45OTQgMzguNzE2NEgxNjYuNDNaIiBmaWxsPSIjMUExQTFBIj48L3BhdGg+PHBhdGggZD0iTTE3OC40NDEgMzkuMjEwOUMxNzguNDQxIDM3LjUwNTUgMTc5LjczIDM2LjUyMzcgMTgxLjE4OCAzNi41MjM3QzE4MS44ODMgMzYuNTIzNyAxODIuMzkyIDM2Ljc3NDYgMTgyLjc4OCAzNy4wOTgyTDE4Mi4xNjIgMzcuODc2NEMxODEuODcyIDM3LjY0IDE4MS41OTQgMzcuNTAxOCAxODEuMjUzIDM3LjUwMThDMTgwLjM3MSAzNy41MDE4IDE3OS43NTkgMzguMTg1NSAxNzkuNzU5IDM5LjIxMDlDMTc5Ljc1OSA0MC4yMzY0IDE4MC4zNiA0MC45MDkxIDE4MS4yMTMgNDAuOTA5MUMxODEuNjQyIDQwLjkwOTEgMTgyLjAzMyA0MC43MTI3IDE4Mi4zNDUgNDAuNDY5MUwxODIuODY1IDQxLjI2MThDMTgyLjM1MiA0MS42ODczIDE4MS43IDQxLjg5MDkgMTgxLjA3OCA0MS44OTA5QzE3OS41ODcgNDEuODg3MyAxNzguNDQxIDQwLjkwNTUgMTc4LjQ0MSAzOS4yMTA5WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik0xODcuNTYzIDQwLjM4OTFDMTg3LjU2MyAzOS4yOTQ2IDE4OC41MzQgMzguNzIzNiAxOTAuNzgyIDM4LjQ5ODJDMTkwLjc2NCAzNy45NDkxIDE5MC41MjkgMzcuNDkwOSAxODkuNzkgMzcuNDkwOUMxODkuMjQ0IDM3LjQ5MDkgMTg4LjczMSAzNy43MiAxODguMjUyIDM3Ljk5NjRMMTg3Ljc3OSAzNy4xOTY0QzE4OC4zOCAzNi44NDM3IDE4OS4xNTYgMzYuNTI3MyAxOTAuMDI4IDM2LjUyNzNDMTkxLjM5NyAzNi41MjczIDE5Mi4wNzEgMzcuMzE2NCAxOTIuMDcxIDM4LjczODJWNDEuNzY3M0gxOTEuMDJMMTkwLjkyMSA0MS4ySDE5MC44ODVDMTkwLjM5NCA0MS41OTI3IDE4OS44MzQgNDEuODkwOSAxODkuMTg1IDQxLjg5MDlDMTg4LjIyMiA0MS44ODczIDE4Ny41NjMgNDEuMjggMTg3LjU2MyA0MC4zODkxWk0xOTAuNzgyIDQwLjM5MjdWMzkuMjQzNkMxODkuMjk5IDM5LjQxODIgMTg4LjgwMSAzOS43ODE4IDE4OC44MDEgNDAuMjk4MkMxODguODAxIDQwLjc0OTEgMTg5LjEzIDQwLjk0OTEgMTg5LjU5MiA0MC45NDkxQzE5MC4wMzkgNDAuOTQ1NSAxOTAuMzc2IDQwLjc0MTggMTkwLjc4MiA0MC4zOTI3WiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxwYXRoIGQ9Ik0xOTcuNTEzIDM2LjY0NzNIMTk4LjU2NEwxOTguNjYzIDM3LjMzODJIMTk4LjY5OUMxOTkuMTkgMzYuODkwOSAxOTkuNzQ3IDM2LjUyIDIwMC40OTcgMzYuNTJDMjAxLjY2OSAzNi41MiAyMDIuMTgyIDM3LjI2MTggMjAyLjE4MiAzOC41NTI3VjQxLjc2SDIwMC44OTZWMzguNzA1NUMyMDAuODk2IDM3Ljg2NTUgMjAwLjYzNiAzNy41NDkxIDIwMC4wNDMgMzcuNTQ5MUMxOTkuNTYgMzcuNTQ5MSAxOTkuMjQ1IDM3Ljc3MDkgMTk4Ljc5NCAzOC4xODU1VjQxLjc2SDE5Ny41MDlWMzYuNjQ3M0gxOTcuNTEzWiIgZmlsbD0iIzFBMUExQSI+PC9wYXRoPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl84N18xMzQ1IiB4MT0iNTEuOTA2MyIgeTE9Ii0wLjc1MjkiIHgyPSItMTYuNTg5MSIgeTI9IjY1LjA3MjYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAuMzcyOCIgc3RvcC1jb2xvcj0iIzQ2Qjc1MSI+PC9zdG9wPjxzdG9wIG9mZnNldD0iMC45OTgzIiBzdG9wLWNvbG9yPSIjNDY1QzVDIj48L3N0b3A+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+">
 <link rel="alternate icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEk0lEQVR4nOxXXUwcVRj97sxgWDfsUgnlRxA0bRSxpdhWsFCrqYWlFYuSIm1SEmmq8a8PJjb6UF940RhfTFNDLQUpaptVigZK2bauaPqgpokmZaPVpFqgS4MLtbtQKTtzPTO7nZ0usz+laXjpSYY799z73XPmu9+9gEQLDIkWGHcMCGZkbm7u3Tk5OU60E2g/BSUaxraBG0Lry87Ofo8MHwFuN56LGP8eTxElAdGMtFqtOwVBeAuvFsZYCfpnA4GAB4tXgusFlxkeq0xLS5v2+/2nMzIy7pUkqR98GvgCtOmI6ab5ZAC4GtXn6g9FUcpN5qqmSJblKbOYRDCtgbGxsS/wtTvwWsE5H0C/R3MrCKPRczF+UW0vAxaLZQ++vgVdH/g9ZmtvcNUvZbKyl4jNkBDYOmcLsrKyyux2+/tYoBiL2UGJNputFttwwev19iHlpeAeDE//fXp6eivSvxj8Z+ivRkwOYmV16xAnY3vO6uJ99asYKYN4LcL4qy5H7zkWpc/w5ZNo7Sbm92ELOpCFZXhvM3BOCOaCP4RF52wpxouRQU/VsboaYkytiVTO2M4Tju4DmmDU/FQYiN5/dX/fgcBGCKwlcwxjztuYsx9zrAZ+JhgMlq3oqFiJ90+gBoN8n6um57XrE2IVoRG/iqI4HkdcRT7mrEcmDho4H0ytK+mseB7CbSFxctv9KbuMgQkNYNEhPIWUGEXIwC/hGI+cIq8u6VjzBuP0bnil8yL/r87Z4JSNQTecgry8PIY9m+OBkgRiOUy4rZXWFx5oXv45Qp8OL3FFVpjDtan/SnTMDQZGRkZmcLs9ZeSQ+kto6igxOAwMFrQUH7Pn21xIw4qwfYUJQt2pTd3nzIKkqoON+SQHd2hWhOhH0SxOXPq3c7TFox6x52Kqc/5VaWe5wEn6CZ379A8Q+JsDjqPuWHHaKahu3fK6IvGPcIhQKsi4CJrx0EWt9gV2fvLv8XWjH/55BMzjUcIKnuZlbY8NMUEaAHOPYbjLVXN0O8WBVoQDLzv3Mpm2kUwKEoZzB1GOVi0Hta/w+xcVZJ5Kr8luAvOHIX4Gad+MYhuF+A9R4qd9mZnNlAD6KXC99OVhCG7mMs3qJrRWN7E0b2PhN6lLbPVgJvHVfrTrS9rX2JGG4xBPpUheh1Pka7VnVu2fTdpA2ESvIAvVMDIVyQRFMiFT0ZJdD7eLuZYnYGD5I63lapV3ceNvVUYBUVEcfc/0TVISYGbkhjbc2ZydRAHaQ7XAQrWgyoT6P3KmXGAS26LXCtMerhCrPeno7qMkwWINVLXWP0QSG0SOFuuFqRUkRczop0U3sRtF9wHdBFi8QcfHjYXKXbNuiBfGyITe58S7Tjwbv+LNEPcqPv7K4b/omlKGvf9NOxVaYVKkMMN9FO7PE97EFW8GlsykJ9vr0lMU6VsmUqlJJoZFElf2NzjHaR5I5rchffdiz2WWYllLMnOH7gf9iF6FuGO+4kkbUOFqOjTlCy6qhmivKq7efziyjRD30C1AvJnJ3t4zyvZHG46M2Mb/wV81B1xNzq/pFpFUDdxO3PnXbMEN/A8AAP//28g8hwAAAAZJREFUAwDaJ9fLAEYqFgAAAABJRU5ErkJggg==">
 
@@ -390,7 +390,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media (max-width:1180px){.brand-band{margin-left:-20px;margin-right:-20px}}
 @media (max-width:520px){.brand-band{margin-left:-14px;margin-right:-14px}}
 @media print{.brand-band{display:none}}
-.sidebar > .actions{margin-bottom:12px}
+
 /* Poppins is wider than the old system font: let fields shrink to their grid
    column (a date input's built-in minimum width overflowed on phones). */
 .grid2>*,.grid3>*,.colgrid>*,.itemrow-fields>*{min-width:0}
@@ -406,7 +406,84 @@ details.panel>summary:hover h2{color:var(--sa-green-dark)}
 details.panel>.panel-body{padding:0 14px 14px}
 details.panel:not([open]){background:#fcfcfc}
 /* Phones: keep the toolbar on one line. */
-@media (max-width:420px){.sidebar > .actions{gap:5px}.sidebar > .actions .btn:not(.icon-btn){padding:9px 8px;letter-spacing:0}.sidebar > .actions .btn.icon-btn{width:34px}}
+@media (max-width:420px){.sidebar-sticky > .actions{gap:5px}.sidebar-sticky > .actions .btn:not(.icon-btn){padding:9px 8px;letter-spacing:0}.sidebar-sticky > .actions .btn.icon-btn{width:34px}}
+
+/* ================================================== 2.7 spacing and layout */
+
+/* The hidden attribute always wins (some components set display). */
+[hidden]{display:none!important}
+
+/* Toolbar and tabs stay pinned at the top of the editor while it scrolls. */
+.sidebar-sticky{position:sticky;top:0;z-index:15;background:#fff;margin:0 -20px 14px;padding:10px 20px 0;border-bottom:1px solid var(--sa-line)}
+.sidebar-sticky>.actions{margin:0 0 8px}
+.sidebar-sticky>.tabs{margin:0;border-bottom:0}
+.topbar{margin-bottom:4px}
+.sidebar>.notice{margin-bottom:12px}
+
+/* Denser fields: easier to scan and quicker to fill. */
+.field label{margin-bottom:4px;font-size:12px}
+.grid2,.grid3{gap:10px 12px}
+.field input,.field select{min-height:38px;padding:7px 10px;font-size:14px}
+.field textarea{padding:8px 10px;font-size:14px;min-height:62px}
+.field textarea.compact-textarea{min-height:52px}
+input[type=color]{padding:3px;min-height:38px;cursor:pointer}
+input[type=range],input[type=checkbox],input[type=radio]{accent-color:var(--sa-green)}
+/* Phones keep 16px text in fields: iOS zooms the page into anything smaller. */
+@media (max-width:760px){.field input,.field select,.field textarea{font-size:16px}}
+
+.importbox{margin-bottom:10px}
+.panel-body>.hint{margin:0 0 10px}
+
+/* Due date shortcuts */
+.due-presets{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.due-presets-label{font-size:12px;font-weight:500;color:var(--sa-text);margin-right:2px}
+.chip{border:1px solid var(--sa-line-strong);background:#fff;padding:5px 10px;font:inherit;font-size:12px;font-weight:600;color:var(--sa-ink);cursor:pointer;line-height:1.3}
+.chip:hover,.chip:focus-visible{border-color:var(--sa-green);color:var(--sa-green-dark)}
+
+/* Saved client picker: the select takes the room, buttons wrap under it on phones. */
+.picker-row{display:flex;flex-wrap:wrap;gap:6px}
+.picker-row select{flex:1 1 170px;min-width:0}
+.picker-row .btn{flex:none}
+
+/* Line items footer */
+.items-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
+.link-btn{border:0;background:none;padding:4px 0;font:inherit;font-size:12px;font-weight:600;color:var(--sa-text);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link-btn.danger{color:#b42318}
+.items-tip{margin:8px 0 0}
+#itemsEditor:empty~.items-footer,#itemsEditor:empty~.items-tip{display:none}
+.itemrow:last-child{margin-bottom:10px}
+
+/* Logo upload button (the native file control is visually hidden) */
+.logo-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.upload-btn{cursor:pointer;display:inline-flex;align-items:center}
+#logoFile:focus-visible+.upload-btn{outline:3px solid rgba(70,183,81,.35);outline-offset:1px}
+
+/* Saved invoices: rows never wider than the panel */
+.invoice-list{grid-template-columns:minmax(0,1fr)}
+.invoice-row{min-width:0}
+
+/* Columns: heading on its own row, settings in a 2 x 2 grid */
+.columnrow .colgrid{grid-template-columns:1fr 1fr;gap:8px 10px}
+.columnrow .colgrid .field.full{grid-column:1/-1}
+
+/* Bundle drop zone */
+.bundle-drop{border-radius:0;border-color:var(--sa-line-strong)}
+.bundle-drop.drag{border-color:var(--sa-green);background:var(--sa-green-tint)}
+
+/* Preview toolbar: label centred between equal buttons */
+.canvasbar .actions{display:flex;align-items:center;gap:6px;margin:0}
+.canvasbar #zoomLabel{min-width:44px;text-align:center;line-height:32px;font-variant-numeric:tabular-nums}
+.canvasbar #zoomOut,.canvasbar #zoomIn{width:32px;height:32px;padding:0;font-size:16px;letter-spacing:0;display:inline-grid;place-items:center}
+.canvasbar #zoomFit{height:32px;padding:0 10px}
+/* Bundle status line: no empty gap before a sheet is chosen */
+.bundle-status:empty{display:none}
+/* Phones: messages sit above the floating Preview button instead of covering it. */
+@media (max-width:1180px){.toast{bottom:calc(76px + env(safe-area-inset-bottom, 0px));right:12px;left:12px;max-width:none}}
+/* The pinned header spans the sidebar's padding, which is narrower on phones. */
+@media (max-width:520px){.sidebar-sticky{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px}}
+/* Keep the visually hidden file input inside its row (it caused sideways scroll on phones). */
+.logo-actions{position:relative}
+.logo-actions>#logoFile{left:0;top:0}
 
 /* css/invoice.css */
 /* Invoice canvas and the Modern template (the base invoice design) */
@@ -422,6 +499,13 @@ details.panel:not([open]){background:#fcfcfc}
 /* Zoom stage: holds the scaled page (see applyZoom). */
 .invoice-stage{margin:0 auto;position:relative}
 .invoice-stage>.invoice{margin:0;position:absolute;top:0;left:0}
+
+/* Watermark layer (js/invoice/watermark.js): behind all content, inside the
+   page. isolation keeps z-index:-1 above the page's own white background. */
+.invoice{isolation:isolate}
+.invoice-watermark{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.invoice-watermark svg{display:block;width:100%;height:100%}
+.invoice-watermark text{font-family:inherit}
 
 /* css/templates/minimal.css */
 /* Janets / Minimal template + its embedded Nimbus Sans faces */
@@ -1039,6 +1123,140 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
 
 .invoice.template-royalty{padding:13mm 13mm;font-family:var(--font-royalty)}.template-royalty .inv-header{grid-template-columns:1fr .72fr}.template-royalty .companywrap{display:block}.template-royalty .logobox{margin-bottom:8px;border:0;border-radius:0}.template-royalty .companyname{font-size:17px}.template-royalty .invtitle h2{font-size:26px;font-weight:650}.template-royalty .metatable{table-layout:fixed}.template-royalty .metatable td:first-child{width:62%;text-align:right;padding-right:24px}.template-royalty .metatable td:last-child{width:38%;text-align:right}.template-royalty .balance{display:grid;grid-template-columns:62% 38%;background:#f4f4f4;border:0;border-radius:3px;color:#303030;margin-top:18px;padding:8px 14px}.template-royalty .balance span{text-align:right;padding-right:24px}.template-royalty .balance strong{color:#303030;font-size:17px;text-align:right}.template-royalty .billrow{margin:15px 0}.template-royalty .clientname{white-space:pre-line;line-height:1.55}.template-royalty .invtable th{background:#e5e5e5;border-color:#777;color:#111;font-family:var(--font-royalty);font-weight:700}.template-royalty .invtable td{border-color:#777;font-family:var(--font-royalty)}.template-royalty .bottomgrid{grid-template-columns:minmax(0,1fr) 220px;align-items:start}.template-royalty .notebox{min-width:0}.template-royalty .notebox .label,.template-royalty .paymentgrid .label{text-transform:none;letter-spacing:0;font-size:10px;line-height:1.25;margin-bottom:7px;color:#333}.template-royalty .notebox .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:700;font-style:italic}.template-royalty .paymentgrid .metaText{white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere;word-break:normal;font-weight:400;font-style:normal}.template-royalty .summary{border-top:1px solid #111}
 
+/* css/templates/ukhf.css */
+/*
+ * UKHF Fanatical template (js/templates/ukhf.js).
+ * Measured from "FNT 2026 - INVOICE - September" (Microsoft Word, US Letter):
+ * Academy for Health & Fitness to Fanatical, invoice #2026-3080. Positions
+ * are kept in millimetres from the top-left corner, on A4.
+ *
+ *   logo           x 17.7  y 17.4   44.5 x 33.3mm
+ *   INVOICE        x 154.7 y 31.3   Verdana 18pt
+ *   Date / number  x 155.6 y 38.6 / 43.2   Verdana 9.5pt
+ *   Invoice for    x 19.0  y 68.8   Verdana 12pt
+ *   parties        y 74.6, lines every 4.5mm   Calibri 11pt, names bold
+ *                  company x 19.3, client x 153.3 (151.5 on A4, see below)
+ *   bundle table   x 19.9 to 204.5  y 122.4   columns 60.0 / 21.5 / 18.4%
+ *                  rows 4.8mm, 0.2mm black rules; names 11pt, numbers 10pt
+ *   PayPal line    x 13.7  y 163.8  Calibri 11pt, label bold
+ *   Bank Details   x 13.8  y 174.5  Calibri bold 11pt
+ *   bank table     x 16.2 to 108.8  y 182.9   0.5mm rules, rows 7.3mm,
+ *                  label column 32.1mm, Verdana 9.5pt
+ *   thank-you      centred, y 239.7  Times New Roman bold italic 9pt
+ *   watermark      the logo, faint, about 200 x 222mm, centred (see
+ *                  "Watermark"); the faint grey edge on the original is part
+ *                  of its watermark image
+ */
+
+.invoice.template-ukhf{
+  --ukhf-ink:#000;
+  --ukhf-verdana:Verdana,"DejaVu Sans",Geneva,sans-serif;
+  --ukhf-calibri:var(--font-royalty);
+  padding:17.4mm 5.5mm 14mm 19.3mm;
+  font-family:var(--ukhf-calibri);
+  font-size:14.67px;            /* 11pt */
+  line-height:4.5mm;
+  color:var(--ukhf-ink);
+}
+
+/* --------------------------------------------------------- top grid */
+/* The shared markup is flattened into one grid:
+     logo           | INVOICE block
+     Invoice for... (both columns)
+     your company   | client                                            */
+.template-ukhf .topdetails{
+  display:grid;
+  /* Client column at x 151.5mm: 1.8mm left of the original, because A4 is
+     5.9mm narrower than Letter and the longest address line must still fit. */
+  grid-template-columns:132.2mm minmax(0,1fr);
+  grid-template-areas:"logo title" "period period" "seller client";
+}
+.template-ukhf .inv-header,
+.template-ukhf .companywrap,
+.template-ukhf .billrow{display:contents}
+
+.template-ukhf .logobox{
+  grid-area:logo;align-self:start;justify-self:start;
+  margin-left:-1.6mm;border:0;border-radius:0;background:transparent;
+}
+.template-ukhf .logofallback{border-radius:0}
+
+.template-ukhf .invtitle{
+  grid-area:title;display:flex;flex-direction:column;align-items:flex-start;
+  text-align:left;margin:13.4mm -5.5mm 0 3mm;
+}
+.template-ukhf .invtitle h2{
+  order:0;margin:0;font-family:var(--ukhf-verdana);font-size:24px;font-weight:400;
+  letter-spacing:0;line-height:7.3mm;color:#222;
+}
+.template-ukhf .metatable{order:1;display:block;margin:0 0 0 .9mm;border:0;width:auto}
+.template-ukhf .metatable tbody,.template-ukhf .metatable tr{display:block}
+.template-ukhf .metatable td{display:inline;padding:0;border:0;font-family:var(--ukhf-verdana);font-size:12.67px;line-height:4.6mm;color:var(--ukhf-ink);font-weight:400}
+.template-ukhf .metatable td:first-child::after{content:" "}
+.template-ukhf .metatable tr[data-section="dueDate"],
+.template-ukhf .metatable tr[data-section="reference"],
+.template-ukhf .metatable .classic-only{display:none}
+.template-ukhf .invno{order:2;margin:0 0 0 .9mm;font-family:var(--ukhf-verdana);font-size:12.67px;line-height:4.6mm;font-weight:400;color:var(--ukhf-ink);letter-spacing:0}
+.template-ukhf .balance{display:none}
+
+/* "Invoice for September 2026" */
+.template-ukhf .period-title{grid-area:period;margin:17.6mm 0 0 -.3mm;font-family:var(--ukhf-verdana);font-size:16px;line-height:5.8mm;color:#222}
+.invoice:not(.template-ukhf) .period-title{display:none}
+
+/* Parties */
+.template-ukhf .companywrap>div:not(.logobox){grid-area:seller;min-width:0}
+.template-ukhf .billrow [data-section="client"]{grid-area:client;margin-right:-5.5mm}
+.template-ukhf .companyname,
+.template-ukhf .clientname{font-family:var(--ukhf-calibri);font-size:14.67px;font-weight:700;line-height:4.5mm;color:var(--ukhf-ink)}
+.template-ukhf .companywrap .metaText,
+.template-ukhf .billrow .metaText{font-family:var(--ukhf-calibri);font-size:14.67px;line-height:4.5mm;color:var(--ukhf-ink);white-space:pre-line;margin:0}
+.template-ukhf .billrow .label{display:none}
+
+/* --------------------------------------------------- bundle table */
+.template-ukhf .invtable{
+  margin:25.4mm 0 0 .6mm;width:184.6mm;border-collapse:collapse;
+  font-family:var(--ukhf-calibri);font-size:13.33px;
+}
+.template-ukhf .invtable th,
+.template-ukhf .invtable td{height:4.6mm;padding:0 .8mm;border:.2mm solid #000;line-height:4.4mm;vertical-align:middle;color:var(--ukhf-ink);background:transparent}
+.template-ukhf .invtable th{font-family:var(--ukhf-calibri);font-weight:700;font-size:13.33px;letter-spacing:0;text-align:center}
+.template-ukhf .invtable th:first-child{font-size:14.67px}
+.template-ukhf .invtable td{text-align:center}
+.template-ukhf .invtable td:first-child{text-align:left;padding-left:2.7mm;font-size:14.67px}
+.template-ukhf .invtable .classic-total-row td.classic-total-label{text-align:right;padding-right:.1mm}
+
+/* No totals box, notes heading or other labels on the original */
+.template-ukhf .bottomgrid{display:block;margin:0}
+.template-ukhf .summary{display:none}
+.template-ukhf .notebox{margin-top:6mm}
+.template-ukhf .notebox .label{display:none}
+.template-ukhf .notebox .metaText{white-space:pre-line;font-size:14.67px;color:var(--ukhf-ink)}
+
+/* ---------------------------------------------------- payment block */
+.template-ukhf .paymentgrid{display:block;border:0;margin:22mm 0 0 -5.6mm;padding:0}
+.template-ukhf .paymentgrid .label{display:none}
+.template-ukhf .paymentgrid [data-section="terms"]{display:none}
+.template-ukhf #pPayment{font-family:var(--ukhf-calibri);font-size:14.67px;line-height:4.5mm;color:var(--ukhf-ink);white-space:normal}
+.template-ukhf .ukhf-pay-line strong,
+.template-ukhf .ukhf-bank-title{font-weight:700;letter-spacing:-.01em}
+.template-ukhf .ukhf-bank-title{margin-top:6.2mm}
+.template-ukhf .ukhf-bank{
+  margin:3.9mm 0 0 2.5mm;width:92.6mm;border-collapse:collapse;table-layout:fixed;
+  font-family:var(--ukhf-verdana);font-size:12.67px;
+}
+.template-ukhf .ukhf-bank tr{height:7.3mm}   /* measured row pitch */
+.template-ukhf .ukhf-bank td{height:7.3mm;box-sizing:border-box;padding:0 0 0 3.8mm;border:.55mm solid #000;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.template-ukhf .ukhf-bank td:first-child{width:32.6mm}
+
+/* --------------------------------------------------------- footer */
+.template-ukhf .footer{
+  /* In the flow (19.5mm below the bank table, as measured) so a long
+     invoice pushes it down instead of overlapping. */
+  position:static;margin:20.3mm 0 0 -19.3mm;width:210mm;display:block;text-align:center;
+  font-family:"Times New Roman",Tinos,Times,serif;font-style:italic;font-weight:700;font-size:12px;line-height:4mm;color:var(--ukhf-ink);
+}
+.template-ukhf #pFooterInvoice{display:none}
+
 /* css/print.css */
 /* Global print page box */
 /* Extracted verbatim from the original index.html <style> block. */
@@ -1079,6 +1297,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     </div>
     <div class="save-state" id="saveState" aria-live="off"><span class="save-dot" aria-hidden="true"></span><span id="saveStateText">Saved</span></div>
   </div>
+<div class="sidebar-sticky">
   <div class="actions">
     <button class="btn icon-btn" id="undoBtn" disabled title="Undo the last invoice change (Ctrl/Cmd + Z)" aria-keyshortcuts="Control+Z Meta+Z"><svg aria-hidden="true" focusable="false" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span class="sr-only">Undo</span></button>
     <button class="btn icon-btn" id="redoBtn" disabled title="Redo (Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z)" aria-keyshortcuts="Control+Y Meta+Y Control+Shift+Z Meta+Shift+Z"><svg aria-hidden="true" focusable="false" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg><span class="sr-only">Redo</span></button>
@@ -1096,51 +1315,45 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     </div>
     <input type="file" id="jsonFile" class="hidden" accept=".json">
   </div>
-  <div class="notice privacy-notice" id="privacyNotice"><span>Saved only in this browser on this device. Nothing is uploaded.</span><button class="notice-close" id="privacyNoticeClose" type="button" aria-label="Hide this message" title="Hide">&times;</button></div>
-  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <span class="notice-actions"><button class="btn small" id="backupNowBtn" type="button">Back up now</button><button class="btn small" id="backupLaterBtn" type="button" title="Remind me again in 7 days">Later</button></span></div>
   <nav class="tabs" role="tablist" aria-label="Editor">
     <button class="tab active" type="button" role="tab" id="tabbtn-invoice" data-tab="invoice" aria-controls="tab-invoice" aria-selected="true">Invoice</button>
     <button class="tab" type="button" role="tab" id="tabbtn-invoices" data-tab="invoices" aria-controls="tab-invoices" aria-selected="false" tabindex="-1">Saved</button>
     <button class="tab" type="button" role="tab" id="tabbtn-design" data-tab="design" aria-controls="tab-design" aria-selected="false" tabindex="-1">Design</button>
   </nav>
+</div>
+  <div class="notice privacy-notice" id="privacyNotice"><span>Saved only in this browser on this device. Nothing is uploaded.</span><button class="notice-close" id="privacyNoticeClose" type="button" aria-label="Hide this message" title="Hide">&times;</button></div>
+  <div class="notice backup-reminder" id="backupReminder" role="status" hidden><span id="backupReminderText">You have not made a full backup in the last 30 days.</span> <span class="notice-actions"><button class="btn small" id="backupNowBtn" type="button">Back up now</button><button class="btn small" id="backupLaterBtn" type="button" title="Remind me again in 7 days">Later</button></span></div>
+
 
   <div class="tabpane active" id="tab-invoice" role="tabpanel" aria-labelledby="tabbtn-invoice">
-    <details class="panel" id="panel-invoice" data-default="open" open>
-      <summary class="panelhead"><h2>Invoice</h2><span class="hint when-closed" id="sumInvoice"></span></summary>
-      <div class="panel-body">
-      <div class="grid2">
-        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
-        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
-        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
-        <div class="field"><label for="currency">Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
-        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
-      </div>
-    </div>
-    </details>
     <details class="panel" id="panel-client" data-default="open" open>
       <summary class="panelhead"><h2>Bill to</h2><span class="hint when-closed" id="sumClient"></span></summary>
       <div class="panel-body">
       <div class="grid2">
-        <div class="field full"><label for="savedClients">Saved clients</label><div class="inline-input"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients">Remove</button></div></div>
-        <div class="field full"><label for="clientName">Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Example: Fanatical&#10;Focus Multimedia Ltd"></textarea><div class="hint" style="margin-top:4px">Press Enter to add another company-name line.</div></div>
-        <div class="field"><label for="clientContact">Contact</label><input id="clientContact"></div>
-        <div class="field"><label for="clientTax">VAT / tax</label><input id="clientTax"></div>
+        <div class="field full"><label for="savedClients">Saved clients</label><div class="picker-row"><select id="savedClients"><option value="">Choose a saved client</option></select><button class="btn small" id="saveClientBtn" type="button" title="Save these client details for later invoices">Save client</button><button class="btn small danger" id="removeClientBtn" type="button" title="Remove the chosen client from saved clients" hidden>Remove</button></div></div>
+        <div class="field full"><label for="clientName">Client company</label><textarea id="clientName" class="compact-textarea" rows="2" placeholder="Company name (a second line is fine)"></textarea></div>
         <div class="field full"><label for="clientAddress">Address</label><textarea id="clientAddress"></textarea></div>
-        <div class="field full"><label for="clientEmail">Email</label><input id="clientEmail"></div>
+        <div class="field"><label for="clientContact">Contact</label><input id="clientContact"></div>
+        <div class="field"><label for="clientEmail">Email</label><input id="clientEmail" type="email" autocomplete="off"></div>
+        <div class="field"><label for="clientTax">VAT / tax</label><input id="clientTax"></div>
       </div>
     </div>
     </details>
     <details class="panel" id="panel-items" data-default="open" open>
       <summary class="panelhead"><h2>Line items</h2><span class="hint" id="sumItems"></span></summary>
       <div class="panel-body">
-      <div class="importbox"><button class="btn small primary" id="addItemBtn">+ Add item</button>
-        <button class="btn small" id="importSheetBtn">Import CSV / Excel</button>
-        <button class="btn small danger" id="clearItemsBtn">Clear all</button>
+      <div class="importbox">
+        <button class="btn small primary" id="addItemBtn" type="button">+ Add item</button>
+        <button class="btn small" id="importSheetBtn" type="button" title="Columns in the sheet are matched to your invoice columns by name">Import CSV / Excel</button>
         <input id="sheetFile" class="hidden" type="file" accept=".csv,.xlsx,.xls">
       </div>
-      <p class="hint">Spreadsheet columns are matched against your current column names and common aliases.</p>
       <div class="import-check" id="importCheck" role="status" hidden></div>
       <div id="itemsEditor"></div>
+      <div class="items-footer">
+        <button class="btn small" id="addItemBottomBtn" type="button">+ Add another item</button>
+        <button class="link-btn danger" id="clearItemsBtn" type="button">Clear all items</button>
+      </div>
+      <p class="hint items-tip">Press Enter in Qty or Rate to go to the next line, or add one.</p>
     </div>
     </details>
     <details class="panel" id="panel-bundles" data-default="closed" open>
@@ -1169,10 +1382,23 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       </div>
     </div>
     </details>
+    <details class="panel" id="panel-invoice" data-default="open" open>
+      <summary class="panelhead"><h2>Invoice</h2><span class="hint when-closed" id="sumInvoice"></span></summary>
+      <div class="panel-body">
+      <div class="grid2">
+        <div class="field"><label for="invoiceNumber">Invoice number</label><div class="inline-input"><input id="invoiceNumber" value="INV-1001"><button class="btn small" id="nextNumberBtn" type="button" title="Increase the number at the end by one, for example INV-1001 to INV-1002">Next</button></div><div class="hint field-warning" id="invoiceNumberWarning" role="status" hidden>Another saved invoice already uses this number.</div></div>
+        <div class="field"><label for="reference">Reference / PO</label><input id="reference"></div>
+        <div class="field"><label for="invoiceDate">Invoice date</label><input id="invoiceDate" type="date"></div>
+        <div class="field"><label for="dueDate">Due date</label><input id="dueDate" type="date" aria-describedby="dueDateWarning"><div class="hint field-warning" id="dueDateWarning" role="status" hidden>The due date is before the invoice date.</div></div>
+        <div class="field full due-presets" role="group" aria-label="Set the due date"><span class="due-presets-label">Due</span><button class="chip" type="button" data-due-days="0">On receipt</button><button class="chip" type="button" data-due-days="7">7 days</button><button class="chip" type="button" data-due-days="14">14 days</button><button class="chip" type="button" data-due-days="30">30 days</button></div>
+      </div>
+    </div>
+    </details>
     <details class="panel" id="panel-totals" data-default="open" open>
       <summary class="panelhead"><h2>Totals</h2><span class="hint" id="sumTotals"></span></summary>
       <div class="panel-body">
-      <div class="grid3">
+      <div class="grid2">
+        <div class="field"><label for="currency">Currency</label><select id="currency"><option value="GBP">GBP - £</option><option value="USD">USD - $</option><option value="EUR">EUR - €</option><option value="BDT">BDT - ৳</option><option value="AUD">AUD - A$</option><option value="CAD">CAD - C$</option></select></div>
         <div class="field"><label for="discount">Discount %</label><input id="discount" type="number" min="0" value="0" step=".01"></div>
         <div class="field"><label for="tax">Tax %</label><input id="tax" type="number" min="0" value="0" step=".01"></div>
         <div class="field"><label for="shipping">Shipping</label><input id="shipping" type="number" min="0" value="0" step=".01"></div>
@@ -1201,7 +1427,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         <div class="field"><label for="companyEmail">Email</label><input id="companyEmail"></div>
         <div class="field"><label for="companyWebsite">Website</label><input id="companyWebsite"></div>
         <div class="field full"><label for="logoFile">Logo</label>
-<div class="logo-actions"><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><button class="btn small danger" id="removeLogoBtn" type="button">Remove</button></div>
+<div class="logo-actions"><input id="logoFile" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><label class="btn small upload-btn" for="logoFile">Upload logo</label><button class="btn small danger" id="removeLogoBtn" type="button" hidden>Remove</button></div>
 <div class="hint" id="logoHint" style="margin-top:5px">PNG, JPG, WEBP or SVG. Maximum 3 MB.</div></div>
       </div>
     </div>
@@ -1213,11 +1439,11 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       <summary class="panelhead"><h2>Saved invoices</h2><span class="hint" id="invoiceCount"></span></summary>
       <div class="panel-body">
       <div class="importbox">
-        <button class="btn small primary" id="newInvoiceBtn" type="button">New invoice</button>
-        <button class="btn small" id="duplicateInvoiceBtn" type="button">Duplicate</button>
-        <button class="btn small" id="blankInvoiceBtn" type="button">New blank</button>
+        <button class="btn small primary" id="newInvoiceBtn" type="button" title="Keeps your company details, design and payment details; clears the client and items; uses the next unused number">New invoice</button>
+        <button class="btn small" id="duplicateInvoiceBtn" type="button" title="Copies the open invoice with the next unused number and today's date">Duplicate</button>
+        <button class="btn small" id="blankInvoiceBtn" type="button" title="Starts from the app's defaults">New blank</button>
       </div>
-      <p class="hint">Every change is saved automatically. New invoice keeps your company details, design and payment details, clears the client and items, and uses the next unused number. New blank starts from the app defaults.</p>
+      <p class="hint">Every change is saved automatically.</p>
       <div class="field"><label for="invoiceSearch">Search</label><input id="invoiceSearch" type="search" placeholder="Invoice number or client" autocomplete="off"></div>
       <div id="invoiceList" class="invoice-list" aria-live="polite"></div>
     </div>
@@ -1244,7 +1470,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
           <option value="modern">Modern</option>
           <option value="minimal">Minimal</option>
           <option value="classic">Classic, bordered table</option>
-          <option value="royalty">Royalty statement</option>
+          <option value="royalty">Royalty statement</option><option value="ukhf">UKHF Fanatical</option>
         </select>
         <div class="hint" id="fontHint" style="margin-top:6px"></div>
       </div>
@@ -1258,6 +1484,24 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         <div class="field"><label for="logoFallback">Without a logo, show</label><select id="logoFallback"><option value="initial" selected>Company initial</option><option value="none">Nothing</option></select></div>
       </div>
     </div>
+    </details>
+    <details class="panel" id="panel-watermark" data-default="closed" open>
+      <summary class="panelhead"><h2>Watermark</h2><span class="hint" id="sumWatermark"></span></summary>
+      <div class="panel-body">
+      <p class="hint" id="watermarkTemplateHint" hidden>Watermarks show on the Modern and UKHF Fanatical templates. Choose one under Invoice template to see it.</p>
+      <div class="grid2">
+        <div class="field full"><label for="watermarkType">Watermark</label><select id="watermarkType"><option value="none" selected>Off</option><option value="text">Text</option><option value="logo">Logo</option><option value="image">Image</option></select></div>
+        <div class="field full" data-wm="text"><label for="watermarkText">Text</label><input id="watermarkText" maxlength="40" autocomplete="off" placeholder="For example: PAID, DRAFT or a brand name"></div>
+        <div class="field full" data-wm="image"><label for="watermarkFile">Image</label><div class="logo-actions"><input id="watermarkFile" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><label class="btn small upload-btn" for="watermarkFile">Upload image</label><button class="btn small danger" id="removeWatermarkBtn" type="button" hidden>Remove</button></div><div class="hint" id="watermarkFileHint" style="margin-top:5px">PNG, JPG, WEBP or SVG, up to 3 MB. A transparent PNG works best.</div></div>
+        <div class="field full hint" data-wm="logo" id="watermarkLogoHint">Uses the logo from Your company.</div>
+        <div class="field" data-wm="any"><label for="watermarkOpacity">Opacity</label><input id="watermarkOpacity" type="range" min="2" max="100" step="1" value="8"><div class="hint" id="watermarkOpacityValue">8%</div></div>
+        <div class="field" data-wm="any"><label for="watermarkSize">Size</label><input id="watermarkSize" type="range" min="20" max="150" step="5" value="70"><div class="hint" id="watermarkSizeValue">70% of the page width</div></div>
+        <div class="field" data-wm="any"><label for="watermarkAngle">Angle</label><select id="watermarkAngle"><option value="0">Level</option><option value="-30" selected>Rising, 30°</option><option value="-45">Rising, 45°</option><option value="30">Falling, 30°</option></select></div>
+        <div class="field" data-wm="any"><label for="watermarkLayout">Layout</label><select id="watermarkLayout"><option value="centred" selected>Centred on each page</option><option value="tiled">Tiled</option></select></div>
+        <div class="field" data-wm="text"><label for="watermarkColor">Colour</label><select id="watermarkColor"><option value="accent" selected>Accent colour</option><option value="grey">Grey</option><option value="black">Black</option></select></div>
+      </div>
+      <p class="hint" style="margin-top:10px">Saved with each invoice and in each brand, so every brand can have its own watermark.</p>
+      </div>
     </details>
     <details class="panel" id="panel-columns" data-default="closed" open>
       <summary class="panelhead"><h2>Columns</h2><span class="hint" id="sumColumns"></span></summary>
@@ -1292,6 +1536,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
 <main class="workspace">
   <div class="canvasbar"><div class="meta" id="previewMeta">A4 portrait preview</div><div class="actions"><button class="btn small" id="zoomOut" type="button" aria-label="Zoom out">−</button><span class="meta" id="zoomLabel" aria-live="polite">100%</span><button class="btn small" id="zoomIn" type="button" aria-label="Zoom in">+</button><button class="btn small" id="zoomFit" type="button" title="Fit the page to the space available">Fit</button></div></div>
   <div class="invoice-stage" id="invoiceStage"><article class="invoice template-modern" id="invoice">
+      <div class="invoice-watermark" id="pWatermark" aria-hidden="true" hidden></div>
     <div class="topdetails">
     <header class="inv-header">
       <div class="companywrap" data-section="company">
@@ -1309,6 +1554,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         <div class="balance" data-section="balance"><span id="pBalanceLabel">Balance due</span><strong id="pBalance">£0.00</strong></div>
       </div>
     </header>
+    <div class="period-title" id="pPeriodTitle"></div>
     <section class="billrow">
       <div data-section="client"><div class="label" id="pBillToLabel">Bill to</div><div class="clientname" id="pClientName">Client company</div><div class="metaText" id="pClientMeta">Add client details</div></div>
     </section>
@@ -1377,7 +1623,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   };
 
   // js/constants.js
-  var APP_VERSION = "2.6.1";
+  var APP_VERSION = "2.9.0";
   var DATA_VERSION = 2;
   var STORAGE_KEYS = {
     invoice: "invoiceStudioPro.v2",
@@ -1428,7 +1674,6 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var SIDEBAR_RESIZE_MIN_VIEWPORT = 1180;
   var XLSX_WORKER_SRC = "js/import-export/xlsx-worker.js";
   var XLSX_PARSE_TIMEOUT_MS = 3e4;
-  var FIXED_WIDTH_COLUMN_COUNT = 4;
   var FIXED_AMOUNT_KEY = "$fixedAmount";
   var NUMERIC_COLUMN_TYPES = ["number", "currency", "percentage"];
   var SECTION_DEFS = [
@@ -1453,6 +1698,13 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     "logoFit",
     "logoAlign",
     "logoFallback",
+    "watermarkType",
+    "watermarkText",
+    "watermarkOpacity",
+    "watermarkSize",
+    "watermarkAngle",
+    "watermarkLayout",
+    "watermarkColor",
     "invoiceNumber",
     "invoiceDate",
     "dueDate",
@@ -1497,6 +1749,13 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     "logoFit",
     "logoAlign",
     "logoFallback",
+    "watermarkType",
+    "watermarkText",
+    "watermarkOpacity",
+    "watermarkSize",
+    "watermarkAngle",
+    "watermarkLayout",
+    "watermarkColor",
     "paymentDetails",
     "terms"
   ];
@@ -1764,6 +2023,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var defaultSections = () => Object.fromEntries(SECTION_DEFS.map(([key]) => [key, true]));
   var state = {
     logo: "",
+    watermark: "",
     zoom: 1,
     columns: defaultColumns(),
     items: [],
@@ -1777,6 +2037,9 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var editableColumns = () => state.columns.filter((c) => c.role !== "amount");
   var setLogo = (dataUrl) => {
     state.logo = dataUrl || "";
+  };
+  var setWatermark = (dataUrl) => {
+    state.watermark = dataUrl || "";
   };
   var setZoom = (zoom) => {
     state.zoom = clamp(zoom, LIMITS.zoom.min, LIMITS.zoom.max);
@@ -1883,6 +2146,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     return {
       version: DATA_VERSION,
       logo: state.logo,
+      watermark: state.watermark,
       zoom: state.zoom,
       columns: state.columns,
       items: state.items,
@@ -1898,7 +2162,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     BRAND_FIELD_IDS.forEach((id) => {
       fields[id] = fieldValue(id);
     });
-    return { version: DATA_VERSION, logo: state.logo, fields };
+    return { version: DATA_VERSION, logo: state.logo, watermark: state.watermark, fields };
   }
   var NOTE_TYPO_PATTERN = /\bbank detailsfor payment\b/i;
   var NOTE_TYPO_REPLACE = /\bbank detailsfor payment\b/gi;
@@ -1951,7 +2215,9 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       fixedColumnWidths: null,
       headerLabels: null,
       showTableTotalRow: false,
-      separatePaymentPage: false
+      separatePaymentPage: false,
+      /** Background watermark (js/invoice/watermark.js). */
+      watermark: true
     }
   };
 
@@ -2071,6 +2337,105 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     }
   };
 
+  // js/templates/ukhf.js
+  var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var MONTHS_LONG = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  function ukhfDate(value) {
+    if (!isIsoDate(value)) return value ? String(value) : "\u2014";
+    const [y, m, d] = value.split("-").map(Number);
+    return `${String(d).padStart(2, "0")}-${MONTHS[m - 1]}-${y}`;
+  }
+  function ukhfPeriodTitle() {
+    const reference = trimmedField("reference");
+    if (reference) return "Invoice for " + reference;
+    const date = fieldValue("invoiceDate");
+    if (!isIsoDate(date)) return "Invoice";
+    let [y, m] = date.split("-").map(Number);
+    m -= 1;
+    if (m === 0) {
+      m = 12;
+      y -= 1;
+    }
+    return `Invoice for ${MONTHS_LONG[m - 1]} ${y}`;
+  }
+  function ukhfCompanyMeta() {
+    const lines = [];
+    const reg = trimmedField("companyReg");
+    const address = trimmedField("companyAddress").split(/\r?\n/).map((s) => s.trim()).filter(Boolean).join(", ");
+    if (reg) lines.push("Reg.no: " + reg);
+    if (address) lines.push("Address: " + address);
+    for (const [id, label] of [["companyVat", "VAT"], ["companyPhone", "Tel"], ["companyEmail", "Email"], ["companyWebsite", "Web"]]) {
+      const value = trimmedField(id);
+      if (value) lines.push(`${label}: ${value}`);
+    }
+    return lines.join("\n") || COMPANY_META_FALLBACK;
+  }
+  var ukhf_default = {
+    id: "ukhf",
+    name: "UKHF Fanatical",
+    description: "Academy for Health & Fitness royalty invoice to Fanatical: bundle table with a Total row, PayPal and bank details, and the logo as a watermark.",
+    cssClass: "template-ukhf",
+    fontStack: "Calibri / Carlito",
+    labels: {
+      title: "INVOICE",
+      bill: "",
+      balance: "Balance due:",
+      note: "Note:",
+      payment: "",
+      terms: "",
+      date: "Date:",
+      due: "Due date:",
+      ref: "Reference:"
+    },
+    capabilities: {
+      invoiceNoPrefix: "INVOICE #",
+      formatDate: ukhfDate,
+      companyMeta: ukhfCompanyMeta,
+      structuredPayment: false,
+      paymentLayout: "ukhf",
+      repairNoteTypo: false,
+      hideReferenceRowWhenEmpty: true,
+      paymentIgnoresSectionToggle: false,
+      dropRateWhenAmount: true,
+      dropSkuWhenDescription: true,
+      fixedColumnWidths: ["60%", "21%", "19%"],
+      headerLabels: {
+        byKey: { description: "Bundle Name" },
+        byRole: { quantity: "Net Qty", rate: "Royalty", amount: "Royalty" }
+      },
+      showTableTotalRow: true,
+      tableTotalLabel: "Total =",
+      separatePaymentPage: false,
+      periodTitle: ukhfPeriodTitle,
+      clientFirstLineBold: true,
+      footerText: () => trimmedField("terms") || "Thank you for your Partnership!",
+      watermark: true,
+      /**
+       * Applied when this template is chosen, only to settings still at the
+       * app's defaults, so nothing you have set yourself is overwritten.
+       */
+      defaultsOnSelect: {
+        // The original's watermark is the logo, enlarged and very faint.
+        watermark: { watermarkType: "logo", watermarkSize: "95", watermarkAngle: "0", watermarkOpacity: "12", watermarkLayout: "centred" },
+        // 44.5 x 33.3mm, as on the original.
+        logo: { logoWidth: "168", logoHeight: "126", logoFit: "contain", logoAlign: "left" }
+      }
+    }
+  };
+
   // js/editor/tabs.js
   var tabs = () => qsa(".tab");
   function selectTab(name, { focus = false } = {}) {
@@ -2104,6 +2469,81 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         selectTab(next.dataset.tab, { focus: true });
       };
     });
+  }
+
+  // js/invoice/watermark.js
+  var PAGE_WIDTH_MM = 210;
+  var FIRST_PAGE_MM = 297;
+  var NEXT_PAGE_MM = 285;
+  var PX_PER_MM = 96 / 25.4;
+  var WATERMARK_DEFAULTS = { opacity: 8, size: 70, angle: -30 };
+  var HEX = /^#[0-9a-f]{6}$/i;
+  var round = (v) => Math.round(v * 100) / 100;
+  function watermarkSettings() {
+    return {
+      type: fieldValue("watermarkType") || "none",
+      text: (fieldValue("watermarkText") || "").trim(),
+      // Up to 100%: an image that is already faded (like the UKHF one) prints at full strength.
+      opacity: clamp(num(fieldValue("watermarkOpacity")) || WATERMARK_DEFAULTS.opacity, 2, 100) / 100,
+      size: clamp(num(fieldValue("watermarkSize")) || WATERMARK_DEFAULTS.size, 20, 150),
+      angle: clamp(num(fieldValue("watermarkAngle")), -90, 90),
+      layout: fieldValue("watermarkLayout") === "tiled" ? "tiled" : "centred",
+      color: fieldValue("watermarkColor") || "accent"
+    };
+  }
+  function watermarkImage(type = fieldValue("watermarkType")) {
+    if (type === "logo") return state.logo;
+    if (type === "image") return state.watermark;
+    return "";
+  }
+  function textColour(choice) {
+    if (choice === "grey") return "#6b7280";
+    if (choice === "black") return "#111111";
+    const hex = fieldValue("accentHex");
+    return HEX.test(hex) ? hex : fieldValue("accent") || "#46b751";
+  }
+  function pageCentres(heightMm) {
+    const extra = Math.max(0, heightMm - FIRST_PAGE_MM);
+    const pages = 1 + Math.ceil(extra / NEXT_PAGE_MM - 1e-3);
+    return Array.from({ length: pages }, (_, i) => i === 0 ? FIRST_PAGE_MM / 2 : FIRST_PAGE_MM + (i - 1) * NEXT_PAGE_MM + NEXT_PAGE_MM / 2);
+  }
+  function markMarkup({ text: text2, image, width, colour }, cx, cy, angle) {
+    const rotate = angle ? ` transform="rotate(${angle} ${round(cx)} ${round(cy)})"` : "";
+    if (image) {
+      const h = width;
+      return `<image href="${esc(image)}" x="${round(cx - width / 2)}" y="${round(cy - h / 2)}" width="${round(width)}" height="${round(h)}" preserveAspectRatio="xMidYMid meet"${rotate}/>`;
+    }
+    const fontSize = Math.min(width / Math.max(1, text2.length * 0.62), width * 0.8);
+    return `<text x="${round(cx)}" y="${round(cy)}" text-anchor="middle" dominant-baseline="central" font-size="${round(fontSize)}" font-weight="800" textLength="${round(width)}" lengthAdjust="spacingAndGlyphs" fill="${colour}"${rotate}>${esc(text2)}</text>`;
+  }
+  function renderWatermark(template) {
+    const host = $("pWatermark");
+    const invoice = $("invoice");
+    if (!host || !invoice) return;
+    const s = watermarkSettings();
+    const image = watermarkImage(s.type);
+    const text2 = s.type === "text" ? s.text : "";
+    const supported = Boolean(template?.capabilities?.watermark);
+    if (!supported || s.type === "none" || !image && !text2) {
+      if (host.innerHTML) host.innerHTML = "";
+      host.hidden = true;
+      return;
+    }
+    const heightMm = Math.max(FIRST_PAGE_MM, invoice.offsetHeight / PX_PER_MM);
+    const width = PAGE_WIDTH_MM * s.size / 100;
+    const mark = { text: text2, image, width, colour: textColour(s.color) };
+    let body;
+    if (s.layout === "tiled") {
+      const fontSize = text2 ? Math.min(width / Math.max(1, text2.length * 0.62), width * 0.8) : 0;
+      const tileW = width * 1.35;
+      const tileH = text2 ? Math.max(fontSize * 3, 30) : width * 1.25;
+      body = `<defs><pattern id="saWatermarkTiles" patternUnits="userSpaceOnUse" width="${round(tileW)}" height="${round(tileH)}"${s.angle ? ` patternTransform="rotate(${s.angle})"` : ""}>` + markMarkup(mark, tileW / 2, tileH / 2, 0) + `</pattern></defs><rect x="0" y="0" width="${PAGE_WIDTH_MM}" height="${round(heightMm)}" fill="url(#saWatermarkTiles)"/>`;
+    } else {
+      body = pageCentres(heightMm).map((cy) => markMarkup(mark, PAGE_WIDTH_MM / 2, cy, s.angle)).join("");
+    }
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PAGE_WIDTH_MM} ${round(heightMm)}" preserveAspectRatio="xMidYMin meet" focusable="false"><g opacity="${s.opacity}">${body}</g></svg>`;
+    if (host.innerHTML !== svg) host.innerHTML = svg;
+    host.hidden = false;
   }
 
   // js/invoice/calculations.js
@@ -2179,8 +2619,35 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     setText("pReference", fieldOr("reference", "\u2014"));
     setText("pClientName", fieldOr("clientName", "Client company"));
     setText("pClientMeta", metaClient());
+    if (caps.clientFirstLineBold) {
+      const [first, ...rest] = trimmedField("clientName").split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+      const meta = metaClient();
+      setText("pClientName", first || "Client company");
+      setText("pClientMeta", [...rest, meta === CLIENT_META_FALLBACK && rest.length ? "" : meta].filter(Boolean).join("\n"));
+    }
+    setText("pPeriodTitle", caps.periodTitle ? caps.periodTitle() : "");
+  };
+  var ukhfPaymentMarkup = (text2) => {
+    const rows = String(text2 || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((line2) => {
+      const plain = line2.match(/^(.*?\S)(?:\t+| {2,}| \| )(.+)$/);
+      if (plain) return { label: plain[1].trim(), value: plain[2].trim() };
+      const colon = line2.indexOf(":");
+      if (colon > 0) return { label: line2.slice(0, colon + 1).trim(), value: line2.slice(colon + 1).trim() };
+      return { label: "", value: line2 };
+    });
+    const isPaypal = (r) => /paypal/i.test(r.label);
+    const isBankHeading = (r) => /^bank\s*details:?$/i.test(r.label || r.value) && !(r.label && r.value);
+    const lines = rows.filter((r) => isPaypal(r) || !r.label && !isBankHeading(r));
+    const bank = rows.filter((r) => r.label && !isPaypal(r) && !isBankHeading(r));
+    const lineHtml = lines.map((r) => r.label ? `<div class="ukhf-pay-line"><strong>${esc(r.label.endsWith(":") ? r.label : r.label + ":")}</strong> ${esc(r.value)}</div>` : `<div class="ukhf-pay-line">${esc(r.value)}</div>`).join("");
+    const bankHtml = bank.length ? `<div class="ukhf-bank-title">Bank Details:</div><table class="ukhf-bank">${bank.map((r) => `<tr><td>${esc(r.label)}</td><td>${esc(r.value)}</td></tr>`).join("")}</table>` : "";
+    return lineHtml + bankHtml;
   };
   var renderPaymentDetails = (caps, paymentText) => {
+    if (caps.paymentLayout === "ukhf") {
+      $("pPayment").innerHTML = ukhfPaymentMarkup(paymentText);
+      return;
+    }
     if (!caps.structuredPayment) {
       $("pPayment").textContent = paymentText;
       return;
@@ -2219,7 +2686,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     return visible;
   };
   var renderColgroup = (caps, visible) => {
-    const useFixed = caps.fixedColumnWidths && visible.length === FIXED_WIDTH_COLUMN_COUNT;
+    const useFixed = Array.isArray(caps.fixedColumnWidths) && caps.fixedColumnWidths.length === visible.length;
     $("pCols").innerHTML = useFixed ? caps.fixedColumnWidths.map((width) => `<col style="width:${width}">`).join("") : visible.map((c) => `<col style="width:${Math.max(LIMITS.columnWidth.min, num(c.width))}%">`).join("");
   };
   var headerLabelFor = (caps, col) => {
@@ -2257,7 +2724,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     }
     const qtyTotal = calculateQuantityTotal(state.items);
     const cells = visible.map((c) => {
-      if (String(c.key || "").toLowerCase() === "description") return `<td class="classic-total-label">Total</td>`;
+      if (String(c.key || "").toLowerCase() === "description") return `<td class="classic-total-label">${esc(caps.tableTotalLabel || "Total")}</td>`;
       if (c.role === "quantity") return `<td class="classic-total-qty">${decimalText(qtyTotal)}</td>`;
       if (c.role === "amount" || c.role === "rate") return `<td class="classic-total-money">${money(totals.subtotal)}</td>`;
       return `<td></td>`;
@@ -2292,6 +2759,8 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     box.style.justifyContent = align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center";
     setText("logoWidthValue", width);
     setText("logoHeightValue", height);
+    const removeButton = $("removeLogoBtn");
+    if (removeButton) removeButton.hidden = !state.logo;
     if (state.logo) {
       if (renderedLogo !== state.logo) {
         img.src = state.logo;
@@ -2335,8 +2804,8 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     $("pNotes").textContent = notesText;
     renderPaymentDetails(caps, paymentText);
     $("pTerms").textContent = termsText;
-    setText("pFooterCompany", fieldOr("companyName", "Your Company"));
-    setText("pFooterInvoice", "Invoice #" + invoiceNo);
+    setText("pFooterCompany", caps.footerText ? caps.footerText() : fieldOr("companyName", "Your Company"));
+    setText("pFooterInvoice", caps.footerText ? "" : "Invoice #" + invoiceNo);
     applySectionVisibility(caps, { notesText, termsText, paymentText });
     const visible = visibleColumns(caps);
     renderColgroup(caps, visible);
@@ -2347,6 +2816,7 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     renderSummary(totals);
     renderLogo();
     applyZoom();
+    renderWatermark(template);
   }
 
   // js/storage/local-storage.js
@@ -2436,9 +2906,10 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   var timer = null;
   var clone = (value) => {
     if (!value || typeof value !== "object") return value;
-    const { logo, ...rest } = value;
+    const { logo, watermark, ...rest } = value;
     const copy = JSON.parse(JSON.stringify(rest));
     if (logo !== void 0) copy.logo = logo;
+    if (watermark !== void 0) copy.watermark = watermark;
     return copy;
   };
   var signature = (snapshot) => {
@@ -2446,9 +2917,10 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     const rest = { ...snapshot };
     delete rest.zoom;
     delete rest.logo;
+    delete rest.watermark;
     return JSON.stringify(rest);
   };
-  var sameEntry = (a, b) => Boolean(a) && Boolean(b) && a.logo === b.logo && signature(a) === signature(b);
+  var sameEntry = (a, b) => Boolean(a) && Boolean(b) && a.logo === b.logo && a.watermark === b.watermark && signature(a) === signature(b);
   var notify = () => {
     listener?.({ canUndo: stack.canUndo(), canRedo: stack.canRedo() });
   };
@@ -2552,12 +3024,13 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   function writeLogos(logos) {
     return writeJSON(STORAGE_KEYS.logos, logos) && writeJSON(STORAGE_KEYS.logoIndex, Object.keys(logos));
   }
-  var lastStored = { dataUrl: null, ref: "" };
-  function storeLogo(dataUrl) {
+  var lastStored = { logo: { dataUrl: null, ref: "" }, watermark: { dataUrl: null, ref: "" } };
+  function storeLogo(dataUrl, slot = "logo") {
     if (!dataUrl) return "";
-    if (dataUrl === lastStored.dataUrl && readLogoIndex().includes(lastStored.ref)) return lastStored.ref;
+    const last = lastStored[slot];
+    if (dataUrl === last.dataUrl && readLogoIndex().includes(last.ref)) return last.ref;
     const ref = storeLogoIn(dataUrl, readLogos());
-    lastStored = ref ? { dataUrl, ref } : { dataUrl: null, ref: "" };
+    lastStored[slot] = ref ? { dataUrl, ref } : { dataUrl: null, ref: "" };
     return ref;
   }
   function storeLogoIn(dataUrl, logos) {
@@ -2571,8 +3044,12 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
     return writeLogos(logos) ? ref : null;
   }
   function removeUnusedLogos() {
-    lastStored = { dataUrl: null, ref: "" };
-    const used = new Set(listInvoices().map((entry) => readRecord(entry.id)?.logoRef).filter(Boolean));
+    lastStored.logo = { dataUrl: null, ref: "" };
+    lastStored.watermark = { dataUrl: null, ref: "" };
+    const used = new Set(listInvoices().flatMap((entry) => {
+      const record = readRecord(entry.id);
+      return [record?.logoRef, record?.watermarkRef];
+    }).filter(Boolean));
     const logos = readLogos();
     let changed = false;
     for (const ref of Object.keys(logos)) {
@@ -2610,15 +3087,21 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
   function loadSavedInvoice(id) {
     const record = readRecord(id);
     if (!record) return null;
-    const logo = record.logoRef ? readLogos()[record.logoRef] || "" : "";
-    return { ...record.data, logo, invoiceId: id };
+    const images = record.logoRef || record.watermarkRef ? readLogos() : {};
+    const logo = record.logoRef ? images[record.logoRef] || "" : "";
+    const watermark = record.watermarkRef ? images[record.watermarkRef] || "" : "";
+    return { ...record.data, logo, watermark, invoiceId: id };
   }
   function saveInvoiceRecord(id, snapshot, summary, updatedAt = (/* @__PURE__ */ new Date()).toISOString()) {
     if (!isInvoiceId(id)) return { ok: false };
     const logoRef = storeLogo(snapshot.logo || "");
     if (logoRef === null) return { ok: false };
-    const { logo, invoiceId, ...data } = snapshot;
-    const text2 = JSON.stringify({ id, updatedAt, logoRef, data });
+    const watermarkRef = storeLogo(snapshot.watermark || "", "watermark");
+    if (watermarkRef === null) return { ok: false };
+    const { logo, watermark, invoiceId, ...data } = snapshot;
+    const record = { id, updatedAt, logoRef, data };
+    if (watermarkRef) record.watermarkRef = watermarkRef;
+    const text2 = JSON.stringify(record);
     if (!writeRaw(recordKey(id), text2)) return { ok: false };
     const list2 = listInvoices().filter((e) => e.id !== id);
     list2.push(cleanEntry({ id, updatedAt, ...summary }));
@@ -2834,7 +3317,12 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
       fitPreview();
       saveInvoice();
     };
-    if ("ResizeObserver" in window) new ResizeObserver(() => applyZoom()).observe($("invoice"));
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(() => {
+        applyZoom();
+        renderWatermark(get(fieldValue("template")));
+      }).observe($("invoice"));
+    }
     let timer2 = null;
     window.addEventListener("resize", () => {
       clearTimeout(timer2);
@@ -2865,6 +3353,36 @@ body.pdf-exporting .invoice.template-classic{padding:16mm 8mm 14mm!important}
         if (id === "invoiceDate" || id === "dueDate") updateDateWarning();
         renderPreview();
         saveInvoice({ typing: true });
+      });
+    });
+    $("template")?.addEventListener("change", () => {
+      const template = get(fieldValue("template"));
+      const groups = template?.capabilities?.defaultsOnSelect;
+      if (!groups) return;
+      const atDefault = (id) => {
+        const el = $(id);
+        if (!el) return false;
+        if (el.tagName === "SELECT") return [...el.options].some((o) => o.defaultSelected && o.selected) || el.selectedIndex === 0 && ![...el.options].some((o) => o.defaultSelected);
+        return el.value === el.defaultValue;
+      };
+      const applied = [];
+      for (const [name, values] of Object.entries(groups)) {
+        if (!Object.keys(values).every(atDefault)) continue;
+        for (const [id, value] of Object.entries(values)) $(id).value = value;
+        applied.push(name);
+      }
+      if (!applied.length) return;
+      renderPreview();
+      saveInvoice();
+      toast(`${template.name}: ${applied.map((n) => n === "watermark" ? "logo watermark switched on" : "logo size set").join(" and ")}, as on the original. You can change ${applied.length > 1 ? "these" : "this"} in Design.`);
+    });
+    qsa("[data-due-days]").forEach((button2) => {
+      button2.addEventListener("click", () => {
+        const from = isIsoDate(fieldValue("invoiceDate")) ? fieldValue("invoiceDate") : today();
+        $("dueDate").value = plusDays(from, Number(button2.dataset.dueDays));
+        updateDateWarning();
+        renderPreview();
+        saveInvoice();
       });
     });
     $("nextNumberBtn")?.addEventListener("click", () => {
@@ -2987,6 +3505,16 @@ ${message}${points}`));
   var isNumericType = (type) => NUMERIC_COLUMN_TYPES.includes(type);
   var isDescriptionField = (col) => col.type === "text" && col.key === "description";
   var inputTypeFor = (col) => isNumericType(col.type) ? "number" : col.type === "date" ? "date" : "text";
+  var fieldRank = (col) => isDescriptionField(col) ? 0 : col.role === "quantity" ? 1 : col.role === "rate" ? 2 : 3;
+  var orderedFields = (cols) => cols.map((c, i) => [c, i]).sort((a, b) => fieldRank(a[0]) - fieldRank(b[0]) || a[1] - b[1]).map(([c]) => c);
+  function addLineAndFocus() {
+    addItem(createBlankItem());
+    renderItems();
+    renderPreview();
+    saveInvoice();
+    const rows = $("itemsEditor").children;
+    rows[rows.length - 1]?.querySelector("[data-key]")?.focus();
+  }
   var ITEM_DRAG_TYPE = "application/x-sa-invoice-item";
   var itemFieldMarkup = (col, item, itemIndex, colIndex) => {
     const value = esc(item[col.key] ?? "");
@@ -3012,7 +3540,7 @@ ${message}${points}`));
   function renderItems() {
     const root = $("itemsEditor");
     root.innerHTML = "";
-    const editable = editableColumns().slice().sort((a, b) => Number(isDescriptionField(b)) - Number(isDescriptionField(a)));
+    const editable = orderedFields(editableColumns());
     const count = state.items.length;
     state.items.forEach((item, idx) => {
       const row = document.createElement("div");
@@ -3055,6 +3583,15 @@ ${message}${points}`));
       const total = row.querySelector(".itemrow-total");
       row.querySelectorAll("[data-key]").forEach((input) => {
         if (input.tagName === "TEXTAREA") requestAnimationFrame(() => fitTextarea(input));
+        if (input.tagName === "INPUT") {
+          input.onkeydown = (e) => {
+            if (e.key !== "Enter" || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
+            e.preventDefault();
+            const next = root.children[idx + 1];
+            if (next) next.querySelector("[data-key]")?.focus();
+            else addLineAndFocus();
+          };
+        }
         input.oninput = () => {
           const col = state.columns.find((c) => c.key === input.dataset.key);
           item[input.dataset.key] = isNumericType(col?.type) ? num(input.value) : input.value;
@@ -3069,14 +3606,8 @@ ${message}${points}`));
     });
   }
   function initItemControls() {
-    $("addItemBtn").onclick = () => {
-      addItem(createBlankItem());
-      renderItems();
-      renderPreview();
-      saveInvoice();
-      const rows = $("itemsEditor").children;
-      rows[rows.length - 1]?.querySelector("[data-key]")?.focus();
-    };
+    $("addItemBtn").onclick = addLineAndFocus;
+    if ($("addItemBottomBtn")) $("addItemBottomBtn").onclick = addLineAndFocus;
     $("clearItemsBtn").onclick = async () => {
       if (!state.items.length) return;
       const ok = await confirmAction({
@@ -3098,7 +3629,7 @@ ${message}${points}`));
   function normalizeKey(value) {
     return String(value || "column").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "column";
   }
-  var columnRowMarkup = (col, idx) => `<div class="columnhead"><span class="drag" aria-hidden="true" title="Drag to reorder">\u2630</span><strong>Column ${idx + 1}</strong><label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label><button class="btn icon danger" type="button" aria-label="Remove column ${idx + 1}" title="Remove column">\xD7</button></div><div class="colgrid"><div class="field"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div><div class="field"><label for="col-${idx}-type">Type</label><select id="col-${idx}-type" class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div><div class="field"><label for="col-${idx}-width">Width %</label><input id="col-${idx}-width" class="width" type="number" min="5" max="80" value="${num(col.width)}"></div><div class="field"><label for="col-${idx}-align">Alignment</label><select id="col-${idx}-align" class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div><div class="field"><label for="col-${idx}-role">Calculation role</label><select id="col-${idx}-role" class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div></div>`;
+  var columnRowMarkup = (col, idx) => `<div class="columnhead"><span class="drag" aria-hidden="true" title="Drag to reorder">\u2630</span><strong>Column ${idx + 1}</strong><label class="tiny"><input class="vis" type="checkbox" ${col.visible ? "checked" : ""}> Show</label><button class="btn icon danger" type="button" aria-label="Remove column ${idx + 1}" title="Remove column">\xD7</button></div><div class="colgrid"><div class="field full"><label for="col-${idx}-labelinput">Heading</label><input id="col-${idx}-labelinput" class="labelinput" value="${esc(col.label)}"></div><div class="field"><label for="col-${idx}-type">Type</label><select id="col-${idx}-type" class="type"><option value="text">Text</option><option value="number">Number</option><option value="currency">Currency</option><option value="percentage">Percentage</option><option value="date">Date</option></select></div><div class="field"><label for="col-${idx}-width">Width %</label><input id="col-${idx}-width" class="width" type="number" min="5" max="80" value="${num(col.width)}"></div><div class="field"><label for="col-${idx}-align">Alignment</label><select id="col-${idx}-align" class="align"><option value="left">Left</option><option value="right">Right</option><option value="center">Centre</option></select></div><div class="field"><label for="col-${idx}-role">Calculation role</label><select id="col-${idx}-role" class="role"><option value="none">None</option><option value="quantity">Quantity</option><option value="rate">Rate</option><option value="amount">Amount</option></select></div></div>`;
   function renderColumns() {
     const root = $("columnEditor");
     root.innerHTML = "";
@@ -3257,7 +3788,10 @@ ${message}${points}`));
     }
     if (typeof data.currency === "string") setFieldValue("currency", data.currency);
     if (typeof data.template === "string") setFieldValue("template", data.template);
-    return typeof data.logo === "string" ? data.logo : void 0;
+    return {
+      logo: typeof data.logo === "string" ? data.logo : void 0,
+      watermark: typeof data.watermark === "string" ? data.watermark : void 0
+    };
   }
 
   // js/print/export-check.js
@@ -3292,6 +3826,13 @@ ${message}${points}`));
       if (!CLIENT_DETAIL_FIELDS.some((id) => trimmedField(id))) {
         add('The client details are empty. "Add client details" will print instead.', "invoice", "clientAddress");
       }
+    }
+    const wmType = fieldValue("watermarkType");
+    const wmSupported = Boolean(get(fieldValue("template"))?.capabilities?.watermark);
+    if (wmSupported && wmType !== "none" && wmType) {
+      if (wmType === "text" && !trimmedField("watermarkText")) add("The watermark is on but has no text.", "design", "watermarkText");
+      if (wmType === "logo" && !state.logo) add("The watermark uses the logo, but there is no logo.", "design", "watermarkType");
+      if (wmType === "image" && !state.watermark) add("The watermark is set to an image, but none is uploaded.", "design", "watermarkType");
     }
     if (!state.items.length) add("There are no line items.", "invoice", "addItemBtn");
     else if (getTotals().total === 0) add(`The invoice total is ${money(0)}.`, "invoice", "addItemBtn");
@@ -3359,6 +3900,68 @@ ${message}${points}`));
     onInvoiceWritten(schedule);
     for (const type of ["input", "change", "click"]) document.addEventListener(type, schedule, true);
     updatePanelSummaries();
+  }
+
+  // js/editor/watermark-controls.js
+  var KIND_LABEL = { none: "Off", text: "Text", logo: "Logo", image: "Image" };
+  function updateWatermarkControls() {
+    const type = fieldValue("watermarkType") || "none";
+    qsa("[data-wm]").forEach((row) => {
+      const want = row.dataset.wm;
+      row.hidden = !(want === "any" ? type !== "none" : want === type);
+    });
+    setText("watermarkOpacityValue", fieldValue("watermarkOpacity") + "%");
+    setText("watermarkSizeValue", fieldValue("watermarkSize") + "% of the page width");
+    $("removeWatermarkBtn").hidden = !state.watermark;
+    setText("watermarkLogoHint", state.logo ? "Uses the logo from Your company." : "Upload a logo under Your company first.");
+    const supported = Boolean(get(fieldValue("template"))?.capabilities?.watermark);
+    $("watermarkTemplateHint").hidden = supported || type === "none";
+    let summary = KIND_LABEL[type] || "Off";
+    if (type === "text" && fieldValue("watermarkText").trim()) summary = "Text: " + fieldValue("watermarkText").trim();
+    if (type !== "none" && !supported) summary += " (not on this template)";
+    setText("sumWatermark", summary);
+  }
+  function initWatermarkControls() {
+    const input = $("watermarkFile");
+    if (!input) return;
+    input.onchange = () => {
+      const file = input.files[0];
+      input.value = "";
+      if (!file) return;
+      if (file.size > LIMITS.logoBytes) return toastError("The watermark image is larger than 3 MB.");
+      const reader = new FileReader();
+      reader.onerror = () => toastError("The watermark image could not be read.");
+      reader.onload = () => {
+        const probe = new Image();
+        probe.onerror = () => toastError("The selected watermark image is not valid.");
+        probe.onload = () => {
+          const original = String(reader.result);
+          setWatermark(shrinkLogo(probe, file.type, original) || original);
+          $("watermarkType").value = "image";
+          updateWatermarkControls();
+          renderPreview();
+          saveInvoice();
+          toast("Watermark image added.");
+        };
+        probe.src = String(reader.result);
+      };
+      reader.readAsDataURL(file);
+    };
+    $("removeWatermarkBtn").onclick = () => {
+      setWatermark("");
+      updateWatermarkControls();
+      renderPreview();
+      saveInvoice();
+      toast("Watermark image removed.");
+    };
+    let timer2 = null;
+    const schedule = () => {
+      clearTimeout(timer2);
+      timer2 = setTimeout(updateWatermarkControls, 60);
+    };
+    for (const type of ["input", "change", "click"]) document.addEventListener(type, schedule, true);
+    onInvoiceWritten(schedule);
+    updateWatermarkControls();
   }
 
   // js/editor/sidebar.js
@@ -3561,8 +4164,10 @@ ${message}${points}`));
     }
     const title = (fieldValue("invoiceNumber") || "Invoice").replace(/[<>]/g, "");
     doc.open();
+    const rootStyle = getComputedStyle(document.documentElement);
+    const accentVars = ["--accent", "--accent-rgb"].map((name) => [name, rootStyle.getPropertyValue(name).trim()]).filter(([, value]) => /^[#0-9a-fA-F, ]+$/.test(value)).map(([name, value]) => `${name}:${value}`).join(";");
     doc.write(`<!doctype html>
-<html>
+<html${accentVars ? ` style="${accentVars}"` : ""}>
 <head>
 <meta charset="utf-8">
 <base href="${document.baseURI}">
@@ -3994,12 +4599,16 @@ ${collectStyleMarkup()}
     let logo = "";
     if (isSafeLogo(data.logo)) logo = data.logo;
     else if (data.logo) warnings.push("The logo was not an embedded image and was removed.");
+    let watermark = "";
+    if (isSafeLogo(data.watermark)) watermark = data.watermark;
+    else if (data.watermark) warnings.push("The watermark image was not an embedded image and was removed.");
     const zoom = Number(data.zoom);
     const columns = cleanColumns(data.columns, warnings);
     const items = cleanItems(data.items, columns, warnings);
     const snapshot = {
       ...data.version !== void 0 ? { version: data.version } : {},
       logo,
+      watermark,
       zoom: Number.isFinite(zoom) && zoom > 0 ? zoom : 1,
       columns,
       items,
@@ -4027,6 +4636,7 @@ ${collectStyleMarkup()}
       if (id in data.fields) setFieldValue(id, data.fields[id]);
     });
     setLogo(data.logo);
+    setWatermark(data.watermark);
     setZoom(data.zoom || 1);
     setColumns(data.columns);
     setItems(data.items);
@@ -4037,8 +4647,11 @@ ${collectStyleMarkup()}
     return warnings;
   }
   function applyBrand(apply) {
-    const logo = apply();
-    if (typeof logo === "string") setLogo(logo === "" || isSafeLogo(logo) ? logo : "");
+    const result = apply();
+    const { logo, watermark } = typeof result === "string" ? { logo: result } : result || {};
+    const safe = (v) => v === "" || isSafeLogo(v) ? v : "";
+    if (typeof logo === "string") setLogo(safe(logo));
+    if (typeof watermark === "string") setWatermark(safe(watermark));
     setAccent(currentAccent());
     renderPreview();
     saveInvoice();
@@ -4875,9 +5488,18 @@ Overwrite it?`)) onOverwrite();
     for (const entry of entries) {
       const record = readRecord(entry.id);
       if (!record) continue;
-      if (record.logoRef && allLogos[record.logoRef]) logos[record.logoRef] = allLogos[record.logoRef];
+      for (const ref of [record.logoRef, record.watermarkRef]) {
+        if (ref && allLogos[ref]) logos[ref] = allLogos[ref];
+      }
       const { id, ...summary } = entry;
-      invoices.push({ id: record.id || entry.id, updatedAt: record.updatedAt || entry.updatedAt, logoRef: record.logoRef || "", summary, data: record.data });
+      invoices.push({
+        id: record.id || entry.id,
+        updatedAt: record.updatedAt || entry.updatedAt,
+        logoRef: record.logoRef || "",
+        watermarkRef: record.watermarkRef || "",
+        summary,
+        data: record.data
+      });
     }
     return {
       format: BACKUP_FORMAT,
@@ -4943,6 +5565,7 @@ Overwrite it?`)) onOverwrite();
         continue;
       }
       const logo = isSafeLogo(logos[item.logoRef]) ? logos[item.logoRef] : "";
+      const watermark = isSafeLogo(logos[item.watermarkRef]) ? logos[item.watermarkRef] : "";
       const s = isObject(item.summary) ? item.summary : {};
       const fields = snapshot.fields || {};
       const summary = {
@@ -4952,7 +5575,7 @@ Overwrite it?`)) onOverwrite();
         total: Number(s.total) || 0,
         currency: s.currency ?? fields.currency ?? ""
       };
-      if (!saveInvoiceRecord(item.id, { ...snapshot, logo }, summary, updatedAt).ok) {
+      if (!saveInvoiceRecord(item.id, { ...snapshot, logo, watermark }, summary, updatedAt).ok) {
         result.failed = true;
         return result;
       }
@@ -4979,6 +5602,7 @@ Overwrite it?`)) onOverwrite();
         if (!isObject(entry) || !nameKey(entry.name) || !isObject(entry.data) || names.has(nameKey(entry.name))) continue;
         const copy = JSON.parse(JSON.stringify({ name: String(entry.name).trim(), data: entry.data }));
         if (copy.data.logo && !isSafeLogo(copy.data.logo)) copy.data.logo = "";
+        if (copy.data.watermark && !isSafeLogo(copy.data.watermark)) copy.data.watermark = "";
         list2.push(copy);
         names.add(nameKey(entry.name));
         result[counter]++;
@@ -5005,7 +5629,7 @@ Overwrite it?`)) onOverwrite();
       option.selected = clientKey(c.name) === current;
       select.add(option);
     }
-    $("removeClientBtn").disabled = !select.value;
+    $("removeClientBtn").hidden = !select.value;
   }
   function applyClient(id) {
     const client = listClients().find((c) => c.id === id);
@@ -5019,7 +5643,7 @@ Overwrite it?`)) onOverwrite();
     const select = $("savedClients");
     if (!select) return;
     select.addEventListener("change", () => {
-      $("removeClientBtn").disabled = !select.value;
+      $("removeClientBtn").hidden = !select.value;
       if (select.value) applyClient(select.value);
     });
     $("saveClientBtn").onclick = () => {
@@ -5440,7 +6064,7 @@ Overwrite it?`)) onOverwrite();
     }
   }
   function registerTemplates() {
-    [modern_default, minimal_default, classic_default, royalty_default].forEach(register);
+    [modern_default, minimal_default, classic_default, royalty_default, ukhf_default].forEach(register);
   }
   function seedDefaults() {
     applyLogoDefaults();
@@ -5484,6 +6108,7 @@ Overwrite it?`)) onOverwrite();
     step("libraries", refreshLibraries);
     step("saved invoices", initInvoiceList);
     step("client book", initClientBook);
+    step("watermark", initWatermarkControls);
     step("panels", initPanels);
     step("save indicator", initSaveState);
     step("jump button", initJumpButton);

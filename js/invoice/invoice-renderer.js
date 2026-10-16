@@ -12,9 +12,10 @@
 
 import { $, qs, qsa, setText, toggleSection, fieldValue, fieldOr, trimmedField, num, esc, clamp } from "../utils.js";
 import {
-  LIMITS, FIXED_WIDTH_COLUMN_COUNT
+  LIMITS, FIXED_WIDTH_COLUMN_COUNT, CLIENT_META_FALLBACK
 } from "../constants.js";
 import { state } from "../state.js";
+import { renderWatermark } from "./watermark.js";
 import * as TemplateRegistry from "../templates/template-registry.js";
 import { fmtCell, money, ratePercentText, decimalText, alignClass } from "./formatters.js";
 import { metaClient, oneEducationPaymentRows, readNotes } from "./invoice-data.js";
@@ -62,10 +63,52 @@ const renderHeaderDetails = (caps, invoiceNo) => {
   setText("pReference", fieldOr("reference", "\u2014"));
   setText("pClientName", fieldOr("clientName", "Client company"));
   setText("pClientMeta", metaClient());
+  if (caps.clientFirstLineBold) {
+    // Only the first line of the client name is bold; further name lines
+    // ("Focus Multimedia Ltd") print with the address.
+    const [first, ...rest] = trimmedField("clientName").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    const meta = metaClient();
+    setText("pClientName", first || "Client company");
+    setText("pClientMeta", [...rest, meta === CLIENT_META_FALLBACK && rest.length ? "" : meta].filter(Boolean).join("\n"));
+  }
+  setText("pPeriodTitle", caps.periodTitle ? caps.periodTitle() : "");
+};
+
+/**
+ * UKHF Fanatical payment block: "PayPal Details: ..." lines in bold-label
+ * form, then "Bank Details:" and the remaining "Label: value" lines as a boxed
+ * table. A line reading just "Bank Details" is taken as the heading itself.
+ */
+const ukhfPaymentMarkup = text => {
+  // One row per line. "Label: value" keeps the colon as typed ("Sort Code:");
+  // a tab, two or more spaces, or " | " separate without one ("IBAN").
+  const rows = String(text || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(line => {
+    const plain = line.match(/^(.*?\S)(?:\t+| {2,}| \| )(.+)$/);
+    if (plain) return { label: plain[1].trim(), value: plain[2].trim() };
+    const colon = line.indexOf(":");
+    if (colon > 0) return { label: line.slice(0, colon + 1).trim(), value: line.slice(colon + 1).trim() };
+    return { label: "", value: line };
+  });
+  const isPaypal = r => /paypal/i.test(r.label);
+  const isBankHeading = r => /^bank\s*details:?$/i.test(r.label || r.value) && !(r.label && r.value);
+  const lines = rows.filter(r => isPaypal(r) || (!r.label && !isBankHeading(r)));
+  const bank = rows.filter(r => r.label && !isPaypal(r) && !isBankHeading(r));
+  const lineHtml = lines.map(r => r.label
+    ? `<div class="ukhf-pay-line"><strong>${esc(r.label.endsWith(":") ? r.label : r.label + ":")}</strong> ${esc(r.value)}</div>`
+    : `<div class="ukhf-pay-line">${esc(r.value)}</div>`).join("");
+  const bankHtml = bank.length
+    ? `<div class="ukhf-bank-title">Bank Details:</div><table class="ukhf-bank">${bank.map(r =>
+      `<tr><td>${esc(r.label)}</td><td>${esc(r.value)}</td></tr>`).join("")}</table>`
+    : "";
+  return lineHtml + bankHtml;
 };
 
 /** Payment details: bordered key/value table for One Education, plain text elsewhere. */
 const renderPaymentDetails = (caps, paymentText) => {
+  if (caps.paymentLayout === "ukhf") {
+    $("pPayment").innerHTML = ukhfPaymentMarkup(paymentText);
+    return;
+  }
   if (!caps.structuredPayment) {
     $("pPayment").textContent = paymentText;
     return;
@@ -127,7 +170,9 @@ const visibleColumns = caps => {
 };
 
 const renderColgroup = (caps, visible) => {
-  const useFixed = caps.fixedColumnWidths && visible.length === FIXED_WIDTH_COLUMN_COUNT;
+  // Fixed widths apply when the template lists one width per visible column
+  // (Royalty statement: 4, UKHF Fanatical: 3).
+  const useFixed = Array.isArray(caps.fixedColumnWidths) && caps.fixedColumnWidths.length === visible.length;
   $("pCols").innerHTML = useFixed
     ? caps.fixedColumnWidths.map(width => `<col style="width:${width}">`).join("")
     : visible.map(c => `<col style="width:${Math.max(LIMITS.columnWidth.min, num(c.width))}%">`).join("");
@@ -180,7 +225,7 @@ const renderTableTotalRow = (caps, visible, totals) => {
   }
   const qtyTotal = calculateQuantityTotal(state.items);
   const cells = visible.map(c => {
-    if (String(c.key || "").toLowerCase() === "description") return `<td class="classic-total-label">Total</td>`;
+    if (String(c.key || "").toLowerCase() === "description") return `<td class="classic-total-label">${esc(caps.tableTotalLabel || "Total")}</td>`;
     if (c.role === "quantity") return `<td class="classic-total-qty">${decimalText(qtyTotal)}</td>`;
     if (c.role === "amount" || c.role === "rate") return `<td class="classic-total-money">${money(totals.subtotal)}</td>`;
     return `<td></td>`;
@@ -226,6 +271,10 @@ const renderLogo = () => {
   box.style.justifyContent = align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center";
   setText("logoWidthValue", width);
   setText("logoHeightValue", height);
+
+  // The editor's Remove button only makes sense when there is a logo.
+  const removeButton = $("removeLogoBtn");
+  if (removeButton) removeButton.hidden = !state.logo;
 
   if (state.logo) {
     // Only reassign when the logo changed: re-setting a multi-megabyte data
@@ -289,8 +338,8 @@ export function renderPreview() {
   $("pNotes").textContent = notesText;
   renderPaymentDetails(caps, paymentText);
   $("pTerms").textContent = termsText;
-  setText("pFooterCompany", fieldOr("companyName", "Your Company"));
-  setText("pFooterInvoice", "Invoice #" + invoiceNo);
+  setText("pFooterCompany", caps.footerText ? caps.footerText() : fieldOr("companyName", "Your Company"));
+  setText("pFooterInvoice", caps.footerText ? "" : "Invoice #" + invoiceNo);
 
   applySectionVisibility(caps, { notesText, termsText, paymentText });
 
@@ -305,4 +354,6 @@ export function renderPreview() {
 
   renderLogo();
   applyZoom();
+  // Last: the watermark is sized from the rendered page height.
+  renderWatermark(template);
 }

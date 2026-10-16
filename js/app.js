@@ -16,6 +16,7 @@ import modernTemplate from "./templates/modern.js";
 import minimalTemplate from "./templates/minimal.js";
 import classicTemplate from "./templates/classic.js";
 import royaltyTemplate from "./templates/royalty.js";
+import ukhfTemplate from "./templates/ukhf.js";
 
 import { initTabs } from "./editor/tabs.js";
 import { initFieldBindings } from "./editor/details.js";
@@ -24,6 +25,7 @@ import { initColumnControls } from "./editor/columns.js";
 import { setAccent, initLogoControls, initZoomControls, applyLogoDefaults, fitPreviewOnNarrowScreens } from "./editor/design.js";
 import { initJumpButton } from "./editor/jump.js";
 import { initPanels } from "./editor/panels.js";
+import { initWatermarkControls } from "./editor/watermark-controls.js";
 import { initSidebarResizer } from "./editor/sidebar.js";
 import { initToolbar } from "./editor/toolbar.js";
 import { initLibraryControls, refreshLibraries } from "./editor/library.js";
@@ -54,7 +56,7 @@ function step(name, fn) {
 
 function registerTemplates() {
   // Modern is registered first, so it is also the fallback for unknown ids.
-  [modernTemplate, minimalTemplate, classicTemplate, royaltyTemplate]
+  [modernTemplate, minimalTemplate, classicTemplate, royaltyTemplate, ukhfTemplate]
     .forEach(TemplateRegistry.register);
 }
 
@@ -120,6 +122,7 @@ export function init() {
   step("saved invoices", initInvoiceList);
   step("client book", initClientBook);
   // After the invoice is restored, so "Your company" can start closed when filled.
+  step("watermark", initWatermarkControls);
   step("panels", initPanels);
   step("save indicator", initSaveState);
   step("jump button", initJumpButton);
